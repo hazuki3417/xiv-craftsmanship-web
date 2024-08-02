@@ -1,5 +1,5 @@
 import { FC, ReactNode, useState } from "react"
-import { DiagramChildNodeProps } from "../index";
+import { ChildItemType, DiagramChildNodeProps } from "../index";
 import { Table, UnstyledButton } from '@mantine/core';
 import { IconArrowsSort, IconSortAscending, IconSortDescending } from "@tabler/icons-react";
 import { InternalTableContext, useInternalTable, SortState } from "./InternalTable.context";
@@ -60,36 +60,36 @@ export const InternalTableProvider: FC<InternalTableProviderProps> = (props) => 
 };
 
 export type InternalTableBodyProps = {
-  nodes: DiagramChildNodeProps[]
+  items: ChildItemType[]
 }
 
 export const InternalTableBody: FC<InternalTableBodyProps> = (props) => {
-  const { nodes, ...rest } = props
+  const { items, ...rest } = props
   const { sort } = useInternalTable()
 
   return (
     <Table.Tbody>
-      {nodes.sort((a, b) => {
+      {items.sort((a, b) => {
         if (sort.name === "ascending") {
-          return a.data.name.localeCompare(b.data.name)
+          return a.name.localeCompare(b.name)
         }
         if (sort.name === "descending") {
-          return b.data.name.localeCompare(a.data.name)
+          return b.name.localeCompare(a.name)
         }
 
         if (sort.quantity === "ascending") {
-          return a.data.tcount - b.data.tcount
+          return a.tcount - b.tcount
         }
 
         if (sort.quantity === "descending") {
-          return b.data.tcount - a.data.tcount
+          return b.tcount - a.tcount
         }
         return 0
       }).map((node) => {
         return (
-          <Table.Tr key={node.data.id}>
-            <Table.Td>{node.data.name}</Table.Td>
-            <Table.Td>{node.data.tcount}</Table.Td>
+          <Table.Tr key={node.id}>
+            <Table.Td>{node.name}</Table.Td>
+            <Table.Td>{node.tcount}</Table.Td>
           </Table.Tr>
         )
       })}

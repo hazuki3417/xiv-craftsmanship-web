@@ -25,19 +25,23 @@ export const Diagram1Provider: FC<DiagramProviderProps> = (props) => {
 export type NodeType = "root" | "internal" | "leaf"
 
 /**
+ * TODO: ドメインに関する型定義なので実装箇所を変更する
  * 共通のプロパティ
  */
-type DiagramItemProps = {
+export type ItemType = {
   id: string
   type: NodeType
   name: string
 }
 
-type DiagramRootItemProps = DiagramItemProps & {
+/**
+ * TODO: ドメインに関する型定義なので実装箇所を変更する
+ */
+export type RootItemType = ItemType & {
   count: number
 };
 
-export type DiagramRootNodeProps = Node<DiagramRootItemProps>;
+export type DiagramRootNodeProps = Node<RootItemType>;
 
 export const DiagramRootNode = memo((props: NodeProps<DiagramRootNodeProps>) => {
   const { id, name, count } = props.data;
@@ -81,14 +85,16 @@ export type DepthType = {
   y: number
 }
 
-
-type DiagramChildItemProps = DiagramItemProps & {
+/**
+ * TODO: ドメインに関する型定義なので実装箇所を変更する
+ */
+export type ChildItemType = ItemType & {
   ucount: number
   tcount: number
   depth: DepthType
 };
 
-export type DiagramChildNodeProps = Node<DiagramChildItemProps>;
+export type DiagramChildNodeProps = Node<ChildItemType>;
 
 export const DiagramChildNode = memo((props: NodeProps<DiagramChildNodeProps>) => {
 
