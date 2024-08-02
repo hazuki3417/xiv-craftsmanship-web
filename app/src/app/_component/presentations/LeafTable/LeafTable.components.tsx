@@ -60,7 +60,7 @@ export const LeafTableProvider: FC<LeafTableProviderProps> = (props) => {
     </LeafTableContext.Provider>
   );
 };
-
+LeafTableProvider.displayName = "component/presentations/LeafTable/LeafTableProvider";
 
 export type LeafTableBodyProps = {
   items: ChildItemType[]
@@ -100,6 +100,7 @@ export const LeafTableBody: FC<LeafTableBodyProps> = (props) => {
     </Table.Tbody>
   )
 }
+LeafTableBody.displayName = "component/presentations/LeafTable/LeafTableBody";
 
 export type LeafTableHeaderProps = {
 
@@ -134,3 +135,4 @@ export const LeafTableHeader: FC<LeafTableHeaderProps> = (props) => {
     </Table.Tbody>
   )
 }
+LeafTableHeader.displayName = "component/presentations/LeafTable/LeafTableHeader";

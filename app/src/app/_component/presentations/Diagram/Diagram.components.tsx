@@ -11,7 +11,7 @@ export interface DiagramProviderProps {
   onChangeRootItemCount: (value: number | string) => void
 }
 
-export const Diagram1Provider: FC<DiagramProviderProps> = (props) => {
+export const DiagramProvider: FC<DiagramProviderProps> = (props) => {
   const { children, onChangeRootItemCount, ...rest } = props;
   return (
     <DiagramContext.Provider value={{
@@ -21,6 +21,7 @@ export const Diagram1Provider: FC<DiagramProviderProps> = (props) => {
     </DiagramContext.Provider >
   );
 };
+DiagramProvider.displayName = "component/presentations/Diagram/DiagramProvider";
 
 export type NodeType = "root" | "internal" | "leaf"
 
@@ -77,8 +78,8 @@ export const DiagramRootNode = memo((props: NodeProps<DiagramRootNodeProps>) => 
       <Handle type="source" position={Position.Bottom} />
     </>
   )
-
 })
+DiagramRootNode.displayName = "component/presentations/Diagram/DiagramRootNode";
 
 export type DepthType = {
   x: number
@@ -142,5 +143,6 @@ export const DiagramChildNode = memo((props: NodeProps<DiagramChildNodeProps>) =
     </>
   );
 })
+DiagramChildNode.displayName = "component/presentations/Diagram/DiagramChildNode";
 
 export type DiagramNodeProps = DiagramRootNodeProps | DiagramChildNodeProps;

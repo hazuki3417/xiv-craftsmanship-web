@@ -29,5 +29,6 @@ export const InternalTable: CompoundedComponent = (props) => {
   );
 }
 
+InternalTable.displayName = "component/prestations/InternalTable";
 InternalTable.Header = InternalTableHeader;
 InternalTable.Body = InternalTableBody;

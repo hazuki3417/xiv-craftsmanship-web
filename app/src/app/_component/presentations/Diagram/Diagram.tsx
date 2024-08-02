@@ -1,5 +1,5 @@
 import { FC } from "react"
-import { DiagramRootNode, DiagramChildNode, Diagram1Provider } from "./Diagram.components"
+import { DiagramRootNode, DiagramChildNode, DiagramProvider } from "./Diagram.components"
 import { ReactFlow, Edge, Node } from "@xyflow/react"
 
 export type DiagramProps = {
@@ -13,8 +13,10 @@ type CompoundedComponent = FC<DiagramProps> & {
 
 export const Diagram: CompoundedComponent = (props) => {
   const { nodes, edges, onChangeRootItemCount } = props
+  // TODO: 下記のエラーに対応をする
+  // index.mjs:572 [React Flow]: The React Flow parent container needs a width and a height to render the graph. Help: https://reactflow.dev/error#004
   return (
-    <Diagram1Provider onChangeRootItemCount={onChangeRootItemCount}>
+    <DiagramProvider onChangeRootItemCount={onChangeRootItemCount}>
       <ReactFlow
         nodeTypes={{
           rootNode: DiagramRootNode,
@@ -27,7 +29,7 @@ export const Diagram: CompoundedComponent = (props) => {
         zoomOnPinch={false}
         zoomOnDoubleClick={false}
       />
-    </Diagram1Provider>
+    </DiagramProvider>
   )
 }
-
+Diagram.displayName = "component/presentations/Diagram"

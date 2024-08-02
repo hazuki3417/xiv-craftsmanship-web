@@ -29,5 +29,7 @@ export const LeafTable: CompoundedComponent = (props) => {
   );
 }
 
+LeafTable.displayName = "component/prestations/LeafTable";
 LeafTable.Header = LeafTableHeader;
 LeafTable.Body = LeafTableBody;
+

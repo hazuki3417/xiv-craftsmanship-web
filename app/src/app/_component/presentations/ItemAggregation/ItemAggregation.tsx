@@ -49,3 +49,4 @@ export const ItemAggregation: FC<ItemAggregationProps> = (props) => {
     </ItemAggregationContext.Provider>
   );
 };
+ItemAggregation.displayName = "component/presentations/ItemAggregation";

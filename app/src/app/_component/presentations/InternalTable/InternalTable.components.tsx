@@ -58,6 +58,7 @@ export const InternalTableProvider: FC<InternalTableProviderProps> = (props) => 
     </InternalTableContext.Provider>
   );
 };
+InternalTableProvider.displayName = "component/presentations/InternalTable/InternalTableProvider";
 
 export type InternalTableBodyProps = {
   items: ChildItemType[]
@@ -96,6 +97,7 @@ export const InternalTableBody: FC<InternalTableBodyProps> = (props) => {
     </Table.Tbody>
   )
 }
+InternalTableBody.displayName = "component/presentations/InternalTable/InternalTableBody";
 
 export type InternalTableHeaderProps = {
 
@@ -125,3 +127,4 @@ export const InternalTableHeader: FC<InternalTableHeaderProps> = (props) => {
     </Table.Tbody>
   )
 }
+InternalTableHeader.displayName = "component/presentations/InternalTable/InternalTableHeader";

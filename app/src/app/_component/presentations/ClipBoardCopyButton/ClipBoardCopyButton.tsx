@@ -24,3 +24,4 @@ export const ClipBoardCopyButton: FC<ClipBoardCopyButtonProps> = (props) => {
     </CopyButton>
   );
 }
+ClipBoardCopyButton.displayName = "component/presentations/ClipBoardCopyButton";
