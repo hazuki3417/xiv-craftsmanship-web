@@ -70,6 +70,16 @@ export const LeafTableBody: FC<LeafTableBodyProps> = (props) => {
   const { items, ...rest } = props
   const { sort } = useLeafTable()
 
+  if (items.length === 0) {
+    return (
+      <Table.Tbody>
+        <Table.Tr>
+          <Table.Td colSpan={3}>No data</Table.Td>
+        </Table.Tr>
+      </Table.Tbody>
+    )
+  }
+
   return (
     <Table.Tbody>
       {items.sort((a, b) => {

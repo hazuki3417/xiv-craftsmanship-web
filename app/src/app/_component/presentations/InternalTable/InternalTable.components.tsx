@@ -68,6 +68,16 @@ export const InternalTableBody: FC<InternalTableBodyProps> = (props) => {
   const { items, ...rest } = props
   const { sort } = useInternalTable()
 
+  if (items.length === 0) {
+    return (
+      <Table.Tbody>
+        <Table.Tr>
+          <Table.Td colSpan={2}>No data</Table.Td>
+        </Table.Tr>
+      </Table.Tbody>
+    )
+  }
+
   return (
     <Table.Tbody>
       {items.sort((a, b) => {
