@@ -182,8 +182,8 @@ export const Tab: FC<TabProps> = (props) => {
     }
 
     const { nodes, edges } = buildNodeAndEdge({
-      // items: initialParts,
-      items: [],
+      items: initialParts,
+      // items: [],
       parentId: rootId,
       depth: { x: depthX, y: depthY },
       pcount: rootCount
