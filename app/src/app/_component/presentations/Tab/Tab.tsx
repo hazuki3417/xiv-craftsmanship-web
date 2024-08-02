@@ -225,3 +225,4 @@ export const Tab: FC<TabProps> = (props) => {
     </Box>
   );
 }
+Tab.displayName = "component/presentations/Tab";
