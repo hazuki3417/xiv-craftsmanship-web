@@ -9,11 +9,15 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@apollo/client": "^3.11.3",
     "@hookform/resolvers": "^3.9.0",
     "@mantine/core": "^7.11.2",
     "@mantine/hooks": "^7.11.2",
     "@tabler/icons-react": "^3.11.0",
     "@xyflow/react": "^12.0.3",
+    "csrf": "^3.1.0",
+    "graphql": "^16.9.0",
+    "nanoid": "^5.0.7",
     "next": "14.2.5",
     "react": "^18",
     "react-dom": "^18",
