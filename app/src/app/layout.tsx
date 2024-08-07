@@ -1,6 +1,6 @@
 import "@mantine/core/styles.css";
 import '@xyflow/react/dist/style.css';
-import { ThemeProvider } from "@/component/containers";
+import { ApolloProvider, ThemeProvider } from "@/component/containers";
 import { ColorSchemeScript } from "@mantine/core";
 import { FC } from "react";
 import { ReactNode } from "react";
@@ -23,7 +23,9 @@ const RootLayout: FC<Props> = ({ children }) => (
 		</head>
 		<body>
 			<ThemeProvider defaultColorScheme="light" theme={theme}>
-				{children}
+				<ApolloProvider>
+					{children}
+				</ApolloProvider>
 			</ThemeProvider>
 		</body>
 	</html>

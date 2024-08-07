@@ -1,0 +1,6 @@
+query GetCrafts($name: String!) {
+  crafts(name: $name) {
+    id
+    name
+  }
+}
