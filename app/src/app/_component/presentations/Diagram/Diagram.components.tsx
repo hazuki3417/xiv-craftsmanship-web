@@ -6,8 +6,10 @@ import type { Node, NodeProps } from "@xyflow/react";
 import { ClipBoardCopyButton } from "../ClipBoardCopyButton";
 import { DiagramContext, useDiagram } from "./Diagram.context";
 import { IconCheck, IconSearch } from "@tabler/icons-react";
-import { useDebouncedCallback, useDebouncedValue } from "@mantine/hooks";
+import { useDebouncedValue } from "@mantine/hooks";
 import { rem } from "@mantine/core";
+import { useLazyQuery } from "@apollo/client";
+import { GetCraftsDocument } from "@/graphql";
 
 export interface DiagramProviderProps {
   children: ReactNode;
@@ -47,29 +49,29 @@ export type RootItemType = ItemType & {
 
 export type DiagramRootNodeProps = Node<RootItemType>;
 
-
 type SearchState = {
   value: string,
   keyTypeChange: boolean
-}
-
-type OptionState = {
-  value: string
-  label: string
 }
 
 const SearchCombobox: FC = () => {
   const combobox = useCombobox({
     onDropdownClose: () => combobox.resetSelectedOption(),
   })
+
   const [search, setSearch] = useState<SearchState>({ value: '', keyTypeChange: false });
-  const [options, setOptions] = useState<OptionState[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loadQuery, { loading, data }] = useLazyQuery(GetCraftsDocument);
   const [debouncedSearch] = useDebouncedValue(search, 500);
 
-  const onOptionSubmit = (option: string) => {
-    setSearch({ value: option, keyTypeChange: false });
-    console.debug('api request: fetch item recipe');
+  const onOptionSubmit = (value: string) => {
+
+    const craft = data?.crafts.find((craft) => craft.id === value);
+    if (!craft) {
+      return;
+    }
+
+    setSearch({ value: craft.name, keyTypeChange: false });
+    console.debug('api request: fetch item recipe id', craft.id);
     combobox.closeDropdown();
   }
 
@@ -77,26 +79,18 @@ const SearchCombobox: FC = () => {
     setSearch({ value: event.target.value, keyTypeChange: true });
   }
 
-
   useEffect(() => {
+    // NOTE: debounceにより最後の入力から一定時間後に発火する
+
     if (debouncedSearch.keyTypeChange === false) {
-      // NOTE: oOption選択による変更の場合は検索を行わない
+      // NOTE: Option選択による変更の場合は検索を行わない
       return;
     }
 
     // NOTE: キー入力があるときは検索を行う
-
     if (debouncedSearch.value) {
       combobox.openDropdown();
-      setLoading(true);
-      console.debug('api request: fetch item list');
-      setOptions([
-        { value: "apple", label: 'apple' },
-        { value: "apple2", label: 'apple2' },
-        { value: "grape", label: 'grape' },
-        { value: "pineapple", label: 'pineapple' },
-      ])
-      // setLoading(false);
+      loadQuery({ variables: { name: debouncedSearch.value } });
     }
   }, [debouncedSearch])
 
@@ -125,12 +119,13 @@ const SearchCombobox: FC = () => {
           rightSectionPointerEvents="all"
           onChange={onSerachChange}
           onBlur={() => combobox.closeDropdown()}
-
         />
       </Combobox.Target>
       <Combobox.Dropdown>
         <Combobox.Options>
-          {options.map((option) => <Combobox.Option value={option.value}>{option.label}</Combobox.Option>)}
+          {data && data.crafts.map((craft) => (
+            <Combobox.Option value={craft.id}>{craft.name}</Combobox.Option>
+          ))}
         </Combobox.Options>
       </Combobox.Dropdown>
     </Combobox>
