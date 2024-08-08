@@ -1,5 +1,5 @@
 import { FC, ReactNode, useEffect, useState } from "react"
-import { ActionIcon, Autocomplete, Box, Button, Checkbox, Combobox, ComboboxStringData, Grid, Input, Loader, NumberInput, Select, useCombobox } from "@mantine/core";
+import { ActionIcon, Box, Checkbox, Combobox, Grid, Input, Loader, NumberInput, useCombobox } from "@mantine/core";
 import { Handle, Position } from "@xyflow/react";
 import { memo } from "react";
 import type { Node, NodeProps } from "@xyflow/react";
@@ -9,7 +9,7 @@ import { IconCheck, IconSearch } from "@tabler/icons-react";
 import { useDebouncedValue } from "@mantine/hooks";
 import { rem } from "@mantine/core";
 import { useLazyQuery } from "@apollo/client";
-import { GetCraftsDocument } from "@/graphql";
+import { GetCraftsDocument, GetRecipeDocument } from "@/graphql";
 
 export interface DiagramProviderProps {
   children: ReactNode;
@@ -60,7 +60,8 @@ const SearchCombobox: FC = () => {
   })
 
   const [search, setSearch] = useState<SearchState>({ value: '', keyTypeChange: false });
-  const [loadQuery, { loading, data }] = useLazyQuery(GetCraftsDocument);
+  const [lazyCraftQuery, { loading, data }] = useLazyQuery(GetCraftsDocument);
+  const [lazyRecipeQuery] = useLazyQuery(GetRecipeDocument);
   const [debouncedSearch] = useDebouncedValue(search, 500);
 
   const onOptionSubmit = (value: string) => {
@@ -71,8 +72,13 @@ const SearchCombobox: FC = () => {
     }
 
     setSearch({ value: craft.name, keyTypeChange: false });
-    console.debug('api request: fetch item recipe id', craft.id);
     combobox.closeDropdown();
+
+    lazyRecipeQuery({ variables: { id: craft.id } }).then((result) => {
+      console.log(result.data);
+    }).catch((error) => {
+      console.error(error);
+    });
   }
 
   const onSerachChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -90,7 +96,7 @@ const SearchCombobox: FC = () => {
     // NOTE: キー入力があるときは検索を行う
     if (debouncedSearch.value) {
       combobox.openDropdown();
-      loadQuery({ variables: { name: debouncedSearch.value } });
+      lazyCraftQuery({ variables: { name: debouncedSearch.value } });
     }
   }, [debouncedSearch])
 
@@ -124,7 +130,7 @@ const SearchCombobox: FC = () => {
       <Combobox.Dropdown>
         <Combobox.Options>
           {data && data.crafts.map((craft) => (
-            <Combobox.Option value={craft.id}>{craft.name}</Combobox.Option>
+            <Combobox.Option key={craft.id} value={craft.id}>{craft.name}</Combobox.Option>
           ))}
         </Combobox.Options>
       </Combobox.Dropdown>
