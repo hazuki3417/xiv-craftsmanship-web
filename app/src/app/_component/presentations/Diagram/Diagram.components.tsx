@@ -42,7 +42,7 @@ const SearchCombobox: FC = () => {
     onDropdownClose: () => combobox.resetSelectedOption(),
   })
 
-  const { setMaterials } = useRecipe();
+  const { setCraftItem } = useRecipe();
   const [search, setSearch] = useState<SearchState>({ value: '', keyTypeChange: false });
   const [lazyCraftQuery, { loading, data }] = useLazyQuery(GetCraftsDocument);
   const [lazyMaterialQuery] = useLazyQuery(GetMaterialsDocument);
@@ -63,7 +63,11 @@ const SearchCombobox: FC = () => {
         return
       }
 
-      setMaterials(result.data.materials);
+      setCraftItem({
+        id: craft.id,
+        name: craft.name,
+        materials: result.data.materials
+      });
     }).catch((error) => {
       console.error(error);
     });
