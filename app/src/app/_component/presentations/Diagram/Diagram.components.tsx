@@ -4,29 +4,12 @@ import { Handle, Position } from "@xyflow/react";
 import { memo } from "react";
 import type { Node, NodeProps } from "@xyflow/react";
 import { ClipBoardCopyButton } from "../ClipBoardCopyButton";
-import { DiagramContext, useDiagram } from "./Diagram.context";
 import { IconCheck, IconSearch } from "@tabler/icons-react";
 import { useDebouncedValue } from "@mantine/hooks";
 import { rem } from "@mantine/core";
 import { useLazyQuery } from "@apollo/client";
-import { GetCraftsDocument, GetRecipeDocument } from "@/graphql";
-
-export interface DiagramProviderProps {
-  children: ReactNode;
-  onChangeRootItemCount: (value: number | string) => void
-}
-
-export const DiagramProvider: FC<DiagramProviderProps> = (props) => {
-  const { children, onChangeRootItemCount, ...rest } = props;
-  return (
-    <DiagramContext.Provider value={{
-      onChangeRootItemCount
-    }}>
-      {children}
-    </DiagramContext.Provider >
-  );
-};
-DiagramProvider.displayName = "component/presentations/Diagram/DiagramProvider";
+import { GetCraftsDocument, GetMaterialsDocument } from "@/graphql";
+import { useRecipe } from "../Recipe";
 
 export type NodeType = "root" | "internal" | "leaf"
 
@@ -59,9 +42,10 @@ const SearchCombobox: FC = () => {
     onDropdownClose: () => combobox.resetSelectedOption(),
   })
 
+  const { setMaterials } = useRecipe();
   const [search, setSearch] = useState<SearchState>({ value: '', keyTypeChange: false });
   const [lazyCraftQuery, { loading, data }] = useLazyQuery(GetCraftsDocument);
-  const [lazyRecipeQuery] = useLazyQuery(GetRecipeDocument);
+  const [lazyMaterialQuery] = useLazyQuery(GetMaterialsDocument);
   const [debouncedSearch] = useDebouncedValue(search, 500);
 
   const onOptionSubmit = (value: string) => {
@@ -74,8 +58,12 @@ const SearchCombobox: FC = () => {
     setSearch({ value: craft.name, keyTypeChange: false });
     combobox.closeDropdown();
 
-    lazyRecipeQuery({ variables: { id: craft.id } }).then((result) => {
-      console.log(result.data);
+    lazyMaterialQuery({ variables: { craftId: craft.id } }).then((result) => {
+      if (!result.data) {
+        return
+      }
+
+      setMaterials(result.data.materials);
     }).catch((error) => {
       console.error(error);
     });
@@ -140,8 +128,9 @@ const SearchCombobox: FC = () => {
 
 
 export const DiagramRootNode = memo((props: NodeProps<DiagramRootNodeProps>) => {
-  const { id, name, count } = props.data;
-  const { onChangeRootItemCount } = useDiagram();
+  const { id, } = props.data;
+
+  const { rootCount, onChangeRootCount } = useRecipe();
 
   return (
     <>
@@ -162,7 +151,7 @@ export const DiagramRootNode = memo((props: NodeProps<DiagramRootNodeProps>) => 
                 count:
               </Grid.Col>
               <Grid.Col span={9}>
-                <NumberInput size="xs" style={{ width: '7ch' }} defaultValue={count} onChange={onChangeRootItemCount} />
+                <NumberInput size="xs" style={{ width: '7ch' }} defaultValue={rootCount} onChange={onChangeRootCount} />
               </Grid.Col>
             </Grid>
           </Grid.Col>
@@ -191,7 +180,6 @@ export type ChildItemType = ItemType & {
 export type DiagramChildNodeProps = Node<ChildItemType>;
 
 export const DiagramChildNode = memo((props: NodeProps<DiagramChildNodeProps>) => {
-
   const { id, name, ucount, tcount } = props.data;
 
   return (
