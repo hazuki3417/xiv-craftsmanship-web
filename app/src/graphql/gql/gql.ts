@@ -14,7 +14,7 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  */
 const documents = {
     "query GetCrafts($name: String!) {\n  crafts(name: $name) {\n    id\n    name\n  }\n}": types.GetCraftsDocument,
-    "query GetRecipe($id: String!) {\n  recipe(id: $id) {\n    nodes {\n      id\n      name\n      unit\n      total\n      depth\n    }\n    edges {\n      source\n      target\n    }\n  }\n}": types.GetRecipeDocument,
+    "query GetRecipe($id: String!) {\n  recipe(id: $id) {\n    nodes {\n      id\n      name\n      unit\n      total\n      depth {\n        x\n        y\n      }\n      node_type\n    }\n    edges {\n      source\n      target\n    }\n  }\n}": types.GetRecipeDocument,
 };
 
 /**
@@ -38,7 +38,7 @@ export function graphql(source: "query GetCrafts($name: String!) {\n  crafts(nam
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "query GetRecipe($id: String!) {\n  recipe(id: $id) {\n    nodes {\n      id\n      name\n      unit\n      total\n      depth\n    }\n    edges {\n      source\n      target\n    }\n  }\n}"): (typeof documents)["query GetRecipe($id: String!) {\n  recipe(id: $id) {\n    nodes {\n      id\n      name\n      unit\n      total\n      depth\n    }\n    edges {\n      source\n      target\n    }\n  }\n}"];
+export function graphql(source: "query GetRecipe($id: String!) {\n  recipe(id: $id) {\n    nodes {\n      id\n      name\n      unit\n      total\n      depth {\n        x\n        y\n      }\n      node_type\n    }\n    edges {\n      source\n      target\n    }\n  }\n}"): (typeof documents)["query GetRecipe($id: String!) {\n  recipe(id: $id) {\n    nodes {\n      id\n      name\n      unit\n      total\n      depth {\n        x\n        y\n      }\n      node_type\n    }\n    edges {\n      source\n      target\n    }\n  }\n}"];
 
 export function graphql(source: string) {
   return (documents as any)[source] ?? {};

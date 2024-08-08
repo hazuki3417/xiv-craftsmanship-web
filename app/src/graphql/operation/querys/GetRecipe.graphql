@@ -5,7 +5,11 @@ query GetRecipe($id: String!) {
       name
       unit
       total
-      depth
+      depth {
+        x
+        y
+      }
+      node_type
     }
     edges {
       source
