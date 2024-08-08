@@ -1,6 +1,6 @@
 "use client"
 import { useState } from 'react';
-import { InternalTable, ItemAggregation, LeafTable, Tab, withInternalItemHOC, withLeafItemHOC } from './_component/presentations';
+import { InternalTable, ItemAggregation, LeafTable, Recipe, withInternalItemHOC, withLeafItemHOC } from './_component/presentations';
 import {
   Container,
   Grid,
@@ -45,9 +45,9 @@ export default function Home() {
                   <Tabs.Tab value="2">2</Tabs.Tab>
                   <Tabs.Tab value="3">3</Tabs.Tab>
                 </Tabs.List>
-                <Tabs.Panel value="1"><Tab tabid="1" /></Tabs.Panel>
-                <Tabs.Panel value="2"><Tab tabid="2" /></Tabs.Panel>
-                <Tabs.Panel value="3"><Tab tabid="3" /></Tabs.Panel>
+                <Tabs.Panel value="1"><Recipe id="1" /></Tabs.Panel>
+                <Tabs.Panel value="2"><Recipe id="2" /></Tabs.Panel>
+                <Tabs.Panel value="3"><Recipe id="3" /></Tabs.Panel>
               </Tabs>
             </Grid.Col>
           )}

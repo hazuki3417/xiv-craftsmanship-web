@@ -3,4 +3,4 @@ export * from './Diagram';
 export * from './InternalTable';
 export * from './ItemAggregation';
 export * from './LeafTable';
-export * from './Tab';
+export * from './Recipe';

@@ -6,10 +6,9 @@ import {
   useEdgesState,
   Edge,
 } from '@xyflow/react';
-import { Diagram, InternalTable, LeafTable, DiagramChildNodeProps, DiagramNodeProps, DiagramRootNodeProps, useItemAggregation, ChildItemType, ItemType } from './../index';
+import { Diagram, InternalTable, LeafTable, DiagramChildNodeProps, DiagramNodeProps, DiagramRootNodeProps, useItemAggregation, ChildItemType, ItemType } from '../index';
 import { Grid, Box } from '@mantine/core';
 import { Depth } from '@/lib';
-// TODO: コンポーネント名をかえる。たとえばレシピ、設計図などの名前にする
 
 
 interface Item {
@@ -151,11 +150,11 @@ const buildNodeAndEdge = (memo: BuildMemoType): { nodes: DiagramChildNodeProps[]
 };
 
 
-export interface TabProps {
-  tabid: string;
+export interface RecipeProps {
+  id: string;
 }
 
-export const Tab: FC<TabProps> = (props) => {
+export const Recipe: FC<RecipeProps> = (props) => {
   const { ...rest } = props;
   const [rootCount, setRootCount] = useState(1);
   const [nodes, setNodes] = useNodesState<DiagramNodeProps>([]);
@@ -191,7 +190,7 @@ export const Tab: FC<TabProps> = (props) => {
 
     setNodes([rootNode, ...nodes]);
     setEdges(edges);
-    dispatchTabData(props.tabid, nodes.flatMap((node) => node.data));
+    dispatchTabData(props.id, nodes.flatMap((node) => node.data));
   }, [rootCount]);
 
   const onChangeRootItem = (value: string | number) => {
@@ -225,4 +224,4 @@ export const Tab: FC<TabProps> = (props) => {
     </Box>
   );
 }
-Tab.displayName = "component/presentations/Tab";
+Recipe.displayName = "component/presentations/Recipe";
