@@ -17,6 +17,8 @@ export const withLeafItemHOC = <P extends object>(WrapperComponent: React.Compon
 
   return OriginComponent;
 };
+withLeafItemHOC.displayName = "component/presentations/ItemAggregation/withLeafItemHOC";
+
 /**
  * internal itemの情報を注入するHOC
  * @param WrapperComponent
@@ -33,3 +35,4 @@ export const withInternalItemHOC = <P extends object>(WrapperComponent: React.Co
 
   return OriginComponent;
 };
+withInternalItemHOC.displayName = "component/presentations/ItemAggregation/withInternalItemHOC";
