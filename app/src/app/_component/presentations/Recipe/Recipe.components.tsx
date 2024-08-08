@@ -1,7 +1,7 @@
 import { ReactNode, FC, useState, useEffect, useCallback } from "react";
 import { CraftItem, RecipeContext, useRecipe } from "./index";
 import { Depth } from "@/lib";
-import { DiagramChildNodeProps, DiagramNodeProps } from "../Diagram";
+import { DiagramChildNodeProps, DiagramNodeProps, DiagramRootNodeProps } from "../Diagram";
 import { Edge, useEdgesState, useNodesState } from "@xyflow/react";
 
 export interface RecipeProviderProps {
@@ -53,6 +53,7 @@ const buidRecipeTree = (craftItem: CraftItem) => {
     const child = map[material.childId];
     parent.children.push(child);
   })
+
 
   const tree = map[id];
   return tree
@@ -121,6 +122,9 @@ const parseRecipeTree = (current: TreeNode): { nodes: DiagramChildNodeProps[], e
   return { nodes, edges }
 }
 
+
+
+
 export const RecipeProvider: FC<RecipeProviderProps> = (props) => {
   const { children, ...rest } = props;
 
@@ -139,45 +143,35 @@ export const RecipeProvider: FC<RecipeProviderProps> = (props) => {
   }, [])
 
   useEffect(() => {
+    const rootId = "root";
+    const rootNode: DiagramRootNodeProps = {
+      id: rootId,
+      type: 'rootNode',
+      data: {
+        id: rootId,
+        type: 'root',
+        name: "root",
+        count: rootCount,
+      },
+      position: { x: 0, y: 0 },
+    }
+
     if (!craftItem) {
       // 選択されていないとき
-      setNodes([{
-        id: "",
-        type: 'rootNode',
-        data: {
-          id: "",
-          type: 'root',
-          name: "",
-          count: rootCount,
-        },
-        position: { x: 0, y: 0 },
-      }]);
+      setNodes([rootNode]);
       return;
     }
 
     // 選択されたとき
-
-    // レシピツリーを構築
     const tree = buidRecipeTree(craftItem);
-    // レシピツリーを解析
     const { nodes, edges } = parseRecipeTree({
-      nodes: [tree],
-      id: craftItem.id,
+      nodes: tree.children,
+      id: rootId,
       count: rootCount,
       depth: { x: new Depth(), y: new Depth() }
     });
 
-    setNodes([{
-      id: craftItem.id,
-      type: 'rootNode',
-      data: {
-        id: craftItem.id,
-        type: 'root',
-        name: craftItem.name,
-        count: rootCount,
-      },
-      position: { x: 0, y: 0 },
-    }, ...nodes]);
+    setNodes([rootNode, ...nodes]);
     setEdges(edges);
   }, [craftItem, rootCount]);
 
