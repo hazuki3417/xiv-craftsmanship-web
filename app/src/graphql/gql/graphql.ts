@@ -22,24 +22,12 @@ export type Craft = {
   name: Scalars['String']['output'];
 };
 
-export type Depth = {
-  __typename?: 'Depth';
-  x: Scalars['Int']['output'];
-  y: Scalars['Int']['output'];
-};
-
-export type Edge = {
-  __typename?: 'Edge';
-  source: Scalars['String']['output'];
-  target: Scalars['String']['output'];
-};
-
-export type Node = {
-  __typename?: 'Node';
-  depth: Depth;
-  id: Scalars['String']['output'];
-  name: Scalars['String']['output'];
-  node_type: Scalars['String']['output'];
+export type Material = {
+  __typename?: 'Material';
+  childId: Scalars['String']['output'];
+  childName: Scalars['String']['output'];
+  parentId: Scalars['String']['output'];
+  parentName: Scalars['String']['output'];
   total: Scalars['Int']['output'];
   unit: Scalars['Int']['output'];
 };
@@ -47,7 +35,7 @@ export type Node = {
 export type Query = {
   __typename?: 'Query';
   crafts: Array<Craft>;
-  recipe: RecipeTree;
+  materials: Array<Material>;
 };
 
 
@@ -56,14 +44,8 @@ export type QueryCraftsArgs = {
 };
 
 
-export type QueryRecipeArgs = {
-  id: Scalars['String']['input'];
-};
-
-export type RecipeTree = {
-  __typename?: 'RecipeTree';
-  edges: Array<Edge>;
-  nodes: Array<Node>;
+export type QueryMaterialsArgs = {
+  craftId: Scalars['String']['input'];
 };
 
 export type GetCraftsQueryVariables = Exact<{
@@ -73,13 +55,13 @@ export type GetCraftsQueryVariables = Exact<{
 
 export type GetCraftsQuery = { __typename?: 'Query', crafts: Array<{ __typename?: 'Craft', id: string, name: string }> };
 
-export type GetRecipeQueryVariables = Exact<{
-  id: Scalars['String']['input'];
+export type GetMaterialsQueryVariables = Exact<{
+  craftId: Scalars['String']['input'];
 }>;
 
 
-export type GetRecipeQuery = { __typename?: 'Query', recipe: { __typename?: 'RecipeTree', nodes: Array<{ __typename?: 'Node', id: string, name: string, unit: number, total: number, node_type: string, depth: { __typename?: 'Depth', x: number, y: number } }>, edges: Array<{ __typename?: 'Edge', source: string, target: string }> } };
+export type GetMaterialsQuery = { __typename?: 'Query', materials: Array<{ __typename?: 'Material', parentId: string, childId: string, parentName: string, childName: string, unit: number, total: number }> };
 
 
 export const GetCraftsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetCrafts"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"name"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"crafts"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"name"},"value":{"kind":"Variable","name":{"kind":"Name","value":"name"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]} as unknown as DocumentNode<GetCraftsQuery, GetCraftsQueryVariables>;
-export const GetRecipeDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetRecipe"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"recipe"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"nodes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"unit"}},{"kind":"Field","name":{"kind":"Name","value":"total"}},{"kind":"Field","name":{"kind":"Name","value":"depth"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"x"}},{"kind":"Field","name":{"kind":"Name","value":"y"}}]}},{"kind":"Field","name":{"kind":"Name","value":"node_type"}}]}},{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"source"}},{"kind":"Field","name":{"kind":"Name","value":"target"}}]}}]}}]}}]} as unknown as DocumentNode<GetRecipeQuery, GetRecipeQueryVariables>;
+export const GetMaterialsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetMaterials"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"craftId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"materials"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"craftId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"craftId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"parentId"}},{"kind":"Field","name":{"kind":"Name","value":"childId"}},{"kind":"Field","name":{"kind":"Name","value":"parentName"}},{"kind":"Field","name":{"kind":"Name","value":"childName"}},{"kind":"Field","name":{"kind":"Name","value":"unit"}},{"kind":"Field","name":{"kind":"Name","value":"total"}}]}}]}}]} as unknown as DocumentNode<GetMaterialsQuery, GetMaterialsQueryVariables>;

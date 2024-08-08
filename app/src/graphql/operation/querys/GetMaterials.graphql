@@ -1,0 +1,10 @@
+query GetMaterials($craftId: String!) {
+  materials(craftId: $craftId) {
+    parentId
+    childId
+    parentName
+    childName
+    unit
+    total
+  }
+}
