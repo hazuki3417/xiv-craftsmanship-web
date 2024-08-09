@@ -1,6 +1,7 @@
 import { createContext, useContext } from "react";
 import { ChildItemType } from "../Diagram";
 import { CraftData, MaterialData, QuantityData } from "./MaterialManagerProvider";
+import { CraftItem } from "../Recipe";
 
 export interface MaterialManagerContextValue {
   materials: ChildItemType[];
@@ -10,7 +11,7 @@ export interface MaterialManagerContextValue {
     quantity: (data: QuantityData) => void;
   },
   fetch : {
-    craftItem: (recipeId: string) => CraftData
+    craftItem: (recipeId: string) => CraftItem | null;
     quantity: (recipeId: string) => number
   }
 }

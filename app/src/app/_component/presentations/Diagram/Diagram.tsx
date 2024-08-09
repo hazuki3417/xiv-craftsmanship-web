@@ -21,7 +21,7 @@ export const Diagram: CompoundedComponent = (props) => {
       }}
       nodes={nodes}
       edges={edges}
-      maxZoom={0.6}
+      maxZoom={0.8}
       zoomOnScroll={false}
       zoomOnPinch={false}
       zoomOnDoubleClick={false}

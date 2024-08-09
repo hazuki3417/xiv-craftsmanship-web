@@ -12,7 +12,12 @@ export type CraftItem = {
 export interface RecipeContextValue {
   rootCount: number
   onChangeRootCount: (value: string | number) => void
-  setCraftItem: (value: CraftItem) => void
+  dispatch: {
+    craftitem: (data: CraftItem) => void
+  },
+  fetch: {
+    craftItem: () => CraftItem | null
+  }
   nodes: DiagramNodeProps[]
   edges: Edge[]
 }

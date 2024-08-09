@@ -132,14 +132,9 @@ export const RecipeProvider: FC<RecipeProviderProps> = (props) => {
 
   const { fetch, dispatch } = useMaterialManager();
 
-  const tmpCraftItem = fetch.craftItem(recipeId)
-
-  console.debug("tmpCraftItem", tmpCraftItem)
-
   // craftするアイテムの情報を管理
-  const [craftItem, setCraftItem] = useState<CraftItem | null>(null);
+  const [craftItem, setCraftItem] = useState<CraftItem | null>(fetch.craftItem(recipeId));
 
-  console.debug("count", fetch.quantity(recipeId))
   //  rootのアイテム数を管理
   const [rootCount, setRootCount] = useState(fetch.quantity(recipeId));
 
@@ -191,7 +186,8 @@ export const RecipeProvider: FC<RecipeProviderProps> = (props) => {
     <RecipeContext.Provider value={{
       rootCount,
       onChangeRootCount,
-      setCraftItem,
+      dispatch: { craftitem: setCraftItem },
+      fetch: { craftItem: () => craftItem },
       nodes,
       edges,
     }}>

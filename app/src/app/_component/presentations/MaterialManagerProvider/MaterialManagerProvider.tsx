@@ -11,7 +11,7 @@ export type MaterialData = {
 
 export type CraftData = {
   recipeId: string;
-  craftItem: CraftItem;
+  craftItem: CraftItem | null;
 }
 
 export type QuantityData = {
@@ -41,7 +41,7 @@ const aggregateItems = (materials: MaterialData[]): ChildItemType[] => {
 
 const limit = 3;
 const initMaterialData: MaterialData[] = Array.from({ length: limit }, (_, index) => ({ recipeId: (index + 1).toString(), materials: [] }));
-const initCraftData: CraftData[] = Array.from({ length: limit }, (_, index) => ({ recipeId: (index + 1).toString(), craftItem: { id: "", name: "", materials: [] } }));
+const initCraftData: CraftData[] = Array.from({ length: limit }, (_, index) => ({ recipeId: (index + 1).toString(), craftItem: null }));
 const initQuantityData: QuantityData[] = Array.from({ length: limit }, (_, index) => ({ recipeId: (index + 1).toString(), quantity: 1 }));
 
 export const MaterialManagerProvider: FC<MaterialManagerProviderProps> = (props) => {
@@ -72,9 +72,9 @@ export const MaterialManagerProvider: FC<MaterialManagerProviderProps> = (props)
     });
   }
 
-  const fetchCraftItem = (recipeId: string): CraftData => {
+  const fetchCraftItem = (recipeId: string): CraftItem | null => {
     const result = craftItems.find((craftItem) => craftItem.recipeId === recipeId)
-    return result || { recipeId, craftItem: { id: "", name: "", materials: [] } };
+    return result?.craftItem || null;
   }
 
   const fetchQuantity = (recipeId: string): number => {
