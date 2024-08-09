@@ -17,7 +17,7 @@ export interface RecipeContextValue {
 		onChange: (value: string | number) => void;
 	};
 	dispatch: {
-		craftitem: (data: CraftItem) => void;
+		craftitem: (data: CraftItem | null) => void;
 	};
 	fetch: {
 		craftItem: () => CraftItem | null;
