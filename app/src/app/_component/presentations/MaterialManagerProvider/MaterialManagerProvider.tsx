@@ -57,38 +57,41 @@ export const MaterialManagerProvider: FC<MaterialManagerProviderProps> = (
 	const { children, ...rest } = props;
 
 	const [materials, setMaterials] = useState<MaterialData[]>(initMaterialData);
-	const [craftItems, setCraftItems] = useState<CraftData[]>(initCraftData);
+	const [craftItem, setCraftItem] = useState<CraftData[]>(initCraftData);
 	const [quantity, setQuantity] = useState<QuantityData[]>(initQuantityData);
 
 	const dispatchMaterials = (data: MaterialData) => {
-		setMaterials((prevMaterials) => {
-			const newMaterials = prevMaterials.filter(
-				(data) => data.recipeId !== data.recipeId,
+		setMaterials((prevItems) => {
+			const newMaterials = prevItems.filter(
+				(prevItem) => prevItem.recipeId !== data.recipeId,
 			);
+			console.debug("dispatchMaterials", materials);
 			return [...newMaterials, data];
 		});
 	};
 
 	const dispatchCraftItem = (data: CraftData) => {
-		setCraftItems((prevCraftItems) => {
-			const newCraftItems = prevCraftItems.filter(
-				(data) => data.recipeId !== data.recipeId,
+		setCraftItem((prevItems) => {
+			const newCraftItems = prevItems.filter(
+				(prevItem) => prevItem.recipeId !== data.recipeId,
 			);
+			console.debug("dispatchCraftItem", craftItem);
 			return [...newCraftItems, data];
 		});
 	};
 
 	const dispatchQuantity = (data: QuantityData) => {
-		setQuantity((prevQuantity) => {
-			const newQuantity = prevQuantity.filter(
-				(data) => data.recipeId !== data.recipeId,
+		setQuantity((prevItems) => {
+			const newQuantity = prevItems.filter(
+				(prevItem) => prevItem.recipeId !== data.recipeId,
 			);
+			console.debug("dispatchQuantity", quantity);
 			return [...newQuantity, data];
 		});
 	};
 
 	const fetchCraftItem = (recipeId: string): CraftItem | null => {
-		const result = craftItems.find(
+		const result = craftItem.find(
 			(craftItem) => craftItem.recipeId === recipeId,
 		);
 		return result?.craftItem || null;

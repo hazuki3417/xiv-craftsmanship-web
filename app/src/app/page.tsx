@@ -53,8 +53,8 @@ export default function Home() {
 							<Tabs variant="outline" defaultValue={"1"}>
 								<Tabs.List>
 									<Tabs.Tab value="1">1</Tabs.Tab>
-									{/* <Tabs.Tab value="2">2</Tabs.Tab>
-                  <Tabs.Tab value="3">3</Tabs.Tab> */}
+									<Tabs.Tab value="2">2</Tabs.Tab>
+									<Tabs.Tab value="3">3</Tabs.Tab>
 									{/* <Tabs.Tab value="4">4</Tabs.Tab>
                   <Tabs.Tab value="5">5</Tabs.Tab>
                   <Tabs.Tab value="6">6</Tabs.Tab>
@@ -65,11 +65,9 @@ export default function Home() {
                   <Tabs.Tab value="11">11</Tabs.Tab>
                   <Tabs.Tab value="12">12</Tabs.Tab> */}
 								</Tabs.List>
-								<Tabs.Panel value="1">
-									<Recipe id="1" />
-								</Tabs.Panel>
-								{/* <Tabs.Panel value="2"><Recipe id="2" /></Tabs.Panel>
-                <Tabs.Panel value="3"><Recipe id="3" /></Tabs.Panel> */}
+								<Tabs.Panel value="1"><Recipe id="1" /></Tabs.Panel>
+								<Tabs.Panel value="2"><Recipe id="2" /></Tabs.Panel>
+								<Tabs.Panel value="3"><Recipe id="3" /></Tabs.Panel>
 								{/* <Tabs.Panel value="4"><Recipe id="4" /></Tabs.Panel>
                 <Tabs.Panel value="5"><Recipe id="5" /></Tabs.Panel>
                 <Tabs.Panel value="6"><Recipe id="6" /></Tabs.Panel>
