@@ -1,5 +1,5 @@
 import React from 'react';
-import { useItemAggregation } from "./ItemAggregation.context"
+import { useMaterialManagerProvider } from "./MaterialManagerProvider.context"
 
 /**
  * leaf itemの情報を注入するHOC
@@ -8,7 +8,7 @@ import { useItemAggregation } from "./ItemAggregation.context"
  */
 export const withLeafItemHOC = <P extends object>(WrapperComponent: React.ComponentType<P>) => {
   const OriginComponent: React.FC<Omit<P, 'items'>> = (props) => {
-    const { items } = useItemAggregation()
+    const { items } = useMaterialManagerProvider()
 
     return (
       <WrapperComponent {...(props as P)} items={items.filter((item) => item.type === "leaf")} />
@@ -17,7 +17,7 @@ export const withLeafItemHOC = <P extends object>(WrapperComponent: React.Compon
 
   return OriginComponent;
 };
-withLeafItemHOC.displayName = "component/presentations/ItemAggregation/withLeafItemHOC";
+withLeafItemHOC.displayName = "component/presentations/MaterialManagerProvider/withLeafItemHOC";
 
 /**
  * internal itemの情報を注入するHOC
@@ -26,7 +26,7 @@ withLeafItemHOC.displayName = "component/presentations/ItemAggregation/withLeafI
  */
 export const withInternalItemHOC = <P extends object>(WrapperComponent: React.ComponentType<P>) => {
   const OriginComponent: React.FC<Omit<P, 'items'>> = (props) => {
-    const { items } = useItemAggregation()
+    const { items } = useMaterialManagerProvider()
 
     return (
       <WrapperComponent {...(props as P)} items={items.filter((item) => item.type === "internal")} />
@@ -35,4 +35,4 @@ export const withInternalItemHOC = <P extends object>(WrapperComponent: React.Co
 
   return OriginComponent;
 };
-withInternalItemHOC.displayName = "component/presentations/ItemAggregation/withInternalItemHOC";
+withInternalItemHOC.displayName = "component/presentations/MaterialManagerProvider/withInternalItemHOC";

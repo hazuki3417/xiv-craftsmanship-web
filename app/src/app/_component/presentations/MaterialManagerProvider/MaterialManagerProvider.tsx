@@ -1,5 +1,5 @@
 import { FC, ReactNode, useState } from "react"
-import { ItemAggregationContext } from "./ItemAggregation.context";
+import { MaterialManagerProviderContext } from "./MaterialManagerProvider.context";
 import { ChildItemType } from "../Diagram";
 
 
@@ -8,11 +8,11 @@ type TabData = {
   items: ChildItemType[];
 }
 
-export interface ItemAggregationProps {
+export interface MaterialManagerProviderProps {
   children: ReactNode;
 }
 
-export const ItemAggregation: FC<ItemAggregationProps> = (props) => {
+export const MaterialManagerProvider: FC<MaterialManagerProviderProps> = (props) => {
   const { children, ...rest } = props;
 
   const [tabData, setTabData] = useState<TabData[]>([]);
@@ -41,12 +41,12 @@ export const ItemAggregation: FC<ItemAggregationProps> = (props) => {
 
 
   return (
-    <ItemAggregationContext.Provider value={{
+    <MaterialManagerProviderContext.Provider value={{
       items: aggregateItems(tabData),
       dispatchTabData: dispatchTabData,
     }}>
       {children}
-    </ItemAggregationContext.Provider>
+    </MaterialManagerProviderContext.Provider>
   );
 };
-ItemAggregation.displayName = "component/presentations/ItemAggregation";
+MaterialManagerProvider.displayName = "component/presentations/MaterialManagerProvider";

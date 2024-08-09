@@ -1,6 +1,6 @@
 "use client"
 import { useState } from 'react';
-import { InternalTable, ItemAggregation, LeafTable, Recipe, withInternalItemHOC, withLeafItemHOC } from './_component/presentations';
+import { InternalTable, MaterialManagerProvider, LeafTable, Recipe, withInternalItemHOC, withLeafItemHOC } from './_component/presentations';
 import {
   Container,
   Grid,
@@ -33,7 +33,7 @@ export default function Home() {
         </Grid.Col>
       </Grid>
       <Grid>
-        <ItemAggregation>
+        <MaterialManagerProvider>
           {/** TODO: レンダリングに時間がかかっているので最適化する */}
           {/** TODO: items -> crafts 遷移すると前の値が消えてる */}
           {segment === "crafts" && (
@@ -85,7 +85,7 @@ export default function Home() {
               </Grid.Col>
             </>
           )}
-        </ItemAggregation>
+        </MaterialManagerProvider>
       </Grid >
     </Container >
   );
