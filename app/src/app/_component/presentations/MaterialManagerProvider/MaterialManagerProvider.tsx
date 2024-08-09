@@ -1,5 +1,5 @@
 import { FC, ReactNode, useState } from "react"
-import { MaterialManagerProviderContext } from "./MaterialManagerProvider.context";
+import { MaterialManagerContext } from "./MaterialManagerProvider.context";
 import { ChildItemType } from "../Diagram";
 
 
@@ -41,12 +41,12 @@ export const MaterialManagerProvider: FC<MaterialManagerProviderProps> = (props)
 
 
   return (
-    <MaterialManagerProviderContext.Provider value={{
+    <MaterialManagerContext.Provider value={{
       items: aggregateItems(tabData),
       dispatchTabData: dispatchTabData,
     }}>
       {children}
-    </MaterialManagerProviderContext.Provider>
+    </MaterialManagerContext.Provider>
   );
 };
 MaterialManagerProvider.displayName = "component/presentations/MaterialManagerProvider";

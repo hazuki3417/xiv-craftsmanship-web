@@ -1,5 +1,5 @@
 import React from 'react';
-import { useMaterialManagerProvider } from "./MaterialManagerProvider.context"
+import { useMaterialManager } from "./MaterialManagerProvider.context"
 
 /**
  * leaf itemの情報を注入するHOC
@@ -8,7 +8,7 @@ import { useMaterialManagerProvider } from "./MaterialManagerProvider.context"
  */
 export const withLeafItemHOC = <P extends object>(WrapperComponent: React.ComponentType<P>) => {
   const OriginComponent: React.FC<Omit<P, 'items'>> = (props) => {
-    const { items } = useMaterialManagerProvider()
+    const { items } = useMaterialManager()
 
     return (
       <WrapperComponent {...(props as P)} items={items.filter((item) => item.type === "leaf")} />
@@ -26,7 +26,7 @@ withLeafItemHOC.displayName = "component/presentations/MaterialManagerProvider/w
  */
 export const withInternalItemHOC = <P extends object>(WrapperComponent: React.ComponentType<P>) => {
   const OriginComponent: React.FC<Omit<P, 'items'>> = (props) => {
-    const { items } = useMaterialManagerProvider()
+    const { items } = useMaterialManager()
 
     return (
       <WrapperComponent {...(props as P)} items={items.filter((item) => item.type === "internal")} />
