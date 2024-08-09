@@ -1,15 +1,15 @@
-import { FC, ReactNode, useEffect, useState } from "react"
+import { FC, ReactNode, useState } from "react"
 import { ItemAggregationContext } from "./ItemAggregation.context";
 import { ChildItemType } from "../Diagram";
 
 
-export interface ItemAggregationProps {
-  children: ReactNode;
-}
-
 type TabData = {
   tabId: string;
   items: ChildItemType[];
+}
+
+export interface ItemAggregationProps {
+  children: ReactNode;
 }
 
 export const ItemAggregation: FC<ItemAggregationProps> = (props) => {
