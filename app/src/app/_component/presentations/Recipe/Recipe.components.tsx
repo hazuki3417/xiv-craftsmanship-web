@@ -1,12 +1,10 @@
 import { ReactNode, FC, useState, useEffect, useCallback } from "react";
-import { CraftItem, RecipeContext, useRecipe } from "./index";
+import { CraftItem, RecipeContext, useRecipe } from "./Recipe.context";
 import { Depth } from "@/lib";
 import { DiagramChildNodeProps, DiagramNodeProps, DiagramRootNodeProps } from "../Diagram";
 import { Edge, useEdgesState, useNodesState } from "@xyflow/react";
-
-export interface RecipeProviderProps {
-  children: ReactNode;
-}
+import { LeafTable } from "../LeafTable";
+import { InternalTable } from "../InternalTable";
 
 type MaterialNode = {
   id: string;
@@ -123,7 +121,9 @@ const parseRecipeTree = (current: TreeNode): { nodes: DiagramChildNodeProps[], e
 }
 
 
-
+export interface RecipeProviderProps {
+  children: ReactNode;
+}
 
 export const RecipeProvider: FC<RecipeProviderProps> = (props) => {
   const { children, ...rest } = props;
@@ -188,3 +188,27 @@ export const RecipeProvider: FC<RecipeProviderProps> = (props) => {
   );
 };
 RecipeProvider.displayName = "component/presentations/Recipe/RecipeProvider";
+
+export const RecipeLeafTable: FC = () => {
+  const { nodes } = useRecipe();
+  const items = nodes.filter((node): node is DiagramChildNodeProps => node.data.type === "leaf").flatMap((node) => node.data);
+
+  return (
+    <LeafTable>
+      <LeafTable.Header />
+      <LeafTable.Body items={items} />
+    </LeafTable>
+  )
+}
+
+export const RecipeInternalTable: FC = () => {
+  const { nodes } = useRecipe();
+  const items = nodes.filter((node): node is DiagramChildNodeProps => node.data.type === "internal").flatMap((node) => node.data);
+
+  return (
+    <InternalTable>
+      <InternalTable.Header />
+      <InternalTable.Body items={items} />
+    </InternalTable>
+  )
+}

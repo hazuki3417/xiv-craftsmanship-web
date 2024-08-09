@@ -1,13 +1,12 @@
-
-"use client"
 import { FC } from 'react';
-import { Diagram, InternalTable, LeafTable } from '../index';
+import { Diagram } from '../index';
 import { Grid, Box } from '@mantine/core';
-import { RecipeProvider } from './index';
+import { RecipeInternalTable, RecipeLeafTable, RecipeProvider, } from './index';
 
 export interface RecipeProps {
   id: string;
 }
+
 
 export const Recipe: FC<RecipeProps> = (props) => {
   const { ...rest } = props;
@@ -22,16 +21,10 @@ export const Recipe: FC<RecipeProps> = (props) => {
         </Grid>
         <Grid>
           <Grid.Col span={4}>
-            <InternalTable>
-              <InternalTable.Header />
-              <InternalTable.Body items={[]} />
-            </InternalTable>
+            <RecipeInternalTable />
           </Grid.Col>
           <Grid.Col span={8}>
-            <LeafTable>
-              <LeafTable.Header />
-              <LeafTable.Body items={[]} />
-            </LeafTable>
+            <RecipeLeafTable />
           </Grid.Col>
         </Grid>
       </Box>
