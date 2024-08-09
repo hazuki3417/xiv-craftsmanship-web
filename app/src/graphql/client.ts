@@ -83,4 +83,3 @@ export interface ApolloClientResult<T> {
 	data?: T;
 	error?: Error;
 }
-

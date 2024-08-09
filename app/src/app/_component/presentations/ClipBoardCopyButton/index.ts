@@ -1,1 +1,1 @@
-export * from './ClipBoardCopyButton';
+export * from "./ClipBoardCopyButton";

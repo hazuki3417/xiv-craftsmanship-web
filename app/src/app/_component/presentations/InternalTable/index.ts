@@ -1,2 +1,2 @@
-export * from './InternalTable';
-export * from './InternalTable.components';
+export * from "./InternalTable";
+export * from "./InternalTable.components";

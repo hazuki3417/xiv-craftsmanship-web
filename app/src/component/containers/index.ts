@@ -1,3 +1,2 @@
-export * from './ApolloProvider'
-export { default as ThemeProvider } from './ThemeProvider'
-
+export * from "./ApolloProvider";
+export { default as ThemeProvider } from "./ThemeProvider";
