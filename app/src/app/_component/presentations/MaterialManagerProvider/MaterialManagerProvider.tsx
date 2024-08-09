@@ -65,7 +65,6 @@ export const MaterialManagerProvider: FC<MaterialManagerProviderProps> = (
 			const newMaterials = prevItems.filter(
 				(prevItem) => prevItem.recipeId !== data.recipeId,
 			);
-			console.debug("dispatchMaterials", materials);
 			return [...newMaterials, data];
 		});
 	};
@@ -75,7 +74,6 @@ export const MaterialManagerProvider: FC<MaterialManagerProviderProps> = (
 			const newCraftItems = prevItems.filter(
 				(prevItem) => prevItem.recipeId !== data.recipeId,
 			);
-			console.debug("dispatchCraftItem", craftItem);
 			return [...newCraftItems, data];
 		});
 	};
@@ -85,7 +83,6 @@ export const MaterialManagerProvider: FC<MaterialManagerProviderProps> = (
 			const newQuantity = prevItems.filter(
 				(prevItem) => prevItem.recipeId !== data.recipeId,
 			);
-			console.debug("dispatchQuantity", quantity);
 			return [...newQuantity, data];
 		});
 	};
