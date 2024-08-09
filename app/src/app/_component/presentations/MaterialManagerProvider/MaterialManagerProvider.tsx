@@ -3,47 +3,46 @@ import { MaterialManagerContext } from "./MaterialManagerProvider.context";
 import { ChildItemType } from "../Diagram";
 
 
-type TabData = {
-  tabId: string;
-  items: ChildItemType[];
+type RecipeData = {
+  recipeId: string;
+  materials: ChildItemType[];
 }
 
 export interface MaterialManagerProviderProps {
   children: ReactNode;
 }
 
+const aggregateItems = (recipeData: RecipeData[]): ChildItemType[] => {
+  const duplacateItems = recipeData.flatMap((data) => data.materials);
+  const itemMap: Record<string, ChildItemType> = {};
+
+  duplacateItems.forEach(item => {
+    if (itemMap[item.id]) {
+      itemMap[item.id].tcount += item.tcount;
+    } else {
+      itemMap[item.id] = { ...item };
+    }
+  });
+
+  return Object.values(itemMap);
+};
+
 export const MaterialManagerProvider: FC<MaterialManagerProviderProps> = (props) => {
   const { children, ...rest } = props;
 
-  const [tabData, setTabData] = useState<TabData[]>([]);
+  const [recipeData, setRecipeData] = useState<RecipeData[]>([]);
 
-  const dispatchTabData = (tabId: string, items: ChildItemType[]) => {
-    setTabData((prevTabData) => {
-      const newTabData = prevTabData.filter((data) => data.tabId !== tabId);
-      return [...newTabData, { tabId, items }];
+  const dispatchMaterials = (recipeId: string, materials: ChildItemType[]) => {
+    setRecipeData((prevRecipeData) => {
+      const newRecipeData = prevRecipeData.filter((data) => data.recipeId !== recipeId);
+      return [...newRecipeData, { recipeId, materials }];
     });
   }
 
-  const aggregateItems = (tabData: TabData[]): ChildItemType[] => {
-    const duplacateItems = tabData.flatMap((data) => data.items);
-    const itemMap: Record<string, ChildItemType> = {};
-
-    duplacateItems.forEach(item => {
-      if (itemMap[item.id]) {
-        itemMap[item.id].tcount += item.tcount;
-      } else {
-        itemMap[item.id] = { ...item };
-      }
-    });
-
-    return Object.values(itemMap);
-  };
-
-
   return (
     <MaterialManagerContext.Provider value={{
-      items: aggregateItems(tabData),
-      dispatchTabData: dispatchTabData,
+      materials: aggregateItems(recipeData),
+      dispatchMaterials: dispatchMaterials,
     }}>
       {children}
     </MaterialManagerContext.Provider>

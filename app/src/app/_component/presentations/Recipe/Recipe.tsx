@@ -9,10 +9,10 @@ export interface RecipeProps {
 
 
 export const Recipe: FC<RecipeProps> = (props) => {
-  const { ...rest } = props;
+  const { id, ...rest } = props;
 
   return (
-    <RecipeProvider>
+    <RecipeProvider recipeId={id}>
       <Box>
         <Grid>
           <Grid.Col span={12} style={{ height: '60vh' }}>

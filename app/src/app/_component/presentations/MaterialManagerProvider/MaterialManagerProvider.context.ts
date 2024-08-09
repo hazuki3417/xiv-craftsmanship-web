@@ -2,8 +2,8 @@ import { createContext, useContext } from "react";
 import { ChildItemType } from "../Diagram";
 
 export interface MaterialManagerContextValue {
-  items: ChildItemType[];
-  dispatchTabData: (tabId: string, items: ChildItemType[]) => void;
+  materials: ChildItemType[];
+  dispatchMaterials: (recipeId: string, materials: ChildItemType[]) => void;
 }
 
 export const MaterialManagerContext = createContext<MaterialManagerContextValue | undefined>(undefined);

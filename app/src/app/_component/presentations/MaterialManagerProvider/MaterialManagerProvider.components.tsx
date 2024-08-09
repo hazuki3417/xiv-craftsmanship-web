@@ -8,10 +8,12 @@ import { useMaterialManager } from "./MaterialManagerProvider.context"
  */
 export const withLeafItemHOC = <P extends object>(WrapperComponent: React.ComponentType<P>) => {
   const OriginComponent: React.FC<Omit<P, 'items'>> = (props) => {
-    const { items } = useMaterialManager()
+    const { materials } = useMaterialManager()
+
+    const items = materials.filter((item) => item.type === "leaf")
 
     return (
-      <WrapperComponent {...(props as P)} items={items.filter((item) => item.type === "leaf")} />
+      <WrapperComponent {...(props as P)} items={items} />
     );
   };
 
@@ -26,10 +28,12 @@ withLeafItemHOC.displayName = "component/presentations/MaterialManagerProvider/w
  */
 export const withInternalItemHOC = <P extends object>(WrapperComponent: React.ComponentType<P>) => {
   const OriginComponent: React.FC<Omit<P, 'items'>> = (props) => {
-    const { items } = useMaterialManager()
+    const { materials } = useMaterialManager()
+
+    const items = materials.filter((item) => item.type === "internal")
 
     return (
-      <WrapperComponent {...(props as P)} items={items.filter((item) => item.type === "internal")} />
+      <WrapperComponent {...(props as P)} items={items} />
     );
   };
 

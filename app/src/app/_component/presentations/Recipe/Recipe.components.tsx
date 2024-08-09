@@ -5,6 +5,7 @@ import { DiagramChildNodeProps, DiagramNodeProps, DiagramRootNodeProps } from ".
 import { Edge, useEdgesState, useNodesState } from "@xyflow/react";
 import { LeafTable } from "../LeafTable";
 import { InternalTable } from "../InternalTable";
+import { useMaterialManager } from "../MaterialManagerProvider";
 
 type MaterialNode = {
   id: string;
@@ -122,11 +123,14 @@ const parseRecipeTree = (current: TreeNode): { nodes: DiagramChildNodeProps[], e
 
 
 export interface RecipeProviderProps {
+  recipeId: string;
   children: ReactNode;
 }
 
 export const RecipeProvider: FC<RecipeProviderProps> = (props) => {
-  const { children, ...rest } = props;
+  const { recipeId, children, ...rest } = props;
+
+  const { dispatchMaterials } = useMaterialManager();
 
   // craftするアイテムの情報を管理
   const [craftItem, setCraftItem] = useState<CraftItem | null>(null)
@@ -173,6 +177,7 @@ export const RecipeProvider: FC<RecipeProviderProps> = (props) => {
 
     setNodes([rootNode, ...nodes]);
     setEdges(edges);
+    dispatchMaterials(recipeId, nodes.map((node) => node.data));
   }, [craftItem, rootCount]);
 
   return (
