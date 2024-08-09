@@ -1,19 +1,30 @@
 import { FC, ReactNode, useState } from "react"
 import { MaterialManagerContext } from "./MaterialManagerProvider.context";
 import { ChildItemType } from "../Diagram";
+import { CraftItem } from "../Recipe";
 
 
-type RecipeData = {
+export type MaterialData = {
   recipeId: string;
   materials: ChildItemType[];
+}
+
+export type CraftData = {
+  recipeId: string;
+  craftItem: CraftItem;
+}
+
+export type QuantityData = {
+  recipeId: string;
+  quantity: number;
 }
 
 export interface MaterialManagerProviderProps {
   children: ReactNode;
 }
 
-const aggregateItems = (recipeData: RecipeData[]): ChildItemType[] => {
-  const duplacateItems = recipeData.flatMap((data) => data.materials);
+const aggregateItems = (materials: MaterialData[]): ChildItemType[] => {
+  const duplacateItems = materials.flatMap((data) => data.materials);
   const itemMap: Record<string, ChildItemType> = {};
 
   duplacateItems.forEach(item => {
@@ -27,22 +38,62 @@ const aggregateItems = (recipeData: RecipeData[]): ChildItemType[] => {
   return Object.values(itemMap);
 };
 
+
+const limit = 3;
+const initMaterialData: MaterialData[] = Array.from({ length: limit }, (_, index) => ({ recipeId: (index + 1).toString(), materials: [] }));
+const initCraftData: CraftData[] = Array.from({ length: limit }, (_, index) => ({ recipeId: (index + 1).toString(), craftItem: { id: "", name: "", materials: [] } }));
+const initQuantityData: QuantityData[] = Array.from({ length: limit }, (_, index) => ({ recipeId: (index + 1).toString(), quantity: 1 }));
+
 export const MaterialManagerProvider: FC<MaterialManagerProviderProps> = (props) => {
   const { children, ...rest } = props;
 
-  const [recipeData, setRecipeData] = useState<RecipeData[]>([]);
+  const [materials, setMaterials] = useState<MaterialData[]>(initMaterialData);
+  const [craftItems, setCraftItems] = useState<CraftData[]>(initCraftData);
+  const [quantity, setQuantity] = useState<QuantityData[]>(initQuantityData);
 
-  const dispatchMaterials = (recipeId: string, materials: ChildItemType[]) => {
-    setRecipeData((prevRecipeData) => {
-      const newRecipeData = prevRecipeData.filter((data) => data.recipeId !== recipeId);
-      return [...newRecipeData, { recipeId, materials }];
+  const dispatchMaterials = (data: MaterialData) => {
+    setMaterials((prevMaterials) => {
+      const newMaterials = prevMaterials.filter((data) => data.recipeId !== data.recipeId);
+      return [...newMaterials, data];
     });
+  }
+
+  const dispatchCraftItem = (data: CraftData) => {
+    setCraftItems((prevCraftItems) => {
+      const newCraftItems = prevCraftItems.filter((data) => data.recipeId !== data.recipeId);
+      return [...newCraftItems, data];
+    });
+  }
+
+  const dispatchQuantity = (data: QuantityData) => {
+    setQuantity((prevQuantity) => {
+      const newQuantity = prevQuantity.filter((data) => data.recipeId !== data.recipeId);
+      return [...newQuantity, data];
+    });
+  }
+
+  const fetchCraftItem = (recipeId: string): CraftData => {
+    const result = craftItems.find((craftItem) => craftItem.recipeId === recipeId)
+    return result || { recipeId, craftItem: { id: "", name: "", materials: [] } };
+  }
+
+  const fetchQuantity = (recipeId: string): number => {
+    const result = quantity.find((data) => data.recipeId === recipeId)
+    return result?.quantity || 1;
   }
 
   return (
     <MaterialManagerContext.Provider value={{
-      materials: aggregateItems(recipeData),
-      dispatchMaterials: dispatchMaterials,
+      materials: aggregateItems(materials),
+      dispatch: {
+        materials: dispatchMaterials,
+        craftItem: dispatchCraftItem,
+        quantity: dispatchQuantity
+      },
+      fetch: {
+        craftItem: fetchCraftItem,
+        quantity: fetchQuantity
+      }
     }}>
       {children}
     </MaterialManagerContext.Provider>

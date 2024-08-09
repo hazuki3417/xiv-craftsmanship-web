@@ -11,7 +11,7 @@ import {
 
 const segments: SegmentedControlItem[] = [
   { value: "crafts", label: "a" },
-  { value: "items", label: "b" },
+  { value: "materials", label: "b" },
 ]
 
 const InternalTableBodyWithNodes = withInternalItemHOC(InternalTable.Body);
@@ -69,7 +69,7 @@ export default function Home() {
               </Tabs>
             </Grid.Col>
           )}
-          {segment === "items" && (
+          {segment === "materials" && (
             <>
               <Grid.Col span={4}>
                 <InternalTable>

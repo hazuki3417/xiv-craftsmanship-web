@@ -130,13 +130,18 @@ export interface RecipeProviderProps {
 export const RecipeProvider: FC<RecipeProviderProps> = (props) => {
   const { recipeId, children, ...rest } = props;
 
-  const { dispatchMaterials } = useMaterialManager();
+  const { fetch, dispatch } = useMaterialManager();
+
+  const tmpCraftItem = fetch.craftItem(recipeId)
+
+  console.debug("tmpCraftItem", tmpCraftItem)
 
   // craftするアイテムの情報を管理
-  const [craftItem, setCraftItem] = useState<CraftItem | null>(null)
+  const [craftItem, setCraftItem] = useState<CraftItem | null>(null);
 
+  console.debug("count", fetch.quantity(recipeId))
   //  rootのアイテム数を管理
-  const [rootCount, setRootCount] = useState(1);
+  const [rootCount, setRootCount] = useState(fetch.quantity(recipeId));
 
   // diagramのノードとエッジを管理
   const [nodes, setNodes] = useNodesState<DiagramNodeProps>([]);
@@ -177,7 +182,9 @@ export const RecipeProvider: FC<RecipeProviderProps> = (props) => {
 
     setNodes([rootNode, ...nodes]);
     setEdges(edges);
-    dispatchMaterials(recipeId, nodes.map((node) => node.data));
+    dispatch.craftItem({ recipeId, craftItem });
+    dispatch.materials({ recipeId, materials: nodes.map((node) => node.data) });
+    dispatch.quantity({ recipeId, quantity: rootCount });
   }, [craftItem, rootCount]);
 
   return (
