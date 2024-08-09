@@ -1,6 +1,6 @@
 import { FC, ReactNode, useState } from "react"
-import { ChildItemType, DiagramChildNodeProps } from "../index";
-import { Table, UnstyledButton } from '@mantine/core';
+import { ChildItemType, ClipBoardCopyButton, DiagramChildNodeProps } from "../index";
+import { Input, Table, UnstyledButton } from '@mantine/core';
 import { IconArrowsSort, IconSortAscending, IconSortDescending } from "@tabler/icons-react";
 import { InternalTableContext, useInternalTable, SortState } from "./InternalTable.context";
 
@@ -96,11 +96,15 @@ export const InternalTableBody: FC<InternalTableBodyProps> = (props) => {
           return b.tcount - a.tcount
         }
         return 0
-      }).map((node) => {
+      }).map((item) => {
         return (
-          <Table.Tr key={node.id}>
-            <Table.Td>{node.name}</Table.Td>
-            <Table.Td>{node.tcount}</Table.Td>
+          <Table.Tr key={item.id}>
+            <Table.Td>
+              <Input size="xs" rightSectionPointerEvents="all" rightSection={
+                <ClipBoardCopyButton value={item.name} />
+              } value={item.name} readOnly variant="unstyled" />
+            </Table.Td>
+            <Table.Td>{item.tcount}</Table.Td>
           </Table.Tr>
         )
       })}

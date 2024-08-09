@@ -1,6 +1,6 @@
 import { FC, ReactNode, useEffect, useState } from "react"
-import { ChildItemType, DiagramChildNodeProps } from "../index";
-import { Table, UnstyledButton } from '@mantine/core';
+import { ChildItemType, ClipBoardCopyButton, DiagramChildNodeProps } from "../index";
+import { Input, Table, UnstyledButton } from '@mantine/core';
 import { IconArrowsSort, IconSortAscending, IconSortDescending } from "@tabler/icons-react";
 import { LeafTableContext, useLeafTable, SortState } from "./LeafTable.context";
 import { useEdges } from "@xyflow/react";
@@ -101,7 +101,11 @@ export const LeafTableBody: FC<LeafTableBodyProps> = (props) => {
       }).map((item) => {
         return (
           <Table.Tr key={item.id}>
-            <Table.Td>{item.name}</Table.Td>
+            <Table.Td>
+              <Input size="xs" rightSectionPointerEvents="all" rightSection={
+                <ClipBoardCopyButton value={item.name} />
+              } value={item.name} readOnly variant="unstyled" />
+            </Table.Td>
             <Table.Td>{item.tcount}</Table.Td>
             <Table.Td>source</Table.Td>
           </Table.Tr>
