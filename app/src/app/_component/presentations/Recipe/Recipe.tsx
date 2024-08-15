@@ -1,15 +1,6 @@
 import { FC } from "react";
 import { Diagram } from "../index";
-import {
-	Grid,
-	Box,
-	Divider,
-	Title,
-	Input,
-	InputWrapper,
-	Group,
-	NumberInput,
-} from "@mantine/core";
+import { Grid, Title, Group } from "@mantine/core";
 import {
 	InputCraftLevel,
 	InputItemLevel,
@@ -20,7 +11,6 @@ import {
 	RecipeLeafTable,
 	RecipeProvider,
 	SearchCombobox,
-	useRecipe,
 } from "./index";
 
 export interface RecipeProps {
