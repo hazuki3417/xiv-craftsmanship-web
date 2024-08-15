@@ -1,8 +1,5 @@
 import { FC, ReactNode, useState } from "react";
-import {
-	ChildItemType,
-	ClipBoardCopyButton,
-} from "../index";
+import { ChildItemType, ClipBoardCopyButton } from "../index";
 import { Group, Input, Table, UnstyledButton } from "@mantine/core";
 import {
 	IconArrowsSort,
@@ -61,7 +58,7 @@ export const InternalTableProvider: FC<InternalTableProviderProps> = (
 					job: "none",
 				};
 			});
-			return
+			return;
 		}
 
 		setSort((prevSort) => {

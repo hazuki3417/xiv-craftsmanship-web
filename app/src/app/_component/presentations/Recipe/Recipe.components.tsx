@@ -424,7 +424,7 @@ export const InputPieces: FC = () => {
 	const { root, fetch } = useRecipe();
 	const craftItem = fetch.craftItem();
 
-	let pieces = "-"
+	let pieces = "-";
 	if (craftItem) {
 		pieces = (craftItem.spec.pieces * root.quantity).toString();
 	}
@@ -441,8 +441,7 @@ export const InputPieces: FC = () => {
 			/>
 		</Group>
 	);
-
-}
+};
 
 export const InputCraftLevel: FC = () => {
 	const { fetch } = useRecipe();
@@ -459,8 +458,8 @@ export const InputCraftLevel: FC = () => {
 				variant="unstyled"
 			/>
 		</Group>
-	)
-}
+	);
+};
 
 export const InputItemLevel: FC = () => {
 	const { fetch } = useRecipe();
@@ -477,9 +476,8 @@ export const InputItemLevel: FC = () => {
 				variant="unstyled"
 			/>
 		</Group>
-	)
-}
-
+	);
+};
 
 export const InputJob: FC = () => {
 	const { fetch } = useRecipe();
@@ -497,4 +495,4 @@ export const InputJob: FC = () => {
 			/>
 		</Group>
 	);
-}
+};

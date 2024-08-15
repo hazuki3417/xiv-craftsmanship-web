@@ -77,7 +77,9 @@ export const DiagramRootNode = memo(
 										size="xs"
 										placeholder="name"
 										rightSectionPointerEvents="all"
-										rightSection={<ClipBoardCopyButton value={craft?.spec.name || ""} />}
+										rightSection={
+											<ClipBoardCopyButton value={craft?.spec.name || ""} />
+										}
 										value={craft?.spec.name || ""}
 										readOnly
 									/>

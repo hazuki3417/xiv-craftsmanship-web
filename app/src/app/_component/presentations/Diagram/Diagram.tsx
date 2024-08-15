@@ -29,7 +29,9 @@ export const Diagram: CompoundedComponent = (props) => {
 			zoomOnDoubleClick={false}
 			style={{ border: `1px solid ${theme.colors.gray[3]}` }}
 		>
-			{data === null && <Center style={{ width: "100%", height: "100%" }}>No tree</Center>}
+			{data === null && (
+				<Center style={{ width: "100%", height: "100%" }}>No tree</Center>
+			)}
 		</ReactFlow>
 	);
 };
