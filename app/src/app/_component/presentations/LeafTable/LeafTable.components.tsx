@@ -4,7 +4,7 @@ import {
 	ClipBoardCopyButton,
 	DiagramChildNodeProps,
 } from "../index";
-import { Input, Table, UnstyledButton } from "@mantine/core";
+import { Group, Input, Table, UnstyledButton } from "@mantine/core";
 import {
 	IconArrowsSort,
 	IconSortAscending,
@@ -154,14 +154,18 @@ export const LeafTableHeader: FC<LeafTableHeaderProps> = (props) => {
 			<Table.Tr>
 				<Table.Th>
 					<UnstyledButton onClick={() => toggleSort("name")}>
-						name
-						{sortIcon("name")}
+						<Group gap={"xs"}>
+							name
+							{sortIcon("name")}
+						</Group>
 					</UnstyledButton>
 				</Table.Th>
 				<Table.Th>
 					<UnstyledButton onClick={() => toggleSort("quantity")}>
-						quantity
-						{sortIcon("quantity")}
+						<Group gap={"xs"}>
+							quantity
+							{sortIcon("quantity")}
+						</Group>
 					</UnstyledButton>
 				</Table.Th>
 				<Table.Th>
