@@ -200,7 +200,7 @@ export const RecipeProvider: FC<RecipeProviderProps> = (props) => {
 
 		if (!craftItem) {
 			// 選択されていないとき
-			setNodes([rootNode]);
+			setNodes([]);
 			return;
 		}
 
@@ -419,3 +419,82 @@ export const QuantityInput: FC = () => {
 		</Group>
 	);
 };
+
+export const InputPieces: FC = () => {
+	const { root, fetch } = useRecipe();
+	const craftItem = fetch.craftItem();
+
+	let pieces = "-"
+	if (craftItem) {
+		pieces = (craftItem.spec.pieces * root.quantity).toString();
+	}
+
+	return (
+		<Group gap="xs">
+			pieces:
+			<NumberInput
+				size="xs"
+				value={pieces}
+				style={{ width: "3ch" }}
+				readOnly
+				variant="unstyled"
+			/>
+		</Group>
+	);
+
+}
+
+export const InputCraftLevel: FC = () => {
+	const { fetch } = useRecipe();
+	const craftItem = fetch.craftItem();
+
+	return (
+		<Group gap="xs">
+			craft lv:
+			<Input
+				size="xs"
+				value={craftItem?.spec.level.craft || "-"}
+				style={{ width: "3ch" }}
+				readOnly
+				variant="unstyled"
+			/>
+		</Group>
+	)
+}
+
+export const InputItemLevel: FC = () => {
+	const { fetch } = useRecipe();
+	const craftItem = fetch.craftItem();
+
+	return (
+		<Group gap="xs">
+			item lv:
+			<Input
+				size="xs"
+				value={craftItem?.spec.level.item || "-"}
+				style={{ width: "3ch" }}
+				readOnly
+				variant="unstyled"
+			/>
+		</Group>
+	)
+}
+
+
+export const InputJob: FC = () => {
+	const { fetch } = useRecipe();
+	const craftItem = fetch.craftItem();
+
+	return (
+		<Group gap="xs">
+			job:
+			<Input
+				size="xs"
+				value={craftItem?.spec.job || "-"}
+				style={{ width: "5ch" }}
+				readOnly
+				variant="unstyled"
+			/>
+		</Group>
+	);
+}

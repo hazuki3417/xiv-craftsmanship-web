@@ -11,6 +11,10 @@ import {
 	NumberInput,
 } from "@mantine/core";
 import {
+	InputCraftLevel,
+	InputItemLevel,
+	InputJob,
+	InputPieces,
 	QuantityInput,
 	RecipeInternalTable,
 	RecipeLeafTable,
@@ -40,46 +44,10 @@ export const Recipe: FC<RecipeProps> = (props) => {
 									quantity:
 									<QuantityInput />
 								</Group>
-								<Group gap="xs">
-									pieces:
-									<NumberInput
-										size="xs"
-										value={1}
-										style={{ width: "3ch" }}
-										readOnly
-										variant="unstyled"
-									/>
-								</Group>
-								<Group gap="xs">
-									craft lv:
-									<Input
-										size="xs"
-										value={1}
-										style={{ width: "3ch" }}
-										readOnly
-										variant="unstyled"
-									/>
-								</Group>
-								<Group gap="xs">
-									item lv:
-									<Input
-										size="xs"
-										value={1}
-										style={{ width: "3ch" }}
-										readOnly
-										variant="unstyled"
-									/>
-								</Group>
-								<Group gap="xs">
-									job:
-									<Input
-										size="xs"
-										value={"錬金術師"}
-										style={{ width: "5ch" }}
-										readOnly
-										variant="unstyled"
-									/>
-								</Group>
+								<InputPieces />
+								<InputCraftLevel />
+								<InputItemLevel />
+								<InputJob />
 							</Group>
 						</Grid.Col>
 					</Grid>
