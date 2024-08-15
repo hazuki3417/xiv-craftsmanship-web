@@ -18,18 +18,12 @@ import {
 	useCombobox,
 	rem,
 	Group,
-	NumberInput
+	NumberInput,
 } from "@mantine/core";
 import { useLazyQuery } from "@apollo/client";
 import { GetCraftsDocument, GetMaterialsDocument } from "@/graphql";
 import { useDebouncedValue } from "@mantine/hooks";
-import {
-	IconMinus,
-	IconPlus,
-	IconSearch,
-	IconX,
-} from "@tabler/icons-react";
-
+import { IconMinus, IconPlus, IconSearch, IconX } from "@tabler/icons-react";
 
 type MaterialNode = {
 	id: string;
@@ -173,7 +167,7 @@ export const RecipeProvider: FC<RecipeProviderProps> = (props) => {
 	}, []);
 
 	const onClear = useCallback(() => {
-		setCraftItem(null)
+		setCraftItem(null);
 		dispatch.craftItem({ recipeId, craftItem: null });
 		dispatch.materials({ recipeId, materials: [] });
 	}, []);
@@ -278,7 +272,6 @@ export const RecipeInternalTable: FC = () => {
 	);
 };
 
-
 type SearchState = {
 	value: string;
 	keyTypeChange: boolean;
@@ -337,7 +330,7 @@ export const SearchCombobox: FC = () => {
 
 	const onClear = useCallback(() => {
 		setSearch({ value: "", keyTypeChange: false });
-		root.onClear()
+		root.onClear();
 	}, []);
 
 	useEffect(() => {
@@ -395,7 +388,7 @@ export const SearchCombobox: FC = () => {
 };
 
 export const QuantityInput: FC = () => {
-	const { root } = useRecipe()
+	const { root } = useRecipe();
 
 	return (
 		<Group gap={0}>
@@ -426,4 +419,4 @@ export const QuantityInput: FC = () => {
 			</ActionIcon>
 		</Group>
 	);
-}
+};

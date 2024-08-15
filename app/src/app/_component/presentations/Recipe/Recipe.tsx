@@ -1,7 +1,23 @@
 import { FC } from "react";
 import { Diagram } from "../index";
-import { Grid, Box, Divider, Title, Input, InputWrapper, Group, NumberInput } from "@mantine/core";
-import { QuantityInput, RecipeInternalTable, RecipeLeafTable, RecipeProvider, SearchCombobox, useRecipe } from "./index";
+import {
+	Grid,
+	Box,
+	Divider,
+	Title,
+	Input,
+	InputWrapper,
+	Group,
+	NumberInput,
+} from "@mantine/core";
+import {
+	QuantityInput,
+	RecipeInternalTable,
+	RecipeLeafTable,
+	RecipeProvider,
+	SearchCombobox,
+	useRecipe,
+} from "./index";
 
 export interface RecipeProps {
 	id: string;
@@ -13,12 +29,12 @@ export const Recipe: FC<RecipeProps> = (props) => {
 		<RecipeProvider recipeId={id}>
 			{/* <Box> */}
 			<Grid>
-				<Grid.Col span={12} >
-					<Grid >
-						<Grid.Col span={"auto"} >
+				<Grid.Col span={12}>
+					<Grid>
+						<Grid.Col span={"auto"}>
 							<SearchCombobox />
 						</Grid.Col>
-						<Grid.Col span={7} >
+						<Grid.Col span={7}>
 							<Group>
 								<Group gap="xs">
 									quantity:
@@ -26,21 +42,44 @@ export const Recipe: FC<RecipeProps> = (props) => {
 								</Group>
 								<Group gap="xs">
 									pieces:
-									<NumberInput size="xs" value={1} style={{ width: "3ch" }} readOnly variant="unstyled" />
+									<NumberInput
+										size="xs"
+										value={1}
+										style={{ width: "3ch" }}
+										readOnly
+										variant="unstyled"
+									/>
 								</Group>
 								<Group gap="xs">
 									craft lv:
-									<Input size="xs" value={1} style={{ width: "3ch" }} readOnly variant="unstyled" />
+									<Input
+										size="xs"
+										value={1}
+										style={{ width: "3ch" }}
+										readOnly
+										variant="unstyled"
+									/>
 								</Group>
 								<Group gap="xs">
 									item lv:
-									<Input size="xs" value={1} style={{ width: "3ch" }} readOnly variant="unstyled" />
+									<Input
+										size="xs"
+										value={1}
+										style={{ width: "3ch" }}
+										readOnly
+										variant="unstyled"
+									/>
 								</Group>
 								<Group gap="xs">
 									job:
-									<Input size="xs" value={"錬金術師"} style={{ width: "5ch" }} readOnly variant="unstyled" />
+									<Input
+										size="xs"
+										value={"錬金術師"}
+										style={{ width: "5ch" }}
+										readOnly
+										variant="unstyled"
+									/>
 								</Group>
-
 							</Group>
 						</Grid.Col>
 					</Grid>
@@ -56,9 +95,9 @@ export const Recipe: FC<RecipeProps> = (props) => {
 					<Title order={6}>素材</Title>
 					<RecipeLeafTable />
 				</Grid.Col>
-			</Grid >
+			</Grid>
 			{/* </Box> */}
-		</RecipeProvider >
+		</RecipeProvider>
 	);
 };
 Recipe.displayName = "component/presentations/Recipe";

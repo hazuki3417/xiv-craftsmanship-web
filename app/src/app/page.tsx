@@ -35,11 +35,13 @@ export default function Home() {
 	return (
 		<Container fluid style={{ height: "100vh" }}>
 			{/** header */}
-			<Grid >
-				<Grid.Col span={12} style={{ minHeight: rem(60) }}>craftsmanship</Grid.Col>
+			<Grid>
+				<Grid.Col span={12} style={{ minHeight: rem(60) }}>
+					craftsmanship
+				</Grid.Col>
 			</Grid>
 			{/** controle panel */}
-			<Grid >
+			<Grid>
 				<Grid.Col span={12}>
 					<SegmentedControl
 						value={segment}

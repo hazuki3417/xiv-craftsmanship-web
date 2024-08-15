@@ -49,14 +49,13 @@ export type RootItemType = ItemType & {
 
 export type DiagramRootNodeProps = Node<RootItemType>;
 
-
 export const DiagramRootNode = memo(
 	(props: NodeProps<DiagramRootNodeProps>) => {
 		const { root, fetch } = useRecipe();
 
-		const craft = fetch.craftItem()
+		const craft = fetch.craftItem();
 
-		const data = craft !== null ? craft : { id: "", name: "", materials: [] }
+		const data = craft !== null ? craft : { id: "", name: "", materials: [] };
 
 		return (
 			<>

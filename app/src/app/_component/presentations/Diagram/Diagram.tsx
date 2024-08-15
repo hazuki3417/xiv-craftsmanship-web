@@ -9,7 +9,7 @@ export type DiagramProps = {};
 type CompoundedComponent = FC<DiagramProps> & {};
 
 export const Diagram: CompoundedComponent = (props) => {
-	const theme = useMantineTheme()
+	const theme = useMantineTheme();
 	const { nodes, edges } = useRecipe();
 	// TODO: 下記のエラーに対応をする
 	// index.mjs:572 [React Flow]: The React Flow parent container needs a width and a height to render the graph. Help: https://reactflow.dev/error#004
