@@ -139,6 +139,7 @@ export const InternalTableBody: FC<InternalTableBodyProps> = (props) => {
 								/>
 							</Table.Td>
 							<Table.Td>{item.tcount}</Table.Td>
+							<Table.Td>木工師</Table.Td>
 						</Table.Tr>
 					);
 				})}
@@ -168,6 +169,9 @@ export const InternalTableHeader: FC<InternalTableHeaderProps> = (props) => {
 						quantity
 						{sortIcon("quantity")}
 					</UnstyledButton>
+				</Table.Th>
+				<Table.Th>
+					<UnstyledButton>crafter</UnstyledButton>
 				</Table.Th>
 			</Table.Tr>
 		</Table.Tbody>

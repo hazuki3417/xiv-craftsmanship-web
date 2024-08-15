@@ -5,6 +5,7 @@ import {
 	Checkbox,
 	Combobox,
 	Grid,
+	Group,
 	Input,
 	Loader,
 	NumberInput,
@@ -48,124 +49,14 @@ export type RootItemType = ItemType & {
 
 export type DiagramRootNodeProps = Node<RootItemType>;
 
-type SearchState = {
-	value: string;
-	keyTypeChange: boolean;
-};
-
-const SearchCombobox: FC = () => {
-	const combobox = useCombobox({
-		onDropdownClose: () => combobox.resetSelectedOption(),
-	});
-
-	const { fetch, dispatch } = useRecipe();
-
-	const name = fetch.craftItem()?.name || "";
-
-	const [search, setSearch] = useState<SearchState>({
-		value: name,
-		keyTypeChange: false,
-	});
-	const [lazyCraftQuery, { loading, data }] = useLazyQuery(GetCraftsDocument);
-	const [lazyMaterialQuery] = useLazyQuery(GetMaterialsDocument);
-	const [debouncedSearch] = useDebouncedValue(search, 500);
-
-	const onOptionSubmit = (value: string) => {
-		const craft = data?.crafts.find((craft) => craft.id === value);
-		if (!craft) {
-			return;
-		}
-
-		setSearch({ value: craft.name, keyTypeChange: false });
-		combobox.closeDropdown();
-
-		lazyMaterialQuery({ variables: { craftId: craft.id } })
-			.then((result) => {
-				if (!result.data) {
-					return;
-				}
-
-				dispatch.craftitem({
-					id: craft.id,
-					name: craft.name,
-					materials: result.data.materials,
-				});
-			})
-			.catch((error) => {
-				console.error(error);
-			});
-	};
-
-	const onSerachChange = useCallback(
-		(event: React.ChangeEvent<HTMLInputElement>) => {
-			setSearch({ value: event.target.value, keyTypeChange: true });
-		},
-		[],
-	);
-
-	const onClear = useCallback(() => {
-		setSearch({ value: "", keyTypeChange: false });
-		dispatch.craftitem(null);
-	}, []);
-
-	useEffect(() => {
-		// NOTE: debounceにより最後の入力から一定時間後に発火する
-
-		if (debouncedSearch.keyTypeChange === false) {
-			// NOTE: Option選択による変更の場合は検索を行わない
-			return;
-		}
-
-		// NOTE: キー入力があるときは検索を行う
-		if (debouncedSearch.value) {
-			combobox.openDropdown();
-			lazyCraftQuery({ variables: { name: debouncedSearch.value } });
-		}
-	}, [debouncedSearch]);
-
-	useEffect(() => {
-		if (search.value === "") {
-			// NOTE: 空文字ならすぐに閉じる
-			combobox.closeDropdown();
-		}
-	}, [search]);
-
-	return (
-		<Combobox store={combobox} onOptionSubmit={onOptionSubmit}>
-			<Combobox.Target>
-				<Input
-					placeholder="search"
-					value={search.value}
-					leftSection={loading ? <Loader size={20} /> : <IconSearch />}
-					rightSection={
-						<ActionIcon variant="subtle" onClick={onClear}>
-							<IconX style={{ width: rem(16) }} />
-						</ActionIcon>
-					}
-					rightSectionPointerEvents="all"
-					onChange={onSerachChange}
-					onBlur={() => combobox.closeDropdown()}
-				/>
-			</Combobox.Target>
-			<Combobox.Dropdown>
-				<Combobox.Options>
-					{data &&
-						data.crafts.map((craft) => (
-							<Combobox.Option key={craft.id} value={craft.id}>
-								{craft.name}
-							</Combobox.Option>
-						))}
-				</Combobox.Options>
-			</Combobox.Dropdown>
-		</Combobox>
-	);
-};
 
 export const DiagramRootNode = memo(
 	(props: NodeProps<DiagramRootNodeProps>) => {
-		const { id } = props.data;
+		const { root, fetch } = useRecipe();
 
-		const { root } = useRecipe();
+		const craft = fetch.craftItem()
+
+		const data = craft !== null ? craft : { id: "", name: "", materials: [] }
 
 		return (
 			<>
@@ -178,7 +69,7 @@ export const DiagramRootNode = memo(
 						position: "relative",
 					}}
 				>
-					<input type="hidden" name="id" value={id} />
+					<input type="hidden" name="id" value={data.id} />
 					<Grid align="center">
 						<Grid.Col span={1}>
 							<Checkbox size="xs" />
@@ -186,37 +77,14 @@ export const DiagramRootNode = memo(
 						<Grid.Col span={11}>
 							<Grid align="center">
 								<Grid.Col span={12}>
-									<SearchCombobox />
-								</Grid.Col>
-							</Grid>
-							<Grid align="center">
-								<Grid.Col span={3}>count:</Grid.Col>
-								<Grid.Col span={9}>
-									<NumberInput
+									<Input
 										size="xs"
-										style={{ width: "4ch" }}
-										value={root.quantity}
-										hideControls
-										min={1}
-										max={99}
-										onChange={root.onChange}
+										placeholder="name"
+										rightSectionPointerEvents="all"
+										rightSection={<ClipBoardCopyButton value={data.name} />}
+										value={data.name}
+										readOnly
 									/>
-									<ActionIcon variant="subtle" style={{ marginLeft: 5 }}>
-										<IconMinus
-											style={{ width: rem(16) }}
-											onClick={() => {
-												root.countDown();
-											}}
-										/>
-									</ActionIcon>
-									<ActionIcon variant="subtle" style={{ marginLeft: 5 }}>
-										<IconPlus
-											style={{ width: rem(16) }}
-											onClick={() => {
-												root.countUp();
-											}}
-										/>
-									</ActionIcon>
 								</Grid.Col>
 							</Grid>
 						</Grid.Col>

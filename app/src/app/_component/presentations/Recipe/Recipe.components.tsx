@@ -10,6 +10,26 @@ import { Edge, useEdgesState, useNodesState } from "@xyflow/react";
 import { LeafTable } from "../LeafTable";
 import { InternalTable } from "../InternalTable";
 import { useMaterialManager } from "../MaterialManagerProvider";
+import {
+	ActionIcon,
+	Combobox,
+	Input,
+	Loader,
+	useCombobox,
+	rem,
+	Group,
+	NumberInput
+} from "@mantine/core";
+import { useLazyQuery } from "@apollo/client";
+import { GetCraftsDocument, GetMaterialsDocument } from "@/graphql";
+import { useDebouncedValue } from "@mantine/hooks";
+import {
+	IconMinus,
+	IconPlus,
+	IconSearch,
+	IconX,
+} from "@tabler/icons-react";
+
 
 type MaterialNode = {
 	id: string;
@@ -250,3 +270,152 @@ export const RecipeInternalTable: FC = () => {
 		</InternalTable>
 	);
 };
+
+
+type SearchState = {
+	value: string;
+	keyTypeChange: boolean;
+};
+
+export const SearchCombobox: FC = () => {
+	const combobox = useCombobox({
+		onDropdownClose: () => combobox.resetSelectedOption(),
+	});
+
+	const { fetch, dispatch } = useRecipe();
+
+	const name = fetch.craftItem()?.name || "";
+
+	const [search, setSearch] = useState<SearchState>({
+		value: name,
+		keyTypeChange: false,
+	});
+	const [lazyCraftQuery, { loading, data }] = useLazyQuery(GetCraftsDocument);
+	const [lazyMaterialQuery] = useLazyQuery(GetMaterialsDocument);
+	const [debouncedSearch] = useDebouncedValue(search, 500);
+
+	const onOptionSubmit = (value: string) => {
+		const craft = data?.crafts.find((craft) => craft.id === value);
+		if (!craft) {
+			return;
+		}
+
+		setSearch({ value: craft.name, keyTypeChange: false });
+		combobox.closeDropdown();
+
+		lazyMaterialQuery({ variables: { craftId: craft.id } })
+			.then((result) => {
+				if (!result.data) {
+					return;
+				}
+
+				dispatch.craftitem({
+					id: craft.id,
+					name: craft.name,
+					materials: result.data.materials,
+				});
+			})
+			.catch((error) => {
+				console.error(error);
+			});
+	};
+
+	const onSerachChange = useCallback(
+		(event: React.ChangeEvent<HTMLInputElement>) => {
+			setSearch({ value: event.target.value, keyTypeChange: true });
+		},
+		[],
+	);
+
+	const onClear = useCallback(() => {
+		setSearch({ value: "", keyTypeChange: false });
+		dispatch.craftitem(null);
+	}, []);
+
+	useEffect(() => {
+		// NOTE: debounceにより最後の入力から一定時間後に発火する
+
+		if (debouncedSearch.keyTypeChange === false) {
+			// NOTE: Option選択による変更の場合は検索を行わない
+			return;
+		}
+
+		// NOTE: キー入力があるときは検索を行う
+		if (debouncedSearch.value) {
+			combobox.openDropdown();
+			lazyCraftQuery({ variables: { name: debouncedSearch.value } });
+		}
+	}, [debouncedSearch]);
+
+	useEffect(() => {
+		if (search.value === "") {
+			// NOTE: 空文字ならすぐに閉じる
+			combobox.closeDropdown();
+		}
+	}, [search]);
+
+	return (
+		<Combobox size="xs" store={combobox} onOptionSubmit={onOptionSubmit}>
+			<Combobox.Target>
+				<Input
+					size="xs"
+					placeholder="search"
+					value={search.value}
+					leftSection={loading ? <Loader size={20} /> : <IconSearch />}
+					rightSection={
+						<ActionIcon variant="subtle" onClick={onClear}>
+							<IconX style={{ width: rem(16) }} />
+						</ActionIcon>
+					}
+					rightSectionPointerEvents="all"
+					onChange={onSerachChange}
+					onBlur={() => combobox.closeDropdown()}
+				/>
+			</Combobox.Target>
+			<Combobox.Dropdown>
+				<Combobox.Options>
+					{data &&
+						data.crafts.map((craft) => (
+							<Combobox.Option key={craft.id} value={craft.id}>
+								{craft.name}
+							</Combobox.Option>
+						))}
+				</Combobox.Options>
+			</Combobox.Dropdown>
+		</Combobox>
+	);
+};
+
+export const QuantityInput: FC = () => {
+	const { root } = useRecipe()
+
+	return (
+		<Group gap={0}>
+			<NumberInput
+				size="xs"
+				style={{ width: "4ch" }}
+				value={root.quantity}
+				hideControls
+				min={1}
+				max={99}
+				onChange={root.onChange}
+			/>
+			<ActionIcon variant="subtle" style={{ marginLeft: 5 }}>
+				<IconMinus
+					style={{ width: rem(16) }}
+					onClick={() => {
+						root.countDown();
+					}}
+				/>
+			</ActionIcon>
+			<ActionIcon variant="subtle" style={{ marginLeft: 5 }}>
+				<IconPlus
+					style={{ width: rem(16) }}
+					onClick={() => {
+						root.countUp();
+					}}
+				/>
+			</ActionIcon>
+		</Group>
+	);
+}
