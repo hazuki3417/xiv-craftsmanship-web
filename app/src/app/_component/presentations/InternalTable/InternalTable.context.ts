@@ -4,6 +4,7 @@ export type SortType = "none" | "ascending" | "descending";
 export type SortState = {
 	name: SortType;
 	quantity: SortType;
+	job: SortType;
 };
 
 export interface InternalTableContextValue {

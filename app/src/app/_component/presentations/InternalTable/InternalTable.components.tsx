@@ -2,9 +2,8 @@ import { FC, ReactNode, useState } from "react";
 import {
 	ChildItemType,
 	ClipBoardCopyButton,
-	DiagramChildNodeProps,
 } from "../index";
-import { Input, Table, UnstyledButton } from "@mantine/core";
+import { Group, Input, Table, UnstyledButton } from "@mantine/core";
 import {
 	IconArrowsSort,
 	IconSortAscending,
@@ -23,6 +22,7 @@ export interface InternalTableProviderProps {
 const defaultSortState: SortState = {
 	name: "none",
 	quantity: "none",
+	job: "none",
 };
 
 export const InternalTableProvider: FC<InternalTableProviderProps> = (
@@ -35,28 +35,45 @@ export const InternalTableProvider: FC<InternalTableProviderProps> = (
 		if (target === "name") {
 			setSort((prevSort) => {
 				return {
-					quantity: "none",
 					name:
 						prevSort.name === "none"
 							? "ascending"
 							: prevSort.name === "ascending"
 								? "descending"
 								: "none",
+					quantity: "none",
+					job: "none",
 				};
 			});
 			return;
 		}
 
-		// quantityのとき
+		if (target === "quantity") {
+			setSort((prevSort) => {
+				return {
+					name: "none",
+					quantity:
+						prevSort.quantity === "none"
+							? "ascending"
+							: prevSort.quantity === "ascending"
+								? "descending"
+								: "none",
+					job: "none",
+				};
+			});
+			return
+		}
+
 		setSort((prevSort) => {
 			return {
-				quantity:
-					prevSort.quantity === "none"
+				name: "none",
+				quantity: "none",
+				job:
+					prevSort.job === "none"
 						? "ascending"
-						: prevSort.quantity === "ascending"
+						: prevSort.job === "ascending"
 							? "descending"
 							: "none",
-				name: "none",
 			};
 		});
 	};
@@ -160,18 +177,27 @@ export const InternalTableHeader: FC<InternalTableHeaderProps> = (props) => {
 			<Table.Tr>
 				<Table.Th>
 					<UnstyledButton onClick={() => toggleSort("name")}>
-						name
-						{sortIcon("name")}
+						<Group gap={"xs"}>
+							name
+							{sortIcon("name")}
+						</Group>
 					</UnstyledButton>
 				</Table.Th>
 				<Table.Th>
 					<UnstyledButton onClick={() => toggleSort("quantity")}>
-						quantity
-						{sortIcon("quantity")}
+						<Group gap={"xs"}>
+							quantity
+							{sortIcon("quantity")}
+						</Group>
 					</UnstyledButton>
 				</Table.Th>
 				<Table.Th>
-					<UnstyledButton>crafter</UnstyledButton>
+					<UnstyledButton onClick={() => toggleSort("job")}>
+						<Group gap={"xs"}>
+							crafter
+							{sortIcon("job")}
+						</Group>
+					</UnstyledButton>
 				</Table.Th>
 			</Table.Tr>
 		</Table.Tbody>
