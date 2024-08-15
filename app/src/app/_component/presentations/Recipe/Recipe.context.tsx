@@ -1,11 +1,12 @@
 import { createContext, useContext } from "react";
-import { Material } from "@/graphql";
+import { Craft, Material } from "@/graphql";
 import { DiagramNodeProps } from "../Diagram";
 import { Edge } from "@xyflow/react";
 
 export type CraftItem = {
-	id: string;
-	name: string;
+	spec: Craft;
+	// id: string;
+	// name: string;
 	materials: Material[];
 };
 

@@ -51,11 +51,8 @@ export type DiagramRootNodeProps = Node<RootItemType>;
 
 export const DiagramRootNode = memo(
 	(props: NodeProps<DiagramRootNodeProps>) => {
-		const { root, fetch } = useRecipe();
-
+		const { fetch } = useRecipe();
 		const craft = fetch.craftItem();
-
-		const data = craft !== null ? craft : { id: "", name: "", materials: [] };
 
 		return (
 			<>
@@ -68,7 +65,7 @@ export const DiagramRootNode = memo(
 						position: "relative",
 					}}
 				>
-					<input type="hidden" name="id" value={data.id} />
+					<input type="hidden" name="id" value={craft?.spec.id || ""} />
 					<Grid align="center">
 						<Grid.Col span={1}>
 							<Checkbox size="xs" />
@@ -80,8 +77,8 @@ export const DiagramRootNode = memo(
 										size="xs"
 										placeholder="name"
 										rightSectionPointerEvents="all"
-										rightSection={<ClipBoardCopyButton value={data.name} />}
-										value={data.name}
+										rightSection={<ClipBoardCopyButton value={craft?.spec.name || ""} />}
+										value={craft?.spec.name || ""}
 										readOnly
 									/>
 								</Grid.Col>

@@ -1,8 +1,7 @@
-import { FC, ReactNode, useEffect, useState } from "react";
+import { FC, ReactNode, useState } from "react";
 import {
 	ChildItemType,
 	ClipBoardCopyButton,
-	DiagramChildNodeProps,
 } from "../index";
 import { Group, Input, Table, UnstyledButton } from "@mantine/core";
 import {
@@ -11,7 +10,6 @@ import {
 	IconSortDescending,
 } from "@tabler/icons-react";
 import { LeafTableContext, useLeafTable, SortState } from "./LeafTable.context";
-import { useEdges } from "@xyflow/react";
 
 export interface LeafTableProviderProps {
 	children: ReactNode;

@@ -37,7 +37,7 @@ type MaterialNode = {
  * 選択したアイテムのレシピツリーを構築する
  */
 const buidRecipeTree = (craftItem: CraftItem) => {
-	const { id, materials } = craftItem;
+	const { spec, materials } = craftItem;
 	const map: { [key: string]: MaterialNode } = {};
 
 	materials.forEach((material) => {
@@ -71,7 +71,7 @@ const buidRecipeTree = (craftItem: CraftItem) => {
 		parent.children.push(child);
 	});
 
-	const tree = map[id];
+	const tree = map[spec.id];
 	return tree;
 };
 
@@ -284,7 +284,7 @@ export const SearchCombobox: FC = () => {
 
 	const { root, fetch, dispatch } = useRecipe();
 
-	const name = fetch.craftItem()?.name || "";
+	const name = fetch.craftItem()?.spec.name || "";
 
 	const [search, setSearch] = useState<SearchState>({
 		value: name,
@@ -311,8 +311,7 @@ export const SearchCombobox: FC = () => {
 				}
 
 				dispatch.craftitem({
-					id: craft.id,
-					name: craft.name,
+					spec: craft,
 					materials: result.data.materials,
 				});
 			})
