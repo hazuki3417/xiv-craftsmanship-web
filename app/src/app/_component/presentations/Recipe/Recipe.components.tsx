@@ -172,6 +172,12 @@ export const RecipeProvider: FC<RecipeProviderProps> = (props) => {
 		setRootCount(Number(value));
 	}, []);
 
+	const onClear = useCallback(() => {
+		setCraftItem(null)
+		dispatch.craftItem({ recipeId, craftItem: null });
+		dispatch.materials({ recipeId, materials: [] });
+	}, []);
+
 	const rootCountUp = useCallback(() => {
 		setRootCount((value) => {
 			return Math.min(99, value + 1);
@@ -228,6 +234,7 @@ export const RecipeProvider: FC<RecipeProviderProps> = (props) => {
 					countUp: rootCountUp,
 					countDown: rootCountDown,
 					onChange: onChangeRootCount,
+					onClear: onClear,
 				},
 				dispatch: { craftitem: setCraftItem },
 				fetch: { craftItem: () => craftItem },
@@ -282,7 +289,7 @@ export const SearchCombobox: FC = () => {
 		onDropdownClose: () => combobox.resetSelectedOption(),
 	});
 
-	const { fetch, dispatch } = useRecipe();
+	const { root, fetch, dispatch } = useRecipe();
 
 	const name = fetch.craftItem()?.name || "";
 
@@ -290,6 +297,7 @@ export const SearchCombobox: FC = () => {
 		value: name,
 		keyTypeChange: false,
 	});
+
 	const [lazyCraftQuery, { loading, data }] = useLazyQuery(GetCraftsDocument);
 	const [lazyMaterialQuery] = useLazyQuery(GetMaterialsDocument);
 	const [debouncedSearch] = useDebouncedValue(search, 500);
@@ -329,7 +337,7 @@ export const SearchCombobox: FC = () => {
 
 	const onClear = useCallback(() => {
 		setSearch({ value: "", keyTypeChange: false });
-		dispatch.craftitem(null);
+		root.onClear()
 	}, []);
 
 	useEffect(() => {

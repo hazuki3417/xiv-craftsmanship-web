@@ -15,6 +15,7 @@ export interface RecipeContextValue {
 		countUp: () => void;
 		countDown: () => void;
 		onChange: (value: string | number) => void;
+		onClear: () => void;
 	};
 	dispatch: {
 		craftitem: (data: CraftItem | null) => void;
