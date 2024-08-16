@@ -21,7 +21,7 @@ import {
 	NumberInput,
 } from "@mantine/core";
 import { useLazyQuery } from "@apollo/client";
-import { GetCraftsDocument, GetMaterialsDocument } from "@/graphql";
+import { GetCraftsDocument, GetMaterialsDocument, Material } from "@/graphql";
 import { useDebouncedValue } from "@mantine/hooks";
 import { IconMinus, IconPlus, IconSearch, IconX } from "@tabler/icons-react";
 
@@ -33,47 +33,38 @@ type MaterialNode = {
 	children: MaterialNode[];
 };
 
-/**
- * 選択したアイテムのレシピツリーを構築する
- */
-const buidRecipeTree = (craftItem: CraftItem) => {
+const buildMaterialTree = (materials: Material[], parentId: string, visited: Set<string>): MaterialNode[] => {
+	if (visited.has(parentId)) {
+		return []; // サイクルを防止するために再帰を終了
+	}
+
+	visited.add(parentId); // 現在のノードを訪問済みに追加
+
+	return materials
+		.filter(material => material.parent.itemId === parentId)
+		.map(material => ({
+			id: material.treeId,
+			name: material.child.itemName,
+			unit: material.child.itemUnit,
+			total: material.child.itemTotal,
+			children: buildMaterialTree(materials, material.child.itemId, visited),
+		}));
+}
+
+
+const buildRecipeTree = (craftItem: CraftItem): MaterialNode => {
 	const { spec, materials } = craftItem;
-	const map: { [key: string]: MaterialNode } = {};
 
-	materials.forEach((material) => {
-		const exists = {
-			parent: map[material.parent.itemId],
-			child: map[material.child.itemId],
-		};
-		if (!exists.parent) {
-			map[material.parent.itemId] = {
-				id: material.parent.itemId,
-				name: material.parent.itemName,
-				unit: material.child.itemUnit,
-				total: material.child.itemTotal,
-				children: [],
-			};
-		}
-		if (!exists.child) {
-			map[material.child.itemId] = {
-				id: material.child.itemId,
-				name: material.child.itemName,
-				unit: material.child.itemUnit,
-				total: material.child.itemTotal,
-				children: [],
-			};
-		}
-	});
+	const tree = buildMaterialTree(materials, spec.id, new Set<string>());
 
-	materials.forEach((material) => {
-		const parent = map[material.parent.itemId];
-		const child = map[material.child.itemId];
-		parent.children.push(child);
-	});
-
-	const tree = map[spec.id];
-	return tree;
-};
+	return {
+		id: spec.id,
+		name: spec.name,
+		unit: 1,
+		total: spec.pieces,
+		children: tree,
+	}
+}
 
 type TreeNode = {
 	nodes: MaterialNode[];
@@ -205,7 +196,7 @@ export const RecipeProvider: FC<RecipeProviderProps> = (props) => {
 		}
 
 		// 選択されたとき
-		const tree = buidRecipeTree(craftItem);
+		const tree = buildRecipeTree(craftItem);
 		const { nodes, edges } = parseRecipeTree({
 			nodes: tree.children,
 			id: rootId,
