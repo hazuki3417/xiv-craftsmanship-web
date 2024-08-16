@@ -15,6 +15,8 @@ const makeStyle = (theme: MantineTheme) => {
 			marginBottom: theme.spacing.xs,
 			paddingLeft: theme.spacing.xs,
 			paddingRight: theme.spacing.xs,
+			backgroundColor: theme.colors.dark[6],
+			color: theme.colors.gray[0],
 		},
 		inner: {
 			height: rem(40),

@@ -30,11 +30,9 @@ const makeStyle = (theme: MantineTheme) => {
 	return {
 		tabPanel: {
 			paddingTop: "8px",
-		}
-	}
-}
-
-
+		},
+	};
+};
 
 export default function Home() {
 	const style = makeStyle(useMantineTheme());

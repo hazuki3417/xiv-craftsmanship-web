@@ -1,6 +1,6 @@
 import { FC, ReactNode, useState } from "react";
 import { ChildItemType, ClipBoardCopyButton } from "../index";
-import { Group, Input, Table, UnstyledButton } from "@mantine/core";
+import { Group, Input, rem, Table, UnstyledButton } from "@mantine/core";
 import {
 	IconArrowsSort,
 	IconSortAscending,
@@ -89,7 +89,9 @@ export const LeafTableBody: FC<LeafTableBodyProps> = (props) => {
 		return (
 			<Table.Tbody>
 				<Table.Tr>
-					<Table.Td colSpan={3}>No data</Table.Td>
+					<Table.Td colSpan={3} align="center">
+						No data
+					</Table.Td>
 				</Table.Tr>
 			</Table.Tbody>
 		);
@@ -155,7 +157,7 @@ export const LeafTableHeader: FC<LeafTableHeaderProps> = (props) => {
 						</Group>
 					</UnstyledButton>
 				</Table.Th>
-				<Table.Th>
+				<Table.Th w={rem(120)}>
 					<UnstyledButton onClick={() => toggleSort("quantity")}>
 						<Group gap={"xs"}>
 							quantity
@@ -163,7 +165,7 @@ export const LeafTableHeader: FC<LeafTableHeaderProps> = (props) => {
 						</Group>
 					</UnstyledButton>
 				</Table.Th>
-				<Table.Th>
+				<Table.Th w={rem(300)}>
 					<UnstyledButton>source</UnstyledButton>
 				</Table.Th>
 			</Table.Tr>

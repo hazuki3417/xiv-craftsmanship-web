@@ -1,6 +1,6 @@
 import { FC, ReactNode, useState } from "react";
 import { ChildItemType, ClipBoardCopyButton } from "../index";
-import { Group, Input, Table, UnstyledButton } from "@mantine/core";
+import { Group, Input, rem, Table, UnstyledButton } from "@mantine/core";
 import {
 	IconArrowsSort,
 	IconSortAscending,
@@ -113,7 +113,9 @@ export const InternalTableBody: FC<InternalTableBodyProps> = (props) => {
 		return (
 			<Table.Tbody>
 				<Table.Tr>
-					<Table.Td colSpan={2}>No data</Table.Td>
+					<Table.Td colSpan={3} align="center">
+						No data
+					</Table.Td>
 				</Table.Tr>
 			</Table.Tbody>
 		);
@@ -180,7 +182,7 @@ export const InternalTableHeader: FC<InternalTableHeaderProps> = (props) => {
 						</Group>
 					</UnstyledButton>
 				</Table.Th>
-				<Table.Th>
+				<Table.Th w={rem(120)} align="center">
 					<UnstyledButton onClick={() => toggleSort("quantity")}>
 						<Group gap={"xs"}>
 							quantity
@@ -188,7 +190,7 @@ export const InternalTableHeader: FC<InternalTableHeaderProps> = (props) => {
 						</Group>
 					</UnstyledButton>
 				</Table.Th>
-				<Table.Th>
+				<Table.Th w={rem(100)}>
 					<UnstyledButton onClick={() => toggleSort("job")}>
 						<Group gap={"xs"}>
 							crafter
