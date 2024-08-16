@@ -21,7 +21,6 @@ export const Recipe: FC<RecipeProps> = (props) => {
 	const { id, ...rest } = props;
 	return (
 		<RecipeProvider recipeId={id}>
-			{/* <Box> */}
 			<Grid>
 				<Grid.Col span={12}>
 					<Grid>
@@ -42,7 +41,7 @@ export const Recipe: FC<RecipeProps> = (props) => {
 						</Grid.Col>
 					</Grid>
 				</Grid.Col>
-				<Grid.Col span={12} style={{ height: "60vh" }}>
+				<Grid.Col span={12} style={{ height: "60vh", paddingTop: "0px" }}>
 					<Diagram />
 				</Grid.Col>
 				<Grid.Col span={4}>
@@ -54,7 +53,6 @@ export const Recipe: FC<RecipeProps> = (props) => {
 					<RecipeLeafTable />
 				</Grid.Col>
 			</Grid>
-			{/* </Box> */}
 		</RecipeProvider>
 	);
 };
