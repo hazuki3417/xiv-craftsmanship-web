@@ -170,7 +170,7 @@ export const InternalTableHeader: FC<InternalTableHeaderProps> = (props) => {
 	const { toggleSort, sortIcon } = useInternalTable();
 
 	return (
-		<Table.Tbody>
+		<Table.Thead>
 			<Table.Tr>
 				<Table.Th>
 					<UnstyledButton onClick={() => toggleSort("name")}>
@@ -197,7 +197,7 @@ export const InternalTableHeader: FC<InternalTableHeaderProps> = (props) => {
 					</UnstyledButton>
 				</Table.Th>
 			</Table.Tr>
-		</Table.Tbody>
+		</Table.Thead>
 	);
 };
 InternalTableHeader.displayName =

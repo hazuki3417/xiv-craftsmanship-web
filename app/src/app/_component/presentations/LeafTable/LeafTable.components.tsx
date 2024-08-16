@@ -145,7 +145,7 @@ export const LeafTableHeader: FC<LeafTableHeaderProps> = (props) => {
 	const { toggleSort, sortIcon } = useLeafTable();
 
 	return (
-		<Table.Tbody>
+		<Table.Thead>
 			<Table.Tr>
 				<Table.Th>
 					<UnstyledButton onClick={() => toggleSort("name")}>
@@ -167,7 +167,7 @@ export const LeafTableHeader: FC<LeafTableHeaderProps> = (props) => {
 					<UnstyledButton>source</UnstyledButton>
 				</Table.Th>
 			</Table.Tr>
-		</Table.Tbody>
+		</Table.Thead>
 	);
 };
 LeafTableHeader.displayName =
