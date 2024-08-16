@@ -42,32 +42,32 @@ const buidRecipeTree = (craftItem: CraftItem) => {
 
 	materials.forEach((material) => {
 		const exists = {
-			parent: map[material.parentId],
-			child: map[material.childId],
+			parent: map[material.parent.itemId],
+			child: map[material.child.itemId],
 		};
 		if (!exists.parent) {
-			map[material.parentId] = {
-				id: material.parentId,
-				name: material.parentName,
-				unit: material.unit,
-				total: material.total,
+			map[material.parent.itemId] = {
+				id: material.parent.itemId,
+				name: material.parent.itemName,
+				unit: material.child.itemUnit,
+				total: material.child.itemTotal,
 				children: [],
 			};
 		}
 		if (!exists.child) {
-			map[material.childId] = {
-				id: material.childId,
-				name: material.childName,
-				unit: material.unit,
-				total: material.total,
+			map[material.child.itemId] = {
+				id: material.child.itemId,
+				name: material.child.itemName,
+				unit: material.child.itemUnit,
+				total: material.child.itemTotal,
 				children: [],
 			};
 		}
 	});
 
 	materials.forEach((material) => {
-		const parent = map[material.parentId];
-		const child = map[material.childId];
+		const parent = map[material.parent.itemId];
+		const child = map[material.child.itemId];
 		parent.children.push(child);
 	});
 
