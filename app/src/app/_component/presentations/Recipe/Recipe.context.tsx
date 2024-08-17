@@ -5,8 +5,6 @@ import { Edge } from "@xyflow/react";
 
 export type CraftItem = {
 	spec: Craft;
-	// id: string;
-	// name: string;
 	materials: Material[];
 };
 

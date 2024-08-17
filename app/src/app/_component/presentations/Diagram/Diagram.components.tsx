@@ -25,7 +25,7 @@ import {
 import { useDebouncedValue } from "@mantine/hooks";
 import { rem } from "@mantine/core";
 import { useLazyQuery } from "@apollo/client";
-import { GetCraftsDocument, GetMaterialsDocument } from "@/graphql";
+import { GetCraftsDocument, GetMaterialsDocument, Material } from "@/graphql";
 import { useRecipe } from "../Recipe";
 
 export type NodeType = "root" | "internal" | "leaf";
@@ -35,17 +35,19 @@ export type NodeType = "root" | "internal" | "leaf";
  * 共通のプロパティ
  */
 export type ItemType = {
+	nodeId: string;
+	nodeType: NodeType;
 	id: string;
-	type: NodeType;
 	name: string;
+	unit: number;
+	total: number;
+	source: string;
 };
 
 /**
  * TODO: ドメインに関する型定義なので実装箇所を変更する
  */
-export type RootItemType = ItemType & {
-	count: number;
-};
+export type RootItemType = ItemType;
 
 export type DiagramRootNodeProps = Node<RootItemType>;
 
@@ -95,25 +97,16 @@ export const DiagramRootNode = memo(
 );
 DiagramRootNode.displayName = "component/presentations/Diagram/DiagramRootNode";
 
-export type DepthType = {
-	x: number;
-	y: number;
-};
-
 /**
  * TODO: ドメインに関する型定義なので実装箇所を変更する
  */
-export type ChildItemType = ItemType & {
-	ucount: number;
-	tcount: number;
-	depth: DepthType;
-};
+export type ChildItemType = ItemType;
 
 export type DiagramChildNodeProps = Node<ChildItemType>;
 
 export const DiagramChildNode = memo(
 	(props: NodeProps<DiagramChildNodeProps>) => {
-		const { id, name, ucount, tcount } = props.data;
+		const { id, name, unit, total } = props.data;
 
 		return (
 			<>
@@ -152,9 +145,9 @@ export const DiagramChildNode = memo(
 										size="xs"
 										style={{ width: "7ch" }}
 										rightSection={
-											<ClipBoardCopyButton value={ucount.toString()} />
+											<ClipBoardCopyButton value={unit.toString()} />
 										}
-										value={ucount}
+										value={unit}
 										hideControls
 										readOnly
 									/>
@@ -165,9 +158,9 @@ export const DiagramChildNode = memo(
 										size="xs"
 										style={{ width: "7ch" }}
 										rightSection={
-											<ClipBoardCopyButton value={tcount.toString()} />
+											<ClipBoardCopyButton value={total.toString()} />
 										}
-										value={tcount}
+										value={total}
 										hideControls
 										readOnly
 									/>

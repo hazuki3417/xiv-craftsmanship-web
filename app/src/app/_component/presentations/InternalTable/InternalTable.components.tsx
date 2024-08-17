@@ -1,5 +1,5 @@
 import { FC, ReactNode, useState } from "react";
-import { ChildItemType, ClipBoardCopyButton } from "../index";
+import { ChildItemType, ClipBoardCopyButton, ItemType } from "../index";
 import { Group, Input, rem, Table, UnstyledButton } from "@mantine/core";
 import {
 	IconArrowsSort,
@@ -101,70 +101,6 @@ export const InternalTableProvider: FC<InternalTableProviderProps> = (
 InternalTableProvider.displayName =
 	"component/presentations/InternalTable/InternalTableProvider";
 
-export type InternalTableBodyProps = {
-	items: ChildItemType[];
-};
-
-export const InternalTableBody: FC<InternalTableBodyProps> = (props) => {
-	const { items, ...rest } = props;
-	const { sort } = useInternalTable();
-
-	if (items.length === 0) {
-		return (
-			<Table.Tbody>
-				<Table.Tr>
-					<Table.Td colSpan={3} align="center">
-						No data
-					</Table.Td>
-				</Table.Tr>
-			</Table.Tbody>
-		);
-	}
-
-	return (
-		<Table.Tbody>
-			{items
-				.sort((a, b) => {
-					if (sort.name === "ascending") {
-						return a.name.localeCompare(b.name);
-					}
-					if (sort.name === "descending") {
-						return b.name.localeCompare(a.name);
-					}
-
-					if (sort.quantity === "ascending") {
-						return a.tcount - b.tcount;
-					}
-
-					if (sort.quantity === "descending") {
-						return b.tcount - a.tcount;
-					}
-					return 0;
-				})
-				.map((item) => {
-					return (
-						<Table.Tr key={item.id}>
-							<Table.Td>
-								<Input
-									size="xs"
-									rightSectionPointerEvents="all"
-									rightSection={<ClipBoardCopyButton value={item.name} />}
-									value={item.name}
-									readOnly
-									variant="unstyled"
-								/>
-							</Table.Td>
-							<Table.Td>{item.tcount}</Table.Td>
-							<Table.Td>木工師</Table.Td>
-						</Table.Tr>
-					);
-				})}
-		</Table.Tbody>
-	);
-};
-InternalTableBody.displayName =
-	"component/presentations/InternalTable/InternalTableBody";
-
 export type InternalTableHeaderProps = {};
 
 export const InternalTableHeader: FC<InternalTableHeaderProps> = (props) => {
@@ -204,3 +140,83 @@ export const InternalTableHeader: FC<InternalTableHeaderProps> = (props) => {
 };
 InternalTableHeader.displayName =
 	"component/presentations/InternalTable/InternalTableHeader";
+
+const aggregateById = (nodes: ItemType[]): ItemType[] => {
+	const idMap: { [id: string]: ItemType } = {};
+
+	nodes.forEach(node => {
+		if (idMap[node.id]) {
+			idMap[node.id].total += node.total;
+		} else {
+			idMap[node.id] = { ...node };
+		}
+	});
+
+	return Object.values(idMap);
+};
+
+export type InternalTableBodyProps = {
+	items: ChildItemType[];
+};
+
+export const InternalTableBody: FC<InternalTableBodyProps> = (props) => {
+	const { items, ...rest } = props;
+	const { sort } = useInternalTable();
+
+	if (items.length === 0) {
+		return (
+			<Table.Tbody>
+				<Table.Tr>
+					<Table.Td colSpan={3} align="center">
+						No data
+					</Table.Td>
+				</Table.Tr>
+			</Table.Tbody>
+		);
+	}
+
+	const aggregateItems = aggregateById(items);
+
+	return (
+		<Table.Tbody>
+			{aggregateItems
+				.sort((a, b) => {
+					if (sort.name === "ascending") {
+						return a.name.localeCompare(b.name);
+					}
+					if (sort.name === "descending") {
+						return b.name.localeCompare(a.name);
+					}
+
+					if (sort.quantity === "ascending") {
+						return a.total - b.total;
+					}
+
+					if (sort.quantity === "descending") {
+						return b.total - a.total;
+					}
+					return 0;
+				})
+				.map((item) => {
+					return (
+						<Table.Tr key={item.id}>
+							<Table.Td>
+								<Input
+									size="xs"
+									rightSectionPointerEvents="all"
+									rightSection={<ClipBoardCopyButton value={item.name} />}
+									value={item.name}
+									readOnly
+									variant="unstyled"
+								/>
+							</Table.Td>
+							<Table.Td>{item.total}</Table.Td>
+							<Table.Td>木工師</Table.Td>
+						</Table.Tr>
+					);
+				})}
+		</Table.Tbody>
+	);
+};
+InternalTableBody.displayName =
+	"component/presentations/InternalTable/InternalTableBody";

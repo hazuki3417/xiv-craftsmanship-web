@@ -26,14 +26,23 @@ import { useDebouncedValue } from "@mantine/hooks";
 import { IconMinus, IconPlus, IconSearch, IconX } from "@tabler/icons-react";
 
 type MaterialNode = {
-	id: string;
-	name: string;
-	unit: number;
-	total: number;
+	node: {
+		id: string;
+	};
+	item: {
+		id: string;
+		name: string;
+		unit: number;
+		total: number;
+	};
 	children: MaterialNode[];
 };
 
-const buildMaterialTree = (materials: Material[], parentId: string, visited: Set<string>): MaterialNode[] => {
+const buildMaterialTree = (
+	materials: Material[],
+	parentId: string,
+	visited: Set<string>,
+): MaterialNode[] => {
 	if (visited.has(parentId)) {
 		return []; // サイクルを防止するために再帰を終了
 	}
@@ -41,16 +50,20 @@ const buildMaterialTree = (materials: Material[], parentId: string, visited: Set
 	visited.add(parentId); // 現在のノードを訪問済みに追加
 
 	return materials
-		.filter(material => material.parent.itemId === parentId)
-		.map(material => ({
-			id: material.treeId,
-			name: material.child.itemName,
-			unit: material.child.itemUnit,
-			total: material.child.itemTotal,
+		.filter((material) => material.parent.itemId === parentId)
+		.map((material) => ({
+			node: {
+				id: material.treeId,
+			},
+			item: {
+				id: material.child.itemId,
+				name: material.child.itemName,
+				unit: material.child.itemUnit,
+				total: material.child.itemTotal,
+			},
 			children: buildMaterialTree(materials, material.child.itemId, visited),
 		}));
-}
-
+};
 
 const buildRecipeTree = (craftItem: CraftItem): MaterialNode => {
 	const { spec, materials } = craftItem;
@@ -58,13 +71,18 @@ const buildRecipeTree = (craftItem: CraftItem): MaterialNode => {
 	const tree = buildMaterialTree(materials, spec.id, new Set<string>());
 
 	return {
-		id: spec.id,
-		name: spec.name,
-		unit: 1,
-		total: spec.pieces,
+		node: {
+			id: "",
+		},
+		item: {
+			id: spec.id,
+			name: spec.name,
+			unit: 1,
+			total: spec.pieces,
+		},
 		children: tree,
-	}
-}
+	};
+};
 
 type TreeNode = {
 	nodes: MaterialNode[];
@@ -87,18 +105,19 @@ const parseRecipeTree = (
 
 	current.nodes.forEach((node) => {
 		const exists = node.children.length > 0;
-		const total = current.count * node.total;
+		const total = current.count * node.item.total;
 
 		nodes.push({
-			id: node.id,
+			id: node.node.id,
 			type: "childNode",
 			data: {
-				id: node.id,
-				type: exists ? "internal" : "leaf",
-				name: node.name,
-				ucount: node.unit,
-				tcount: total,
-				depth: { x: current.depth.x.getDepth(), y: current.depth.y.getDepth() },
+				nodeId: node.node.id,
+				nodeType: exists ? "internal" : "leaf",
+				id: node.item.id,
+				name: node.item.name,
+				unit: node.item.unit,
+				total: total,
+				source: "",
 			},
 			position: {
 				x: childBasePoint.x + current.depth.x.getDepth() * childNodeSpace.x,
@@ -106,9 +125,9 @@ const parseRecipeTree = (
 			},
 		});
 		edges.push({
-			id: `${current.id}-${node.id}`,
+			id: `${current.id}-${node.node.id}`,
 			source: current.id,
-			target: node.id,
+			target: node.node.id,
 			type: "smoothstep",
 		});
 
@@ -116,7 +135,7 @@ const parseRecipeTree = (
 			current.depth.x.increase();
 			const { nodes: childNodes, edges: childEdges } = parseRecipeTree({
 				nodes: node.children,
-				id: node.id,
+				id: node.node.id,
 				count: total,
 				depth: { x: current.depth.x, y: current.depth.y },
 			});
@@ -181,10 +200,13 @@ export const RecipeProvider: FC<RecipeProviderProps> = (props) => {
 			id: rootId,
 			type: "rootNode",
 			data: {
-				id: rootId,
-				type: "root",
+				nodeId: rootId,
+				nodeType: "root",
+				id: "root",
 				name: "root",
-				count: rootCount,
+				unit: rootCount,
+				total: rootCount,
+				source: "",
 			},
 			position: { x: 0, y: 0 },
 		};
@@ -236,8 +258,12 @@ RecipeProvider.displayName = "component/presentations/Recipe/RecipeProvider";
 export const RecipeLeafTable: FC = () => {
 	const { nodes } = useRecipe();
 	const items = nodes
-		.filter((node): node is DiagramChildNodeProps => node.data.type === "leaf")
+		.filter(
+			(node): node is DiagramChildNodeProps => node.data.nodeType === "leaf",
+		)
 		.flatMap((node) => node.data);
+
+	console.debug("RecipeLeafTable", items);
 
 	return (
 		<LeafTable>
@@ -251,7 +277,8 @@ export const RecipeInternalTable: FC = () => {
 	const { nodes } = useRecipe();
 	const items = nodes
 		.filter(
-			(node): node is DiagramChildNodeProps => node.data.type === "internal",
+			(node): node is DiagramChildNodeProps =>
+				node.data.nodeType === "internal",
 		)
 		.flatMap((node) => node.data);
 

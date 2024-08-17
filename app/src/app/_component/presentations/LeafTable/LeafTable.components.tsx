@@ -1,5 +1,5 @@
 import { FC, ReactNode, useState } from "react";
-import { ChildItemType, ClipBoardCopyButton } from "../index";
+import { ChildItemType, ClipBoardCopyButton, ItemType } from "../index";
 import { Group, Input, rem, Table, UnstyledButton } from "@mantine/core";
 import {
 	IconArrowsSort,
@@ -77,6 +77,20 @@ export const LeafTableProvider: FC<LeafTableProviderProps> = (props) => {
 LeafTableProvider.displayName =
 	"component/presentations/LeafTable/LeafTableProvider";
 
+const aggregateById = (nodes: ItemType[]): ItemType[] => {
+	const idMap: { [id: string]: ItemType } = {};
+
+	nodes.forEach(node => {
+		if (idMap[node.id]) {
+			idMap[node.id].total += node.total;
+		} else {
+			idMap[node.id] = { ...node };
+		}
+	});
+
+	return Object.values(idMap);
+};
+
 export type LeafTableBodyProps = {
 	items: ChildItemType[];
 };
@@ -97,9 +111,11 @@ export const LeafTableBody: FC<LeafTableBodyProps> = (props) => {
 		);
 	}
 
+	const aggregateItems = aggregateById(items);
+
 	return (
 		<Table.Tbody>
-			{items
+			{aggregateItems
 				.sort((a, b) => {
 					if (sort.name === "ascending") {
 						return a.name.localeCompare(b.name);
@@ -109,11 +125,11 @@ export const LeafTableBody: FC<LeafTableBodyProps> = (props) => {
 					}
 
 					if (sort.quantity === "ascending") {
-						return a.tcount - b.tcount;
+						return a.total - b.total;
 					}
 
 					if (sort.quantity === "descending") {
-						return b.tcount - a.tcount;
+						return b.total - a.total;
 					}
 					return 0;
 				})
@@ -130,7 +146,7 @@ export const LeafTableBody: FC<LeafTableBodyProps> = (props) => {
 									variant="unstyled"
 								/>
 							</Table.Td>
-							<Table.Td>{item.tcount}</Table.Td>
+							<Table.Td>{item.total}</Table.Td>
 							<Table.Td>source</Table.Td>
 						</Table.Tr>
 					);

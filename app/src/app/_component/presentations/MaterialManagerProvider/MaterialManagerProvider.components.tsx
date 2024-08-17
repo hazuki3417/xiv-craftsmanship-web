@@ -12,7 +12,7 @@ export const withLeafItemHOC = <P extends object>(
 	const OriginComponent: React.FC<Omit<P, "items">> = (props) => {
 		const { materials } = useMaterialManager();
 
-		const items = materials.filter((item) => item.type === "leaf");
+		const items = materials.filter((item) => item.nodeType === "leaf");
 
 		return <WrapperComponent {...(props as P)} items={items} />;
 	};
@@ -33,7 +33,7 @@ export const withInternalItemHOC = <P extends object>(
 	const OriginComponent: React.FC<Omit<P, "items">> = (props) => {
 		const { materials } = useMaterialManager();
 
-		const items = materials.filter((item) => item.type === "internal");
+		const items = materials.filter((item) => item.nodeType === "internal");
 
 		return <WrapperComponent {...(props as P)} items={items} />;
 	};
