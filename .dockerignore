@@ -1,0 +1,6 @@
+# 一旦すべてを除外
+*
+# 必要なものを任意で追加（image buildの速度に関わるため）
+!app
+app/.next
+app/node_modules
