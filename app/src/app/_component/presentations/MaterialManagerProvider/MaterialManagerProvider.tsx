@@ -28,7 +28,7 @@ const aggregateItems = (materials: MaterialData[]): ChildItemType[] => {
 
 	duplacateItems.forEach((item) => {
 		if (itemMap[item.id]) {
-			itemMap[item.id].tcount += item.tcount;
+			itemMap[item.id].total += item.total;
 		} else {
 			itemMap[item.id] = { ...item };
 		}
