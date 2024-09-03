@@ -31,3 +31,6 @@ RUN npm install --only=production
 
 # アプリケーションを起動
 CMD ["npm", "start"]
+
+HEALTHCHECK --interval=30s --timeout=10s --retries=3 \
+  CMD wget --quiet --spider http://localhost:3000 || exit 1
