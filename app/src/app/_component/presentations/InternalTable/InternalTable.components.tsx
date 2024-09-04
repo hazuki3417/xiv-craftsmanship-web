@@ -144,7 +144,7 @@ InternalTableHeader.displayName =
 const aggregateById = (nodes: ItemType[]): ItemType[] => {
 	const idMap: { [id: string]: ItemType } = {};
 
-	nodes.forEach(node => {
+	nodes.forEach((node) => {
 		if (idMap[node.id]) {
 			idMap[node.id].total += node.total;
 		} else {

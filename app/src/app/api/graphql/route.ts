@@ -8,10 +8,10 @@ export async function POST(request: Request) {
 
 	/**
 	 * TODO: csrfトークンの検証
-	 * TODO: env value
 	 */
 
-	const response = await fetch("http://localhost:8080/graphql", {
+	const url = `${process.env.API_URL}:${process.env.API_PORT}/graphql`;
+	const response = await fetch(url, {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",

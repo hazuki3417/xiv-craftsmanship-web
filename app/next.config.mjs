@@ -1,8 +1,8 @@
 /** @type {import('next').NextConfig} */
-import { environment } from "./src/lib/environment.mjs";
 
-const env = environment.verify();
-
+/**
+ * NOTE: ここだけprocess.envの型推論が効かないので注意
+ */
 const nextConfig = {
   reactStrictMode: false,
   async headers() {
@@ -16,15 +16,15 @@ const nextConfig = {
           },
           {
             key: "Access-Control-Allow-Origin",
-            value: env.CORS_ALLOW_ORIGIN,
+            value: process.env.CORS_ALLOW_ORIGIN,
           },
           {
             key: "Access-Control-Allow-Methods",
-            value: env.CORS_ALLOW_METHODS,
+            value: process.env.CORS_ALLOW_METHODS,
           },
           {
             key: "Access-Control-Allow-Headers",
-            value: env.CORS_ALLOW_HEADERS,
+            value: process.env.CORS_ALLOW_HEADERS,
           },
         ],
       },
