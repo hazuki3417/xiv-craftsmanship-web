@@ -8,9 +8,8 @@ import {
 let apollo: OriginClient<NormalizedCacheObject> | null = null;
 
 const Client = () => {
-	const url = `${process.env.NEXT_PUBLIC_API_URL}:${process.env.NEXT_PUBLIC_API_PORT}/api/graphql`;
+	const url = `${process.env.NEXT_PUBLIC_API_URL}/api/graphql`;
 	const httpLink = new HttpLink({
-		// uri: "/api/graphql", // app router経由
 		uri: url, // app router経由
 	});
 
