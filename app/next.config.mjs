@@ -1,9 +1,10 @@
 /** @type {import('next').NextConfig} */
+import { environment } from "./src/lib/environment.mjs";
+
+const env = environment.verify();
+
 const nextConfig = {
   reactStrictMode: false,
-  env: {
-    // TODO: Add your environment variables here
-  },
   async headers() {
     return [
       {
@@ -15,16 +16,15 @@ const nextConfig = {
           },
           {
             key: "Access-Control-Allow-Origin",
-            value: "http://localhost:3000",
+            value: env.CORS_ALLOW_ORIGIN,
           },
           {
             key: "Access-Control-Allow-Methods",
-            value: "GET,OPTIONS,POST,PUT,DELETE",
+            value: env.CORS_ALLOW_METHODS,
           },
           {
             key: "Access-Control-Allow-Headers",
-            value:
-              "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version",
+            value: env.CORS_ALLOW_HEADERS,
           },
         ],
       },
