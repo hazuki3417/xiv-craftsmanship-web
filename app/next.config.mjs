@@ -16,15 +16,16 @@ const nextConfig = {
           },
           {
             key: "Access-Control-Allow-Origin",
-            value: process.env.CORS_ALLOW_ORIGIN,
+            value: process.env.NEXT_PUBLIC_HOST_URL,
           },
           {
             key: "Access-Control-Allow-Methods",
-            value: process.env.CORS_ALLOW_METHODS,
+            value: "GET,OPTIONS,POST,PUT,DELETE",
           },
           {
             key: "Access-Control-Allow-Headers",
-            value: process.env.CORS_ALLOW_HEADERS,
+            value:
+              "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version",
           },
         ],
       },
