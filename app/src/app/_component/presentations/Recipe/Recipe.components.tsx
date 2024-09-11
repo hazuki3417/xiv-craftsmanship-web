@@ -19,6 +19,8 @@ import {
 	rem,
 	Group,
 	NumberInput,
+	Text,
+	Grid,
 } from "@mantine/core";
 import { useLazyQuery } from "@apollo/client";
 import { GetCraftsDocument, GetMaterialsDocument, Material } from "@/graphql";
@@ -392,12 +394,29 @@ export const SearchCombobox: FC = () => {
 			</Combobox.Target>
 			<Combobox.Dropdown>
 				<Combobox.Options>
-					{crafts.length > 0 ? crafts.map((craft) => (
-						<Combobox.Option key={craft.id} value={craft.id}>
-							{craft.name}
-						</Combobox.Option>
-					)) : <Combobox.Empty>Nothing found</Combobox.Empty>
-					}
+					{crafts.length > 0 ? (
+						crafts.map((craft) => (
+							<Combobox.Option key={craft.id} value={craft.id}>
+								<Grid>
+									<Grid.Col span={"auto"}>
+										<Text size="sm">{craft.name}</Text>
+									</Grid.Col>
+									<Grid.Col span={2}>
+										<Text size="xs" opacity={0.6}>
+											{craft.job}
+										</Text>
+									</Grid.Col>
+									<Grid.Col span={2}>
+										<Text size="xs" opacity={0.6}>
+											lv:{craft.level.craft}
+										</Text>
+									</Grid.Col>
+								</Grid>
+							</Combobox.Option>
+						))
+					) : (
+						<Combobox.Empty>Nothing found</Combobox.Empty>
+					)}
 				</Combobox.Options>
 			</Combobox.Dropdown>
 		</Combobox>
