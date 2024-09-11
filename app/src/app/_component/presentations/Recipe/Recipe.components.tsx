@@ -370,6 +370,8 @@ export const SearchCombobox: FC = () => {
 		}
 	}, [search]);
 
+	const crafts = data === undefined ? [] : data.crafts;
+
 	return (
 		<Combobox size="xs" store={combobox} onOptionSubmit={onOptionSubmit}>
 			<Combobox.Target>
@@ -390,12 +392,12 @@ export const SearchCombobox: FC = () => {
 			</Combobox.Target>
 			<Combobox.Dropdown>
 				<Combobox.Options>
-					{data &&
-						data.crafts.map((craft) => (
-							<Combobox.Option key={craft.id} value={craft.id}>
-								{craft.name}
-							</Combobox.Option>
-						))}
+					{crafts.length > 0 ? crafts.map((craft) => (
+						<Combobox.Option key={craft.id} value={craft.id}>
+							{craft.name}
+						</Combobox.Option>
+					)) : <Combobox.Empty>Nothing found</Combobox.Empty>
+					}
 				</Combobox.Options>
 			</Combobox.Dropdown>
 		</Combobox>
