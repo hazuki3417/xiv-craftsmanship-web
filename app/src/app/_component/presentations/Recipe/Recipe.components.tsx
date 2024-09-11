@@ -263,8 +263,6 @@ export const RecipeLeafTable: FC = () => {
 		)
 		.flatMap((node) => node.data);
 
-	console.debug("RecipeLeafTable", items);
-
 	return (
 		<LeafTable>
 			<LeafTable.Header />
