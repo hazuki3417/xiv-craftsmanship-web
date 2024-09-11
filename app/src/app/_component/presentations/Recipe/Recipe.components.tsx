@@ -68,7 +68,7 @@ const buildMaterialTree = (
 const buildRecipeTree = (craftItem: CraftItem): MaterialNode => {
 	const { spec, materials } = craftItem;
 
-	const tree = buildMaterialTree(materials, spec.id, new Set<string>());
+	const tree = buildMaterialTree(materials, spec.itemId, new Set<string>());
 
 	return {
 		node: {
