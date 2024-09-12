@@ -2,7 +2,12 @@ name: Build and Deploy to ECR
 
 on:
   workflow_dispatch: # 手動で実行するためのトリガー
-
+  push:
+    branches:
+      - main
+    paths:
+      - docker/*
+      - app/**/*.ts
 env:
   ENVIRONMENT: develop
   IMAGE_NAME: xiv-craftsmanship-web
