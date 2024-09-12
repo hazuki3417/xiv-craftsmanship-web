@@ -123,7 +123,7 @@ export default function Home() {
 								<Grid.Col span={5}>
 									<Stack gap={0}>
 										<Title order={6}>クリスタル</Title>
-										<ScrollArea h={370}>
+										<ScrollArea h={384}>
 											<CrystalTable>
 												<CrystalTable.Header />
 												<CrystalTableBodyWithNodes />
@@ -132,7 +132,7 @@ export default function Home() {
 									</Stack>
 									<Stack gap={0}>
 										<Title order={6}>中間素材</Title>
-										<ScrollArea h={370}>
+										<ScrollArea h={384}>
 											<InternalTable>
 												<InternalTable.Header />
 												<InternalTableBodyWithNodes />
