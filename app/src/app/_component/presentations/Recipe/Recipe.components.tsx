@@ -26,6 +26,7 @@ import { useLazyQuery } from "@apollo/client";
 import { GetCraftsDocument, GetMaterialsDocument, Material } from "@/graphql";
 import { useDebouncedValue } from "@mantine/hooks";
 import { IconMinus, IconPlus, IconSearch, IconX } from "@tabler/icons-react";
+import { nanoid } from "nanoid";
 
 type MaterialNode = {
 	node: {
@@ -108,12 +109,13 @@ const parseRecipeTree = (
 	current.nodes.forEach((node) => {
 		const exists = node.children.length > 0;
 		const total = current.count * node.item.total;
+		const nodeId = nanoid();
 
 		nodes.push({
-			id: node.node.id,
+			id: nodeId,
 			type: "childNode",
 			data: {
-				nodeId: node.node.id,
+				nodeId: nodeId,
 				nodeType: exists ? "internal" : "leaf",
 				id: node.item.id,
 				name: node.item.name,
@@ -127,9 +129,9 @@ const parseRecipeTree = (
 			},
 		});
 		edges.push({
-			id: `${current.id}-${node.node.id}`,
+			id: `${current.id}-${nodeId}`,
 			source: current.id,
-			target: node.node.id,
+			target: nodeId,
 			type: "smoothstep",
 		});
 
@@ -137,7 +139,7 @@ const parseRecipeTree = (
 			current.depth.x.increase();
 			const { nodes: childNodes, edges: childEdges } = parseRecipeTree({
 				nodes: node.children,
-				id: node.node.id,
+				id: nodeId,
 				count: total,
 				depth: { x: current.depth.x, y: current.depth.y },
 			});
@@ -227,6 +229,9 @@ export const RecipeProvider: FC<RecipeProviderProps> = (props) => {
 			count: rootCount,
 			depth: { x: new Depth(), y: new Depth() },
 		});
+
+		// console.debug("nodes", nodes);
+		// console.debug("edges", edges);
 
 		setNodes([rootNode, ...nodes]);
 		setEdges(edges);
