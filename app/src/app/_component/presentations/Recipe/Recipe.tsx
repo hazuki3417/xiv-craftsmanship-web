@@ -44,14 +44,14 @@ export const Recipe: FC<RecipeProps> = (props) => {
 				<Grid.Col span={12} style={{ height: "60vh", paddingTop: "0px" }}>
 					<Diagram />
 				</Grid.Col>
-				<Grid.Col span={5}>
+				{/* <Grid.Col span={5}>
 					<Title order={6}>中間素材</Title>
 					<RecipeInternalTable />
 				</Grid.Col>
 				<Grid.Col span={7}>
 					<Title order={6}>素材</Title>
 					<RecipeLeafTable />
-				</Grid.Col>
+				</Grid.Col> */}
 			</Grid>
 		</RecipeProvider>
 	);
