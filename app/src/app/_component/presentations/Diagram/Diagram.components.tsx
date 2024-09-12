@@ -41,6 +41,7 @@ export type ItemType = {
 	name: string;
 	unit: number;
 	total: number;
+	type: string;
 	source: string;
 };
 

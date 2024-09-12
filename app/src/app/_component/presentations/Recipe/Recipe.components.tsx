@@ -27,16 +27,19 @@ import { GetCraftsDocument, GetMaterialsDocument, Material } from "@/graphql";
 import { useDebouncedValue } from "@mantine/hooks";
 import { IconMinus, IconPlus, IconSearch, IconX } from "@tabler/icons-react";
 import { nanoid } from "nanoid";
+import { CrystalTable } from "../CrystalTable";
 
 type MaterialNode = {
 	node: {
 		id: string;
 	};
+	// TODO: graphqlのレスポンスの型を利用する（operationの変更に追従するようにしたほうが変更が少ない）
 	item: {
 		id: string;
 		name: string;
 		unit: number;
 		total: number;
+		type: string;
 	};
 	children: MaterialNode[];
 };
@@ -63,6 +66,7 @@ const buildMaterialTree = (
 				name: material.child.itemName,
 				unit: material.child.itemUnit,
 				total: material.child.itemTotal,
+				type: material.child.itemType,
 			},
 			children: buildMaterialTree(materials, material.child.itemId, visited),
 		}));
@@ -82,6 +86,7 @@ const buildRecipeTree = (craftItem: CraftItem): MaterialNode => {
 			name: spec.name,
 			unit: 1,
 			total: spec.pieces,
+			type: "material",
 		},
 		children: tree,
 	};
@@ -122,6 +127,7 @@ const parseRecipeTree = (
 				unit: node.item.unit,
 				total: total,
 				source: "",
+				type: node.item.type,
 			},
 			position: {
 				x: childBasePoint.x + current.depth.x.getDepth() * childNodeSpace.x,
@@ -211,6 +217,7 @@ export const RecipeProvider: FC<RecipeProviderProps> = (props) => {
 				unit: rootCount,
 				total: rootCount,
 				source: "",
+				type: "material",
 			},
 			position: { x: 0, y: 0 },
 		};
@@ -230,7 +237,7 @@ export const RecipeProvider: FC<RecipeProviderProps> = (props) => {
 			depth: { x: new Depth(), y: new Depth() },
 		});
 
-		// console.debug("nodes", nodes);
+		console.debug("nodes", nodes);
 		// console.debug("edges", edges);
 
 		setNodes([rootNode, ...nodes]);
@@ -262,12 +269,28 @@ export const RecipeProvider: FC<RecipeProviderProps> = (props) => {
 };
 RecipeProvider.displayName = "component/presentations/Recipe/RecipeProvider";
 
+export const RecipeCrystalTable: FC = () => {
+	const { nodes } = useRecipe();
+	const items = nodes
+		.filter((node): node is DiagramChildNodeProps => {
+			return node.data.type === "crystal";
+		})
+		.flatMap((node) => node.data);
+
+	return (
+		<CrystalTable>
+			<CrystalTable.Header />
+			<CrystalTable.Body items={items} />
+		</CrystalTable>
+	);
+};
+
 export const RecipeLeafTable: FC = () => {
 	const { nodes } = useRecipe();
 	const items = nodes
-		.filter(
-			(node): node is DiagramChildNodeProps => node.data.nodeType === "leaf",
-		)
+		.filter((node): node is DiagramChildNodeProps => {
+			return node.data.nodeType === "leaf" && node.data.type === "material";
+		})
 		.flatMap((node) => node.data);
 
 	return (
@@ -281,10 +304,9 @@ export const RecipeLeafTable: FC = () => {
 export const RecipeInternalTable: FC = () => {
 	const { nodes } = useRecipe();
 	const items = nodes
-		.filter(
-			(node): node is DiagramChildNodeProps =>
-				node.data.nodeType === "internal",
-		)
+		.filter((node): node is DiagramChildNodeProps => {
+			return node.data.nodeType === "internal" && node.data.type === "material";
+		})
 		.flatMap((node) => node.data);
 
 	return (
