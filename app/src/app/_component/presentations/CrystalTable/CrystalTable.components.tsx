@@ -81,6 +81,41 @@ export const CrystalTableProvider: FC<CrystalTableProviderProps> = (props) => {
 CrystalTableProvider.displayName =
 	"component/presentations/CrystalTable/CrystalTableProvider";
 
+export type CrystalTableHeaderProps = {};
+
+export const CrystalTableHeader: FC<CrystalTableHeaderProps> = (props) => {
+	const { ...rest } = props;
+	const { toggleSort, sortIcon } = useCrystalTable();
+
+	return (
+		<Table.Thead>
+			<Table.Tr>
+				<Table.Th>
+					<UnstyledButton onClick={() => toggleSort("name")}>
+						<Group gap={"xs"}>
+							name
+							{sortIcon("name")}
+						</Group>
+					</UnstyledButton>
+				</Table.Th>
+				<Table.Th w={rem(120)}>
+					<UnstyledButton onClick={() => toggleSort("quantity")}>
+						<Group gap={"xs"}>
+							quantity
+							{sortIcon("quantity")}
+						</Group>
+					</UnstyledButton>
+				</Table.Th>
+				<Table.Th w={rem(100)}>
+					<UnstyledButton>source</UnstyledButton>
+				</Table.Th>
+			</Table.Tr>
+		</Table.Thead>
+	);
+};
+CrystalTableHeader.displayName =
+	"component/presentations/CrystalTable/CrystalTableHeader";
+
 const aggregateById = (nodes: ItemType[]): ItemType[] => {
 	const idMap: { [id: string]: ItemType } = {};
 
@@ -160,38 +195,3 @@ export const CrystalTableBody: FC<CrystalTableBodyProps> = (props) => {
 };
 CrystalTableBody.displayName =
 	"component/presentations/CrystalTable/CrystalTableBody";
-
-export type CrystalTableHeaderProps = {};
-
-export const CrystalTableHeader: FC<CrystalTableHeaderProps> = (props) => {
-	const { ...rest } = props;
-	const { toggleSort, sortIcon } = useCrystalTable();
-
-	return (
-		<Table.Thead>
-			<Table.Tr>
-				<Table.Th>
-					<UnstyledButton onClick={() => toggleSort("name")}>
-						<Group gap={"xs"}>
-							name
-							{sortIcon("name")}
-						</Group>
-					</UnstyledButton>
-				</Table.Th>
-				<Table.Th w={rem(120)}>
-					<UnstyledButton onClick={() => toggleSort("quantity")}>
-						<Group gap={"xs"}>
-							quantity
-							{sortIcon("quantity")}
-						</Group>
-					</UnstyledButton>
-				</Table.Th>
-				<Table.Th w={rem(300)}>
-					<UnstyledButton>source</UnstyledButton>
-				</Table.Th>
-			</Table.Tr>
-		</Table.Thead>
-	);
-};
-CrystalTableHeader.displayName =
-	"component/presentations/CrystalTable/CrystalTableHeader";

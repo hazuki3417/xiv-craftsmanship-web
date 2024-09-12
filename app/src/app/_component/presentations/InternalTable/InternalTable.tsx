@@ -1,4 +1,4 @@
-import { Box, Grid, Table } from "@mantine/core";
+import { Table } from "@mantine/core";
 import { FC, ReactNode } from "react";
 import {
 	InternalTableProvider,
@@ -20,13 +20,9 @@ export const InternalTable: CompoundedComponent = (props) => {
 
 	return (
 		<InternalTableProvider>
-			<Box>
-				<Grid>
-					<Grid.Col span={12}>
-						<Table>{children}</Table>
-					</Grid.Col>
-				</Grid>
-			</Box>
+			<Table stickyHeader stickyHeaderOffset={0}>
+				{children}
+			</Table>
 		</InternalTableProvider>
 	);
 };

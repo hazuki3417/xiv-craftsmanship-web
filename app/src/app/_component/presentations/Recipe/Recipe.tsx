@@ -1,12 +1,21 @@
-import { FC } from "react";
+import { FC, useState } from "react";
 import { Diagram } from "../index";
-import { Grid, Title, Group } from "@mantine/core";
+import {
+	Grid,
+	Title,
+	Group,
+	Stack,
+	SegmentedControl,
+	SegmentedControlItem,
+	ScrollArea,
+} from "@mantine/core";
 import {
 	InputCraftLevel,
 	InputItemLevel,
 	InputJob,
 	InputPieces,
 	QuantityInput,
+	RecipeCrystalTable,
 	RecipeInternalTable,
 	RecipeLeafTable,
 	RecipeProvider,
@@ -17,41 +26,52 @@ export interface RecipeProps {
 	id: string;
 }
 
+type SegmentProps = "crystal" | "internal" | "leaf";
+
+const segments: SegmentedControlItem[] = [
+	{ value: "crystal", label: "クリスタル" },
+	{ value: "internal", label: "中間素材" },
+	{ value: "leaf", label: "素材" },
+];
+
 export const Recipe: FC<RecipeProps> = (props) => {
 	const { id, ...rest } = props;
+	const [segment, setSegment] = useState<string>("leaf");
 	return (
 		<RecipeProvider recipeId={id}>
 			<Grid>
-				<Grid.Col span={12}>
-					<Grid>
-						<Grid.Col span={"auto"}>
-							<SearchCombobox />
-						</Grid.Col>
-						<Grid.Col span={7}>
-							<Group>
-								<Group gap="xs">
-									quantity:
-									<QuantityInput />
-								</Group>
-								<InputPieces />
-								<InputCraftLevel />
-								<InputItemLevel />
-								<InputJob />
-							</Group>
-						</Grid.Col>
-					</Grid>
-				</Grid.Col>
-				<Grid.Col span={12} style={{ height: "60vh", paddingTop: "0px" }}>
-					<Diagram />
-				</Grid.Col>
-				{/* <Grid.Col span={5}>
-					<Title order={6}>中間素材</Title>
-					<RecipeInternalTable />
-				</Grid.Col>
 				<Grid.Col span={7}>
-					<Title order={6}>素材</Title>
-					<RecipeLeafTable />
-				</Grid.Col> */}
+					<Stack gap={2}>
+						<SearchCombobox />
+						<Group>
+							<Group gap="xs">
+								quantity:
+								<QuantityInput />
+							</Group>
+							<InputPieces />
+							<InputCraftLevel />
+							<InputItemLevel />
+							<InputJob />
+						</Group>
+						<div style={{ height: "740px" }}>
+							<Diagram />
+						</div>
+					</Stack>
+				</Grid.Col>
+				<Grid.Col span={5}>
+					<Stack gap={0}>
+						<SegmentedControl
+							value={segment}
+							onChange={setSegment}
+							data={segments}
+						/>
+						<ScrollArea h={740}>
+							{segment === "crystal" && <RecipeCrystalTable />}
+							{segment === "internal" && <RecipeInternalTable />}
+							{segment === "leaf" && <RecipeLeafTable />}
+						</ScrollArea>
+					</Stack>
+				</Grid.Col>
 			</Grid>
 		</RecipeProvider>
 	);

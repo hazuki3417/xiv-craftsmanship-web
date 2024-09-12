@@ -1,18 +1,22 @@
 "use client";
 import { useState } from "react";
 import {
+	CrystalTable,
 	InternalTable,
-	MaterialManagerProvider,
 	LeafTable,
+	MaterialManagerProvider,
 	Recipe,
+	withCrystalItemHOC,
 	withInternalItemHOC,
 	withLeafItemHOC,
 } from "./_component/presentations";
 import {
 	Grid,
 	MantineTheme,
+	ScrollArea,
 	SegmentedControl,
 	SegmentedControlItem,
+	Stack,
 	Tabs,
 	Title,
 	useMantineTheme,
@@ -23,13 +27,14 @@ const segments: SegmentedControlItem[] = [
 	{ value: "materials", label: "materials" },
 ];
 
+const CrystalTableBodyWithNodes = withCrystalItemHOC(CrystalTable.Body);
 const InternalTableBodyWithNodes = withInternalItemHOC(InternalTable.Body);
 const LeafTableBodyWithNodes = withLeafItemHOC(LeafTable.Body);
 
 const makeStyle = (theme: MantineTheme) => {
 	return {
 		tabPanel: {
-			paddingTop: "8px",
+			padding: "8px",
 		},
 	};
 };
@@ -52,7 +57,6 @@ export default function Home() {
 					</Grid.Col>
 				</Grid>
 			</section>
-			{/** content */}
 			<section>
 				<Grid>
 					<MaterialManagerProvider>
@@ -116,19 +120,36 @@ export default function Home() {
 						)}
 						{segment === "materials" && (
 							<>
-								<Grid.Col span={4}>
-									<Title order={6}>中間素材</Title>
-									<InternalTable>
-										<InternalTable.Header />
-										<InternalTableBodyWithNodes />
-									</InternalTable>
+								<Grid.Col span={5}>
+									<Stack gap={0}>
+										<Title order={6}>クリスタル</Title>
+										<ScrollArea h={370}>
+											<CrystalTable>
+												<CrystalTable.Header />
+												<CrystalTableBodyWithNodes />
+											</CrystalTable>
+										</ScrollArea>
+									</Stack>
+									<Stack gap={0}>
+										<Title order={6}>中間素材</Title>
+										<ScrollArea h={370}>
+											<InternalTable>
+												<InternalTable.Header />
+												<InternalTableBodyWithNodes />
+											</InternalTable>
+										</ScrollArea>
+									</Stack>
 								</Grid.Col>
-								<Grid.Col span={8}>
-									<Title order={6}>素材</Title>
-									<LeafTable>
-										<LeafTable.Header />
-										<LeafTableBodyWithNodes />
-									</LeafTable>
+								<Grid.Col span={7}>
+									<Stack gap={0}>
+										<Title order={6}>素材</Title>
+										<ScrollArea h={740}>
+											<LeafTable>
+												<LeafTable.Header />
+												<LeafTableBodyWithNodes />
+											</LeafTable>
+										</ScrollArea>
+									</Stack>
 								</Grid.Col>
 							</>
 						)}

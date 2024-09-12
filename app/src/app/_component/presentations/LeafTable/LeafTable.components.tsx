@@ -77,6 +77,41 @@ export const LeafTableProvider: FC<LeafTableProviderProps> = (props) => {
 LeafTableProvider.displayName =
 	"component/presentations/LeafTable/LeafTableProvider";
 
+export type LeafTableHeaderProps = {};
+
+export const LeafTableHeader: FC<LeafTableHeaderProps> = (props) => {
+	const { ...rest } = props;
+	const { toggleSort, sortIcon } = useLeafTable();
+
+	return (
+		<Table.Thead>
+			<Table.Tr>
+				<Table.Th>
+					<UnstyledButton onClick={() => toggleSort("name")}>
+						<Group gap={"xs"}>
+							name
+							{sortIcon("name")}
+						</Group>
+					</UnstyledButton>
+				</Table.Th>
+				<Table.Th w={rem(120)}>
+					<UnstyledButton onClick={() => toggleSort("quantity")}>
+						<Group gap={"xs"}>
+							quantity
+							{sortIcon("quantity")}
+						</Group>
+					</UnstyledButton>
+				</Table.Th>
+				<Table.Th w={rem(100)}>
+					<UnstyledButton>source</UnstyledButton>
+				</Table.Th>
+			</Table.Tr>
+		</Table.Thead>
+	);
+};
+LeafTableHeader.displayName =
+	"component/presentations/LeafTable/LeafTableHeader";
+
 const aggregateById = (nodes: ItemType[]): ItemType[] => {
 	const idMap: { [id: string]: ItemType } = {};
 
@@ -155,38 +190,3 @@ export const LeafTableBody: FC<LeafTableBodyProps> = (props) => {
 	);
 };
 LeafTableBody.displayName = "component/presentations/LeafTable/LeafTableBody";
-
-export type LeafTableHeaderProps = {};
-
-export const LeafTableHeader: FC<LeafTableHeaderProps> = (props) => {
-	const { ...rest } = props;
-	const { toggleSort, sortIcon } = useLeafTable();
-
-	return (
-		<Table.Thead>
-			<Table.Tr>
-				<Table.Th>
-					<UnstyledButton onClick={() => toggleSort("name")}>
-						<Group gap={"xs"}>
-							name
-							{sortIcon("name")}
-						</Group>
-					</UnstyledButton>
-				</Table.Th>
-				<Table.Th w={rem(120)}>
-					<UnstyledButton onClick={() => toggleSort("quantity")}>
-						<Group gap={"xs"}>
-							quantity
-							{sortIcon("quantity")}
-						</Group>
-					</UnstyledButton>
-				</Table.Th>
-				<Table.Th w={rem(300)}>
-					<UnstyledButton>source</UnstyledButton>
-				</Table.Th>
-			</Table.Tr>
-		</Table.Thead>
-	);
-};
-LeafTableHeader.displayName =
-	"component/presentations/LeafTable/LeafTableHeader";

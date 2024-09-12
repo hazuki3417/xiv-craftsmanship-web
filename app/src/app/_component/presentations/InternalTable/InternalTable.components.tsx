@@ -129,7 +129,7 @@ export const InternalTableHeader: FC<InternalTableHeaderProps> = (props) => {
 				<Table.Th w={rem(100)}>
 					<UnstyledButton onClick={() => toggleSort("job")}>
 						<Group gap={"xs"}>
-							crafter
+							source
 							{sortIcon("job")}
 						</Group>
 					</UnstyledButton>
@@ -211,7 +211,7 @@ export const InternalTableBody: FC<InternalTableBodyProps> = (props) => {
 								/>
 							</Table.Td>
 							<Table.Td>{item.total}</Table.Td>
-							<Table.Td>木工師</Table.Td>
+							<Table.Td></Table.Td>
 						</Table.Tr>
 					);
 				})}
