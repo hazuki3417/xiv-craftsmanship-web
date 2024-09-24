@@ -28,6 +28,7 @@ import { useDebouncedValue } from "@mantine/hooks";
 import { IconMinus, IconPlus, IconSearch, IconX } from "@tabler/icons-react";
 import { nanoid } from "nanoid";
 import { CrystalTable } from "../CrystalTable";
+import { Craft, getCraft, getRecipe } from "@/openapi/xiv-craftmanship-api";
 
 type MaterialNode = {
 	node: {
@@ -237,9 +238,6 @@ export const RecipeProvider: FC<RecipeProviderProps> = (props) => {
 			depth: { x: new Depth(), y: new Depth() },
 		});
 
-		console.debug("nodes", nodes);
-		// console.debug("edges", edges);
-
 		setNodes([rootNode, ...nodes]);
 		setEdges(edges);
 		dispatch.craftItem({ recipeId, craftItem });
@@ -336,12 +334,17 @@ export const SearchCombobox: FC = () => {
 		keyTypeChange: false,
 	});
 
-	const [lazyCraftQuery, { loading, data }] = useLazyQuery(GetCraftsDocument);
-	const [lazyMaterialQuery] = useLazyQuery(GetMaterialsDocument);
+	const [lazyCraft, setLazyCraft] = useState<{
+		loading: boolean;
+		data?: Craft[];
+	}>({
+		loading: false,
+	});
+
 	const [debouncedSearch] = useDebouncedValue(search, 500);
 
 	const onOptionSubmit = (value: string) => {
-		const craft = data?.crafts.find((craft) => craft.id === value);
+		const craft = lazyCraft.data?.find((craft) => craft.recipeId === value);
 		if (!craft) {
 			return;
 		}
@@ -349,16 +352,16 @@ export const SearchCombobox: FC = () => {
 		setSearch({ value: craft.name, keyTypeChange: false });
 		combobox.closeDropdown();
 
-		lazyMaterialQuery({ variables: { craftId: craft.id } })
-			.then((result) => {
-				if (!result.data) {
+		getRecipe(craft.recipeId)
+			.then((res) => {
+				if (!res.data) {
 					return;
 				}
 
-				dispatch.craftitem({
-					spec: craft,
-					materials: result.data.materials,
-				});
+				// dispatch.craftitem({
+				// 	spec: craft,
+				// 	materials: result.data.materials,
+				// });
 			})
 			.catch((error) => {
 				console.error(error);
@@ -387,8 +390,15 @@ export const SearchCombobox: FC = () => {
 
 		// NOTE: キー入力があるときは検索を行う
 		if (debouncedSearch.value) {
+			setLazyCraft({ loading: true });
 			combobox.openDropdown();
-			lazyCraftQuery({ variables: { name: debouncedSearch.value } });
+			getCraft({ name: debouncedSearch.value })
+				.then((res) => {
+					setLazyCraft({ loading: false, data: res.data });
+				})
+				.catch((error) => {
+					console.error(error);
+				});
 		}
 	}, [debouncedSearch]);
 
@@ -399,7 +409,7 @@ export const SearchCombobox: FC = () => {
 		}
 	}, [search]);
 
-	const crafts = data === undefined ? [] : data.crafts;
+	const crafts = lazyCraft.data === undefined ? [] : lazyCraft.data;
 
 	return (
 		<Combobox size="xs" store={combobox} onOptionSubmit={onOptionSubmit}>
@@ -408,7 +418,9 @@ export const SearchCombobox: FC = () => {
 					size="xs"
 					placeholder="search"
 					value={search.value}
-					leftSection={loading ? <Loader size={20} /> : <IconSearch />}
+					leftSection={
+						lazyCraft.loading ? <Loader size={20} /> : <IconSearch />
+					}
 					rightSection={
 						<ActionIcon variant="subtle" onClick={onClear}>
 							<IconX style={{ width: rem(16) }} />
@@ -423,7 +435,7 @@ export const SearchCombobox: FC = () => {
 				<Combobox.Options>
 					{crafts.length > 0 ? (
 						crafts.map((craft) => (
-							<Combobox.Option key={craft.id} value={craft.id}>
+							<Combobox.Option key={craft.recipeId} value={craft.recipeId}>
 								<Grid>
 									<Grid.Col span={"auto"}>
 										<Text size="sm">{craft.name}</Text>
@@ -435,7 +447,7 @@ export const SearchCombobox: FC = () => {
 									</Grid.Col>
 									<Grid.Col span={2}>
 										<Text size="xs" opacity={0.6}>
-											lv:{craft.level.craft}
+											lv:{craft.craftLevel}
 										</Text>
 									</Grid.Col>
 								</Grid>

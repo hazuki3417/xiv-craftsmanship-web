@@ -22,6 +22,10 @@ import {
 	useMantineTheme,
 } from "@mantine/core";
 
+// NOTE: 仮実装（いずれ消す）
+import axios from "axios";
+axios.defaults.baseURL = "http://localhost:3000/api/";
+
 const segments: SegmentedControlItem[] = [
 	{ value: "crafts", label: "crafts" },
 	{ value: "materials", label: "materials" },

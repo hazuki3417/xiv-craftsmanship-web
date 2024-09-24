@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "format": "biome format --write src",
-    "codegen": "graphql-codegen"
+    "gen:graphql": "graphql-codegen",
+    "gen:restful": "orval --config orval.config.js"
   },
   "dependencies": {
     "@apollo/client": "^3.11.3",
@@ -18,7 +19,9 @@
     "@mantine/core": "^7.11.2",
     "@mantine/hooks": "^7.11.2",
     "@tabler/icons-react": "^3.11.0",
+    "@tanstack/react-query": "^5.56.2",
     "@xyflow/react": "^12.0.3",
+    "axios": "^1.7.7",
     "biome": "^0.3.3",
     "csrf": "^3.1.0",
     "graphql": "^16.9.0",
@@ -33,6 +36,7 @@
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "orval": "^7.1.1",
     "typescript": "^5"
   }
 }
