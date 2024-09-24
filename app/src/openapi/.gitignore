@@ -1,7 +1,0 @@
-.npmignore
-.openapi-generator
-dist
-git_push.sh
-node_modules
-typings
-wwwroot/*.js
