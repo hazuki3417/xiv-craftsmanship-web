@@ -116,10 +116,10 @@ const aggregateById = (nodes: ItemType[]): ItemType[] => {
 	const idMap: { [id: string]: ItemType } = {};
 
 	nodes.forEach((node) => {
-		if (idMap[node.id]) {
-			idMap[node.id].total += node.total;
+		if (idMap[node.itemId]) {
+			idMap[node.itemId].total += node.total;
 		} else {
-			idMap[node.id] = { ...node };
+			idMap[node.itemId] = { ...node };
 		}
 	});
 
@@ -153,10 +153,10 @@ export const LeafTableBody: FC<LeafTableBodyProps> = (props) => {
 			{aggregateItems
 				.sort((a, b) => {
 					if (sort.name === "ascending") {
-						return a.name.localeCompare(b.name);
+						return a.itemName.localeCompare(b.itemName);
 					}
 					if (sort.name === "descending") {
-						return b.name.localeCompare(a.name);
+						return b.itemName.localeCompare(a.itemName);
 					}
 
 					if (sort.quantity === "ascending") {
@@ -170,13 +170,13 @@ export const LeafTableBody: FC<LeafTableBodyProps> = (props) => {
 				})
 				.map((item) => {
 					return (
-						<Table.Tr key={item.id}>
+						<Table.Tr key={item.itemId}>
 							<Table.Td>
 								<Input
 									size="xs"
 									rightSectionPointerEvents="all"
-									rightSection={<ClipBoardCopyButton value={item.name} />}
-									value={item.name}
+									rightSection={<ClipBoardCopyButton value={item.itemName} />}
+									value={item.itemName}
 									readOnly
 									variant="unstyled"
 								/>

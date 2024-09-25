@@ -4,7 +4,6 @@ import { Depth } from "@/lib";
 import {
 	DiagramChildNodeProps,
 	DiagramNodeProps,
-	DiagramRootNodeProps,
 } from "../Diagram";
 import { Edge, useEdgesState, useNodesState } from "@xyflow/react";
 import { LeafTable } from "../LeafTable";
@@ -22,89 +21,20 @@ import {
 	Text,
 	Grid,
 } from "@mantine/core";
-import { useLazyQuery } from "@apollo/client";
-import { GetCraftsDocument, GetMaterialsDocument, Material } from "@/graphql";
 import { useDebouncedValue } from "@mantine/hooks";
 import { IconMinus, IconPlus, IconSearch, IconX } from "@tabler/icons-react";
-import { nanoid } from "nanoid";
 import { CrystalTable } from "../CrystalTable";
-import { Craft, getCraft, getRecipe } from "@/openapi/xiv-craftmanship-api";
-
-type MaterialNode = {
-	node: {
-		id: string;
-	};
-	// TODO: graphqlのレスポンスの型を利用する（operationの変更に追従するようにしたほうが変更が少ない）
-	item: {
-		id: string;
-		name: string;
-		unit: number;
-		total: number;
-		type: string;
-	};
-	children: MaterialNode[];
-};
-
-const buildMaterialTree = (
-	materials: Material[],
-	parentId: string,
-	visited: Set<string>,
-): MaterialNode[] => {
-	if (visited.has(parentId)) {
-		return []; // サイクルを防止するために再帰を終了
-	}
-
-	visited.add(parentId); // 現在のノードを訪問済みに追加
-
-	return materials
-		.filter((material) => material.parent.itemId === parentId)
-		.map((material) => ({
-			node: {
-				id: material.treeId,
-			},
-			item: {
-				id: material.child.itemId,
-				name: material.child.itemName,
-				unit: material.child.itemUnit,
-				total: material.child.itemTotal,
-				type: material.child.itemType,
-			},
-			children: buildMaterialTree(materials, material.child.itemId, visited),
-		}));
-};
-
-const buildRecipeTree = (craftItem: CraftItem): MaterialNode => {
-	const { spec, materials } = craftItem;
-
-	const tree = buildMaterialTree(materials, spec.itemId, new Set<string>());
-
-	return {
-		node: {
-			id: "",
-		},
-		item: {
-			id: spec.id,
-			name: spec.name,
-			unit: 1,
-			total: spec.pieces,
-			type: "material",
-		},
-		children: tree,
-	};
-};
-
-type TreeNode = {
-	nodes: MaterialNode[];
-	id: string;
-	count: number;
-	depth: { x: Depth; y: Depth };
-};
+import { Craft, Material, getCraft, getRecipe } from "@/openapi";
+import { nanoid } from "nanoid";
 
 /**
  * レシピツリーを解析して、Diagram用のノードとエッジを構築する
  */
 const parseRecipeTree = (
-	current: TreeNode,
+	current: Material,
+	currentId: string,
+	currentCount: number,
+	depth: { x: Depth; y: Depth },
 ): { nodes: DiagramChildNodeProps[]; edges: Edge[] } => {
 	const nodes: DiagramChildNodeProps[] = [];
 	const edges: Edge[] = [];
@@ -112,50 +42,56 @@ const parseRecipeTree = (
 	const childBasePoint = { x: 260, y: 180 };
 	const childNodeSpace = { x: 380, y: 140 };
 
-	current.nodes.forEach((node) => {
-		const exists = node.children.length > 0;
-		const total = current.count * node.item.total;
-		const nodeId = nanoid();
+	const nodeId = nanoid();
+	const type = currentId === "" ? "childNode" : "childNode";
 
-		nodes.push({
-			id: nodeId,
-			type: "childNode",
-			data: {
-				nodeId: nodeId,
-				nodeType: exists ? "internal" : "leaf",
-				id: node.item.id,
-				name: node.item.name,
-				unit: node.item.unit,
-				total: total,
-				source: "",
-				type: node.item.type,
-			},
-			position: {
-				x: childBasePoint.x + current.depth.x.getDepth() * childNodeSpace.x,
-				y: childBasePoint.y + current.depth.y.getDepth() * childNodeSpace.y,
-			},
-		});
+	const existsRecipe = current.recipes.length > 0;
+	const nodeType = existsRecipe ? "internal" : "leaf";
+
+	nodes.push({
+		id: nodeId,
+		type: type,
+		data: {
+			nodeType: nodeType,
+			itemId: current.itemId,
+			itemName: current.itemId,
+			unit: current.quantity,
+			total: 1,
+			source: "",
+			type: current.type,
+		},
+		position: {
+			x: childBasePoint.x + depth.x.getDepth() * childNodeSpace.x,
+			y: childBasePoint.y + depth.y.getDepth() * childNodeSpace.y,
+		},
+	});
+
+	if (currentId !== "") {
 		edges.push({
-			id: `${current.id}-${nodeId}`,
-			source: current.id,
+			id: `${currentId}-${nodeId}`,
+			source: currentId,
 			target: nodeId,
 			type: "smoothstep",
 		});
+	}
 
-		if (exists) {
-			current.depth.x.increase();
-			const { nodes: childNodes, edges: childEdges } = parseRecipeTree({
-				nodes: node.children,
-				id: nodeId,
-				count: total,
-				depth: { x: current.depth.x, y: current.depth.y },
-			});
-			current.depth.x.decrease();
-			nodes.push(...childNodes);
-			edges.push(...childEdges);
-		} else {
-			current.depth.y.increase();
-		}
+	if (!existsRecipe) {
+		depth.y.increase();
+		return { nodes, edges };
+	}
+
+	const recipe = current.recipes[0];
+	recipe.materials.forEach((material) => {
+		depth.x.increase();
+		const { nodes: childNodes, edges: childEdges } = parseRecipeTree(
+			material,
+			nodeId,
+			currentCount,
+			{ x: depth.x, y: depth.y },
+		);
+		depth.x.decrease();
+		nodes.push(...childNodes);
+		edges.push(...childEdges);
 	});
 
 	return { nodes, edges };
@@ -206,23 +142,6 @@ export const RecipeProvider: FC<RecipeProviderProps> = (props) => {
 	}, []);
 
 	useEffect(() => {
-		const rootId = "root";
-		const rootNode: DiagramRootNodeProps = {
-			id: rootId,
-			type: "rootNode",
-			data: {
-				nodeId: rootId,
-				nodeType: "root",
-				id: "root",
-				name: "root",
-				unit: rootCount,
-				total: rootCount,
-				source: "",
-				type: "material",
-			},
-			position: { x: 0, y: 0 },
-		};
-
 		if (!craftItem) {
 			// 選択されていないとき
 			setNodes([]);
@@ -230,15 +149,18 @@ export const RecipeProvider: FC<RecipeProviderProps> = (props) => {
 		}
 
 		// 選択されたとき
-		const tree = buildRecipeTree(craftItem);
-		const { nodes, edges } = parseRecipeTree({
-			nodes: tree.children,
-			id: rootId,
-			count: rootCount,
-			depth: { x: new Depth(), y: new Depth() },
-		});
+		const rootId = "";
+		const { nodes, edges } = parseRecipeTree(
+			craftItem.tree,
+			rootId,
+			rootCount,
+			{
+				x: new Depth(),
+				y: new Depth(),
+			},
+		);
 
-		setNodes([rootNode, ...nodes]);
+		setNodes(nodes);
 		setEdges(edges);
 		dispatch.craftItem({ recipeId, craftItem });
 		dispatch.materials({ recipeId, materials: nodes.map((node) => node.data) });
@@ -358,10 +280,10 @@ export const SearchCombobox: FC = () => {
 					return;
 				}
 
-				// dispatch.craftitem({
-				// 	spec: craft,
-				// 	materials: result.data.materials,
-				// });
+				dispatch.craftitem({
+					spec: craft,
+					tree: res.data,
+				});
 			})
 			.catch((error) => {
 				console.error(error);
@@ -528,7 +450,7 @@ export const InputCraftLevel: FC = () => {
 			craft lv:
 			<Input
 				size="xs"
-				value={craftItem?.spec.level.craft || "-"}
+				value={craftItem?.spec.craftLevel || "-"}
 				style={{ width: "3ch" }}
 				readOnly
 				variant="unstyled"
@@ -546,7 +468,7 @@ export const InputItemLevel: FC = () => {
 			item lv:
 			<Input
 				size="xs"
-				value={craftItem?.spec.level.item || "-"}
+				value={craftItem?.spec.itemLevel || "-"}
 				style={{ width: "3ch" }}
 				readOnly
 				variant="unstyled"

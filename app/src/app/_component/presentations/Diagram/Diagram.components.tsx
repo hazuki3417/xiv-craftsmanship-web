@@ -35,10 +35,9 @@ export type NodeType = "root" | "internal" | "leaf";
  * 共通のプロパティ
  */
 export type ItemType = {
-	nodeId: string;
 	nodeType: NodeType;
-	id: string;
-	name: string;
+	itemId: string;
+	itemName: string;
 	unit: number;
 	total: number;
 	type: string;
@@ -68,7 +67,6 @@ export const DiagramRootNode = memo(
 						position: "relative",
 					}}
 				>
-					<input type="hidden" name="id" value={craft?.spec.id || ""} />
 					<Grid align="center">
 						<Grid.Col span={1}>
 							<Checkbox size="xs" />
@@ -107,7 +105,7 @@ export type DiagramChildNodeProps = Node<ChildItemType>;
 
 export const DiagramChildNode = memo(
 	(props: NodeProps<DiagramChildNodeProps>) => {
-		const { id, name, unit, total } = props.data;
+		const { itemId, itemName, unit, total } = props.data;
 
 		return (
 			<>
@@ -121,7 +119,6 @@ export const DiagramChildNode = memo(
 						position: "relative",
 					}}
 				>
-					<input type="hidden" name="id" value={id} />
 					<Grid align="center">
 						<Grid.Col span={1}>
 							<Checkbox size="xs" />
@@ -133,8 +130,8 @@ export const DiagramChildNode = memo(
 										size="xs"
 										placeholder="name"
 										rightSectionPointerEvents="all"
-										rightSection={<ClipBoardCopyButton value={name} />}
-										value={name}
+										rightSection={<ClipBoardCopyButton value={itemName} />}
+										value={itemName}
 										readOnly
 									/>
 								</Grid.Col>

@@ -2,7 +2,6 @@ import { FC, useState } from "react";
 import { Diagram } from "../index";
 import {
 	Grid,
-	Title,
 	Group,
 	Stack,
 	SegmentedControl,
@@ -25,8 +24,6 @@ import {
 export interface RecipeProps {
 	id: string;
 }
-
-type SegmentProps = "crystal" | "internal" | "leaf";
 
 const segments: SegmentedControlItem[] = [
 	{ value: "crystal", label: "クリスタル" },

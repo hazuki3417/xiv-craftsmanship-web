@@ -27,10 +27,10 @@ const aggregateItems = (materials: MaterialData[]): ChildItemType[] => {
 	const itemMap: Record<string, ChildItemType> = {};
 
 	duplacateItems.forEach((item) => {
-		if (itemMap[item.id]) {
-			itemMap[item.id].total += item.total;
+		if (itemMap[item.itemId]) {
+			itemMap[item.itemId].total += item.total;
 		} else {
-			itemMap[item.id] = { ...item };
+			itemMap[item.itemId] = { ...item };
 		}
 	});
 
