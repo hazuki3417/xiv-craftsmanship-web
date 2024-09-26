@@ -21,16 +21,16 @@ import {
 import { useDebouncedValue } from "@mantine/hooks";
 import { IconMinus, IconPlus, IconSearch, IconX } from "@tabler/icons-react";
 import { CrystalTable } from "../CrystalTable";
-import { Craft, Material, Recipe, getCraft, getRecipe } from "@/openapi";
+import { Craft, Recipe, getCraft, getRecipe } from "@/openapi";
 import { nanoid } from "nanoid";
 
 /**
  * レシピツリーを解析して、Diagram用のノードとエッジを構築する
  */
 const parseRecipeTree = (
-	materials: Material[],
-	currentNodeId: string,
-	currentCount: number,
+	recipe: Recipe,
+	parentNodeId: string,
+	parentCount: number,
 	depth: { x: Depth; y: Depth },
 ): { nodes: DiagramChildNodeProps[]; edges: Edge[] } => {
 	const nodes: DiagramChildNodeProps[] = [];
@@ -41,6 +41,7 @@ const parseRecipeTree = (
 
 	depth.x.increase();
 
+	const materials = recipe.materials;
 	materials.forEach((material, i) => {
 		if (i > 0) {
 			// 1つ目の素材だけ親素材と同じ位置に配置する
@@ -48,17 +49,23 @@ const parseRecipeTree = (
 			depth.y.increase();
 		}
 
-		const nodeId = nanoid();
+		const existsRecipe = material.recipes.length > 0;
+
+
+		const total = parentCount < recipe.pieces ?
+			material.quantity : parentCount * material.quantity;
+
+		const childNodeId = nanoid();
 		material.recipes;
 		nodes.push({
-			id: nodeId,
+			id: childNodeId,
 			type: "childNode",
 			data: {
-				nodeType: material.recipes.length > 0 ? "internal" : "leaf",
+				nodeType: existsRecipe ? "internal" : "leaf",
 				itemId: material.itemId,
 				itemName: material.itemName,
 				unit: material.quantity,
-				total: material.quantity, // TODO: 計算処理を実装
+				total: total,
 				source: "",
 				type: material.type,
 			},
@@ -69,9 +76,9 @@ const parseRecipeTree = (
 		});
 
 		edges.push({
-			id: `${currentNodeId}-${nodeId}`,
-			source: currentNodeId,
-			target: nodeId,
+			id: `${parentNodeId}-${childNodeId}`,
+			source: parentNodeId,
+			target: childNodeId,
 			type: "smoothstep",
 		});
 
@@ -79,9 +86,9 @@ const parseRecipeTree = (
 			// レシピが存在するとき
 			const recipe = material.recipes[0];
 			const { nodes: childNodes, edges: childEdges } = parseRecipeTree(
-				recipe.materials,
-				nodeId,
-				currentCount,
+				recipe,
+				childNodeId,
+				total,
 				{ x: depth.x, y: depth.y },
 			);
 			nodes.push(...childNodes);
@@ -169,7 +176,7 @@ export const RecipeProvider: FC<RecipeProviderProps> = (props) => {
 
 		// 選択されたとき
 		const { nodes, edges } = parseRecipeTree(
-			craftItem.tree.materials,
+			craftItem.tree,
 			root.id,
 			root.data.unit,
 			depth,
