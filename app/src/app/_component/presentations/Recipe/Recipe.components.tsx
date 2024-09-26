@@ -1,10 +1,7 @@
 import { ReactNode, FC, useState, useEffect, useCallback } from "react";
 import { CraftItem, RecipeContext, useRecipe } from "./Recipe.context";
 import { Depth } from "@/lib";
-import {
-	DiagramChildNodeProps,
-	DiagramNodeProps,
-} from "../Diagram";
+import { DiagramChildNodeProps, DiagramNodeProps } from "../Diagram";
 import { Edge, useEdgesState, useNodesState } from "@xyflow/react";
 import { LeafTable } from "../LeafTable";
 import { InternalTable } from "../InternalTable";
@@ -24,75 +21,74 @@ import {
 import { useDebouncedValue } from "@mantine/hooks";
 import { IconMinus, IconPlus, IconSearch, IconX } from "@tabler/icons-react";
 import { CrystalTable } from "../CrystalTable";
-import { Craft, Material, getCraft, getRecipe } from "@/openapi";
+import { Craft, Material, Recipe, getCraft, getRecipe } from "@/openapi";
 import { nanoid } from "nanoid";
 
 /**
  * レシピツリーを解析して、Diagram用のノードとエッジを構築する
  */
 const parseRecipeTree = (
-	current: Material,
-	currentId: string,
+	materials: Material[],
+	currentNodeId: string,
 	currentCount: number,
 	depth: { x: Depth; y: Depth },
 ): { nodes: DiagramChildNodeProps[]; edges: Edge[] } => {
 	const nodes: DiagramChildNodeProps[] = [];
 	const edges: Edge[] = [];
 
-	const childBasePoint = { x: 260, y: 180 };
+	const childBasePoint = { x: 0, y: 0 };
 	const childNodeSpace = { x: 380, y: 140 };
 
-	const nodeId = nanoid();
-	const type = currentId === "" ? "childNode" : "childNode";
+	depth.x.increase();
 
-	const existsRecipe = current.recipes.length > 0;
-	const nodeType = existsRecipe ? "internal" : "leaf";
+	materials.forEach((material, i) => {
+		if (i > 0) {
+			// 1つ目の素材だけ親素材と同じ位置に配置する
+			// 2つ目以降の素材は親素材から1つ下の位置から配置する
+			depth.y.increase();
+		}
 
-	nodes.push({
-		id: nodeId,
-		type: type,
-		data: {
-			nodeType: nodeType,
-			itemId: current.itemId,
-			itemName: current.itemId,
-			unit: current.quantity,
-			total: 1,
-			source: "",
-			type: current.type,
-		},
-		position: {
-			x: childBasePoint.x + depth.x.getDepth() * childNodeSpace.x,
-			y: childBasePoint.y + depth.y.getDepth() * childNodeSpace.y,
-		},
-	});
+		const nodeId = nanoid();
+		material.recipes;
+		nodes.push({
+			id: nodeId,
+			type: "childNode",
+			data: {
+				nodeType: material.recipes.length > 0 ? "internal" : "leaf",
+				itemId: material.itemId,
+				itemName: material.itemName,
+				unit: material.quantity,
+				total: material.quantity, // TODO: 計算処理を実装
+				source: "",
+				type: material.type,
+			},
+			position: {
+				x: childBasePoint.x + depth.x.getDepth() * childNodeSpace.x,
+				y: childBasePoint.y + depth.y.getDepth() * childNodeSpace.y,
+			},
+		});
 
-	if (currentId !== "") {
 		edges.push({
-			id: `${currentId}-${nodeId}`,
-			source: currentId,
+			id: `${currentNodeId}-${nodeId}`,
+			source: currentNodeId,
 			target: nodeId,
 			type: "smoothstep",
 		});
-	}
 
-	if (!existsRecipe) {
-		depth.y.increase();
-		return { nodes, edges };
-	}
-
-	const recipe = current.recipes[0];
-	recipe.materials.forEach((material) => {
-		depth.x.increase();
-		const { nodes: childNodes, edges: childEdges } = parseRecipeTree(
-			material,
-			nodeId,
-			currentCount,
-			{ x: depth.x, y: depth.y },
-		);
-		depth.x.decrease();
-		nodes.push(...childNodes);
-		edges.push(...childEdges);
+		if (material.recipes.length > 0) {
+			// レシピが存在するとき
+			const recipe = material.recipes[0];
+			const { nodes: childNodes, edges: childEdges } = parseRecipeTree(
+				recipe.materials,
+				nodeId,
+				currentCount,
+				{ x: depth.x, y: depth.y },
+			);
+			nodes.push(...childNodes);
+			edges.push(...childEdges);
+		}
 	});
+	depth.x.decrease();
 
 	return { nodes, edges };
 };
@@ -148,19 +144,38 @@ export const RecipeProvider: FC<RecipeProviderProps> = (props) => {
 			return;
 		}
 
-		// 選択されたとき
-		const rootId = "";
-		const { nodes, edges } = parseRecipeTree(
-			craftItem.tree,
-			rootId,
-			rootCount,
-			{
-				x: new Depth(),
-				y: new Depth(),
+		const depth = {
+			x: new Depth(),
+			y: new Depth(),
+		};
+
+		const root: DiagramChildNodeProps = {
+			id: nanoid(),
+			type: "childNode",
+			data: {
+				nodeType: "internal",
+				itemId: craftItem.spec.itemId,
+				itemName: craftItem.spec.name,
+				unit: rootCount,
+				total: rootCount * craftItem.spec.pieces,
+				source: "",
+				type: "material",
 			},
+			position: {
+				x: 0,
+				y: 0,
+			},
+		};
+
+		// 選択されたとき
+		const { nodes, edges } = parseRecipeTree(
+			craftItem.tree.materials,
+			root.id,
+			root.data.unit,
+			depth,
 		);
 
-		setNodes(nodes);
+		setNodes([root, ...nodes]);
 		setEdges(edges);
 		dispatch.craftItem({ recipeId, craftItem });
 		dispatch.materials({ recipeId, materials: nodes.map((node) => node.data) });

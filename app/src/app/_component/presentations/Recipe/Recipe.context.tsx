@@ -1,11 +1,11 @@
 import { createContext, useContext } from "react";
-import { Craft, Material } from "@/openapi";
+import { Craft, Recipe } from "@/openapi";
 import { DiagramNodeProps } from "../Diagram";
 import { Edge } from "@xyflow/react";
 
 export type CraftItem = {
 	spec: Craft;
-	tree: Material;
+	tree: Recipe;
 };
 
 export interface RecipeContextValue {
