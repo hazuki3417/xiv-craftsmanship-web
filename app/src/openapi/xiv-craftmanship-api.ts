@@ -32,7 +32,10 @@ export const ItemType = {
 export interface Recipe {
 	/** @pattern ^[0-9a-z]{11} */
 	itemId: string;
+	job: string;
 	materials: Material[];
+	/** @minimum 1 */
+	pieces: number;
 	/** @pattern ^[0-9a-z]{11} */
 	recipeId: string;
 }
@@ -40,6 +43,7 @@ export interface Recipe {
 export interface Material {
 	/** @pattern ^[0-9a-z]{11} */
 	itemId: string;
+	itemName: string;
 	/**
 	 * @minimum 1
 	 * @maximum 999
@@ -220,7 +224,7 @@ export function useGetCraft<
 export const getRecipe = (
 	recipeId: string,
 	options?: AxiosRequestConfig,
-): Promise<AxiosResponse<Material>> => {
+): Promise<AxiosResponse<Recipe>> => {
 	return axios.get(`/recipe/${recipeId}`, options);
 };
 
