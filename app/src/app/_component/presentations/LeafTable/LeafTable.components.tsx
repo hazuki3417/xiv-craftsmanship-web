@@ -1,4 +1,4 @@
-import { FC, ReactNode, useState } from "react";
+import { FC, memo, ReactNode, useMemo, useState } from "react";
 import { ChildItemType, ClipBoardCopyButton, ItemType } from "../index";
 import { Group, Input, rem, Table, UnstyledButton } from "@mantine/core";
 import {
@@ -126,6 +126,32 @@ const aggregateById = (nodes: ItemType[]): ItemType[] => {
 	return Object.values(idMap);
 };
 
+export type LeafTableRowProps = {
+	name: string;
+	total: number;
+};
+
+export const LeafTableRow: FC<LeafTableRowProps> = memo((props) => {
+	const { name, total } = props;
+
+	return (
+		<Table.Tr>
+			<Table.Td>
+				<Input
+					size="xs"
+					leftSectionPointerEvents="all"
+					leftSection={<ClipBoardCopyButton value={name} />}
+					value={name}
+					readOnly
+					variant="unstyled"
+				/>
+			</Table.Td>
+			<Table.Td>{total}</Table.Td>
+			<Table.Td>source</Table.Td>
+		</Table.Tr>
+	);
+});
+
 export type LeafTableBodyProps = {
 	items: ChildItemType[];
 };
@@ -146,46 +172,36 @@ export const LeafTableBody: FC<LeafTableBodyProps> = (props) => {
 		);
 	}
 
-	const aggregateItems = aggregateById(items);
+	const sortedItems = useMemo(() => {
+		const aggregateItems = aggregateById(items);
+		return aggregateItems.sort((a, b) => {
+			if (sort.name === "ascending") {
+				return a.itemName.localeCompare(b.itemName);
+			}
+			if (sort.name === "descending") {
+				return b.itemName.localeCompare(a.itemName);
+			}
+
+			if (sort.quantity === "ascending") {
+				return a.total - b.total;
+			}
+
+			if (sort.quantity === "descending") {
+				return b.total - a.total;
+			}
+			return 0;
+		});
+	}, [items, sort]);
 
 	return (
 		<Table.Tbody>
-			{aggregateItems
-				.sort((a, b) => {
-					if (sort.name === "ascending") {
-						return a.itemName.localeCompare(b.itemName);
-					}
-					if (sort.name === "descending") {
-						return b.itemName.localeCompare(a.itemName);
-					}
-
-					if (sort.quantity === "ascending") {
-						return a.total - b.total;
-					}
-
-					if (sort.quantity === "descending") {
-						return b.total - a.total;
-					}
-					return 0;
-				})
-				.map((item) => {
-					return (
-						<Table.Tr key={item.itemId}>
-							<Table.Td>
-								<Input
-									size="xs"
-									rightSectionPointerEvents="all"
-									rightSection={<ClipBoardCopyButton value={item.itemName} />}
-									value={item.itemName}
-									readOnly
-									variant="unstyled"
-								/>
-							</Table.Td>
-							<Table.Td>{item.total}</Table.Td>
-							<Table.Td>source</Table.Td>
-						</Table.Tr>
-					);
-				})}
+			{sortedItems.map((item) => (
+				<LeafTableRow
+					key={item.itemId}
+					name={item.itemName}
+					total={item.total}
+				/>
+			))}
 		</Table.Tbody>
 	);
 };

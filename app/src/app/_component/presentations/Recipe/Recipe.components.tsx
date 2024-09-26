@@ -51,9 +51,10 @@ const parseRecipeTree = (
 
 		const existsRecipe = material.recipes.length > 0;
 
-
-		const total = parentCount < recipe.pieces ?
-			material.quantity : parentCount * material.quantity;
+		const total =
+			parentCount < recipe.pieces
+				? material.quantity
+				: parentCount * material.quantity;
 
 		const childNodeId = nanoid();
 		material.recipes;
