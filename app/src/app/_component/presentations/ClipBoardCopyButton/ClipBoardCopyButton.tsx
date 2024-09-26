@@ -1,12 +1,12 @@
 import { ActionIcon, CopyButton, Tooltip, rem } from "@mantine/core";
 import { IconCheck, IconCopy } from "@tabler/icons-react";
-import { FC } from "react";
+import { FC, memo } from "react";
 
 export interface ClipBoardCopyButtonProps {
 	value: string;
 }
 
-export const ClipBoardCopyButton: FC<ClipBoardCopyButtonProps> = (props) => {
+export const ClipBoardCopyButton: FC<ClipBoardCopyButtonProps> = memo((props) => {
 	const { value } = props;
 	return (
 		<CopyButton value={value} timeout={2000}>
@@ -27,5 +27,5 @@ export const ClipBoardCopyButton: FC<ClipBoardCopyButtonProps> = (props) => {
 			)}
 		</CopyButton>
 	);
-};
+});
 ClipBoardCopyButton.displayName = "component/presentations/ClipBoardCopyButton";
