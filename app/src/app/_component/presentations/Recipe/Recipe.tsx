@@ -1,51 +1,24 @@
-import { FC, useState } from "react";
+import { FC } from "react";
 import { Diagram } from "../index";
 import {
 	Grid,
 	Group,
 	Stack,
-	SegmentedControl,
-	SegmentedControlItem,
-	ScrollArea,
 } from "@mantine/core";
 import {
 	InputCraftLevel,
 	InputItemLevel,
 	InputJob,
 	InputPieces,
+	MaterialTableSwitcher,
 	QuantityInput,
-	RecipeCrystalTable,
-	RecipeInternalTable,
-	RecipeLeafTable,
 	RecipeProvider,
 	SearchCombobox,
-} from "./index";
+} from "./";
 
 export interface RecipeProps {
 	id: string;
 }
-
-const segments: SegmentedControlItem[] = [
-	{ value: "crystal", label: "クリスタル" },
-	{ value: "internal", label: "中間素材" },
-	{ value: "leaf", label: "素材" },
-];
-
-type MaterialTableSwitcherProps = {};
-
-const MaterialTableSwitcher: FC<MaterialTableSwitcherProps> = (props) => {
-	const [segment, setSegment] = useState<string>("leaf");
-	return (
-		<>
-			<SegmentedControl value={segment} onChange={setSegment} data={segments} />
-			<ScrollArea h={740}>
-				{segment === "crystal" && <RecipeCrystalTable />}
-				{segment === "internal" && <RecipeInternalTable />}
-				{segment === "leaf" && <RecipeLeafTable />}
-			</ScrollArea>
-		</>
-	);
-};
 
 export const Recipe: FC<RecipeProps> = (props) => {
 	const { id, ...rest } = props;

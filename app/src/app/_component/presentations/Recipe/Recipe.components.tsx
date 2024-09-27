@@ -17,6 +17,9 @@ import {
 	NumberInput,
 	Text,
 	Grid,
+	SegmentedControl,
+	ScrollArea,
+	SegmentedControlItem,
 } from "@mantine/core";
 import { useDebouncedValue } from "@mantine/hooks";
 import { IconMinus, IconPlus, IconSearch, IconX } from "@tabler/icons-react";
@@ -515,5 +518,29 @@ export const InputJob: FC = () => {
 				variant="unstyled"
 			/>
 		</Group>
+	);
+};
+
+const segments: SegmentedControlItem[] = [
+	{ value: "crystal", label: "クリスタル" },
+	{ value: "internal", label: "中間素材" },
+	{ value: "leaf", label: "素材" },
+];
+
+export type MaterialTableSwitcherProps = {};
+
+export const MaterialTableSwitcher: FC<MaterialTableSwitcherProps> = (
+	props,
+) => {
+	const [segment, setSegment] = useState<string>("leaf");
+	return (
+		<>
+			<SegmentedControl value={segment} onChange={setSegment} data={segments} />
+			<ScrollArea h={740}>
+				{segment === "crystal" && <RecipeCrystalTable />}
+				{segment === "internal" && <RecipeInternalTable />}
+				{segment === "leaf" && <RecipeLeafTable />}
+			</ScrollArea>
+		</>
 	);
 };
