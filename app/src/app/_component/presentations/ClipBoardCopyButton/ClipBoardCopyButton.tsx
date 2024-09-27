@@ -6,7 +6,7 @@ export interface ClipBoardCopyButtonProps {
 	value: string;
 }
 
-export const ClipBoardCopyButton: FC<ClipBoardCopyButtonProps> = memo(
+export const ClipBoardCopyButton: FC<ClipBoardCopyButtonProps> =
 	(props) => {
 		const { value } = props;
 		return (
@@ -32,6 +32,5 @@ export const ClipBoardCopyButton: FC<ClipBoardCopyButtonProps> = memo(
 				)}
 			</CopyButton>
 		);
-	},
-);
+	};
 ClipBoardCopyButton.displayName = "component/presentations/ClipBoardCopyButton";
