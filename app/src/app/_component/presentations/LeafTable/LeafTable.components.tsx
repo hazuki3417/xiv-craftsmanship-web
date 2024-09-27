@@ -1,4 +1,4 @@
-import { FC, memo, ReactNode, useMemo, useState } from "react";
+import { FC, memo, ReactNode, useCallback, useMemo, useState } from "react";
 import { ChildItemType, ClipBoardCopyButton, ItemType } from "../index";
 import { Group, Input, rem, Table, UnstyledButton } from "@mantine/core";
 import {
@@ -21,23 +21,21 @@ export const LeafTableProvider: FC<LeafTableProviderProps> = (props) => {
 	const { children, ...rest } = props;
 	const [sort, setSort] = useState<SortState>(defaultSortState);
 
-	const toggleSort = (target: keyof SortState) => {
-		if (target === "name") {
-			setSort((prevSort) => {
-				return {
-					quantity: "none",
-					name:
-						prevSort.name === "none"
-							? "ascending"
-							: prevSort.name === "ascending"
-								? "descending"
-								: "none",
-				};
-			});
-			return;
-		}
+	const toggleSortName = useCallback(() => {
+		setSort((prevSort) => {
+			return {
+				quantity: "none",
+				name:
+					prevSort.name === "none"
+						? "ascending"
+						: prevSort.name === "ascending"
+							? "descending"
+							: "none",
+			};
+		});
+	}, []);
 
-		// quantityのとき
+	const toggleSortQuantity = useCallback(() => {
 		setSort((prevSort) => {
 			return {
 				quantity:
@@ -49,10 +47,12 @@ export const LeafTableProvider: FC<LeafTableProviderProps> = (props) => {
 				name: "none",
 			};
 		});
-	};
+	}, []);
 
-	const sortIcon = (target: keyof SortState) => {
-		const iconSize = 16;
+	const iconSize = 16;
+
+	const iconName = useMemo(() => {
+		const target = "name";
 		if (sort[target] === "ascending") {
 			return <IconSortAscending size={iconSize} />;
 		}
@@ -60,14 +60,33 @@ export const LeafTableProvider: FC<LeafTableProviderProps> = (props) => {
 			return <IconSortDescending size={iconSize} />;
 		}
 		return <IconArrowsSort size={iconSize} />;
-	};
+	}, [sort["name"]]);
+
+	const iconQuantity = useMemo(() => {
+		const target = "quantity";
+		if (sort[target] === "ascending") {
+			return <IconSortAscending size={iconSize} />;
+		}
+		if (sort[target] === "descending") {
+			return <IconSortDescending size={iconSize} />;
+		}
+		return <IconArrowsSort size={iconSize} />;
+	}, [sort["quantity"]]);
 
 	return (
 		<LeafTableContext.Provider
 			value={{
-				sort: sort,
-				toggleSort: toggleSort,
-				sortIcon: sortIcon,
+				sort,
+				name: {
+					label: "name",
+					icon: iconName,
+					sort: toggleSortName,
+				},
+				quantity: {
+					label: "quantity",
+					icon: iconQuantity,
+					sort: toggleSortQuantity,
+				},
 			}}
 		>
 			{children}
@@ -77,34 +96,54 @@ export const LeafTableProvider: FC<LeafTableProviderProps> = (props) => {
 LeafTableProvider.displayName =
 	"component/presentations/LeafTable/LeafTableProvider";
 
+type ToggleSortButtonProps = {
+	label: string;
+	onClick: () => void;
+	icon: ReactNode;
+};
+
+const ToggleSortButton: FC<ToggleSortButtonProps> = (props) => {
+	const { label, onClick, icon } = props;
+	return (
+		<UnstyledButton onClick={onClick}>
+			<Group gap={"xs"}>
+				{label}
+				{icon}
+			</Group>
+		</UnstyledButton>
+	);
+};
+
+const MemoizedToggleSortButton = memo(ToggleSortButton);
+
 export type LeafTableHeaderProps = {};
 
 export const LeafTableHeader: FC<LeafTableHeaderProps> = (props) => {
 	const { ...rest } = props;
-	const { toggleSort, sortIcon } = useLeafTable();
+	const { quantity, name } = useLeafTable();
+
+	const SourceButton = useMemo(() => {
+		return <UnstyledButton>source</UnstyledButton>;
+	}, []);
 
 	return (
 		<Table.Thead>
 			<Table.Tr>
 				<Table.Th>
-					<UnstyledButton onClick={() => toggleSort("name")}>
-						<Group gap={"xs"}>
-							name
-							{sortIcon("name")}
-						</Group>
-					</UnstyledButton>
+					<MemoizedToggleSortButton
+						label={name.label}
+						onClick={name.sort}
+						icon={name.icon}
+					/>
 				</Table.Th>
 				<Table.Th w={rem(120)}>
-					<UnstyledButton onClick={() => toggleSort("quantity")}>
-						<Group gap={"xs"}>
-							quantity
-							{sortIcon("quantity")}
-						</Group>
-					</UnstyledButton>
+					<MemoizedToggleSortButton
+						label={quantity.label}
+						onClick={quantity.sort}
+						icon={quantity.icon}
+					/>
 				</Table.Th>
-				<Table.Th w={rem(100)}>
-					<UnstyledButton>source</UnstyledButton>
-				</Table.Th>
+				<Table.Th w={rem(100)}>{SourceButton}</Table.Th>
 			</Table.Tr>
 		</Table.Thead>
 	);
@@ -160,20 +199,8 @@ export const LeafTableBody: FC<LeafTableBodyProps> = (props) => {
 	const { items, ...rest } = props;
 	const { sort } = useLeafTable();
 
-	if (items.length === 0) {
-		return (
-			<Table.Tbody>
-				<Table.Tr>
-					<Table.Td colSpan={3} align="center">
-						No data
-					</Table.Td>
-				</Table.Tr>
-			</Table.Tbody>
-		);
-	}
-
+	const aggregateItems = useMemo(() => aggregateById(items), [items]);
 	const sortedItems = useMemo(() => {
-		const aggregateItems = aggregateById(items);
 		return aggregateItems.sort((a, b) => {
 			if (sort.name === "ascending") {
 				return a.itemName.localeCompare(b.itemName);
@@ -191,7 +218,19 @@ export const LeafTableBody: FC<LeafTableBodyProps> = (props) => {
 			}
 			return 0;
 		});
-	}, [items, sort]);
+	}, [aggregateItems, sort]);
+
+	if (items.length === 0) {
+		return (
+			<Table.Tbody>
+				<Table.Tr>
+					<Table.Td colSpan={3} align="center">
+						No data
+					</Table.Td>
+				</Table.Tr>
+			</Table.Tbody>
+		);
+	}
 
 	return (
 		<Table.Tbody>
