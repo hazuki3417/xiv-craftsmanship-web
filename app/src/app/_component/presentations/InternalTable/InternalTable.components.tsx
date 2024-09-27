@@ -179,18 +179,22 @@ export type InternalTableRowProps = {
 export const InternalTableRow: FC<InternalTableRowProps> = (props) => {
 	const { name, total } = props;
 
+	const MemoNameColumn = useMemo(() => {
+		return (
+			<Input
+				size="xs"
+				leftSectionPointerEvents="all"
+				leftSection={<ClipBoardCopyButton value={name} />}
+				value={name}
+				readOnly
+				variant="unstyled"
+			/>
+		);
+	}, [name]);
+
 	return (
 		<Table.Tr>
-			<Table.Td>
-				<Input
-					size="xs"
-					leftSectionPointerEvents="all"
-					leftSection={<ClipBoardCopyButton value={name} />}
-					value={name}
-					readOnly
-					variant="unstyled"
-				/>
-			</Table.Td>
+			<Table.Td>{MemoNameColumn}</Table.Td>
 			<Table.Td>{total}</Table.Td>
 			<Table.Td></Table.Td>
 		</Table.Tr>
