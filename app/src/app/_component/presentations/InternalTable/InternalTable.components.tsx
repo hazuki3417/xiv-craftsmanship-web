@@ -1,4 +1,4 @@
-import { FC, memo, ReactNode, useMemo, useState } from "react";
+import { FC, memo, ReactNode, useCallback, useMemo, useState } from "react";
 import { ChildItemType, ClipBoardCopyButton, ItemType } from "../index";
 import { Group, Input, rem, Table, UnstyledButton } from "@mantine/core";
 import {
@@ -19,7 +19,6 @@ export interface InternalTableProviderProps {
 const defaultSortState: SortState = {
 	name: "none",
 	quantity: "none",
-	job: "none",
 };
 
 export const InternalTableProvider: FC<InternalTableProviderProps> = (
@@ -28,55 +27,38 @@ export const InternalTableProvider: FC<InternalTableProviderProps> = (
 	const { children, ...rest } = props;
 	const [sort, setSort] = useState<SortState>(defaultSortState);
 
-	const toggleSort = (target: keyof SortState) => {
-		if (target === "name") {
-			setSort((prevSort) => {
-				return {
-					name:
-						prevSort.name === "none"
-							? "ascending"
-							: prevSort.name === "ascending"
-								? "descending"
-								: "none",
-					quantity: "none",
-					job: "none",
-				};
-			});
-			return;
-		}
-
-		if (target === "quantity") {
-			setSort((prevSort) => {
-				return {
-					name: "none",
-					quantity:
-						prevSort.quantity === "none"
-							? "ascending"
-							: prevSort.quantity === "ascending"
-								? "descending"
-								: "none",
-					job: "none",
-				};
-			});
-			return;
-		}
-
+	const toggleSortName = useCallback(() => {
 		setSort((prevSort) => {
 			return {
-				name: "none",
 				quantity: "none",
-				job:
-					prevSort.job === "none"
+				name:
+					prevSort.name === "none"
 						? "ascending"
-						: prevSort.job === "ascending"
+						: prevSort.name === "ascending"
 							? "descending"
 							: "none",
 			};
 		});
-	};
+	}, []);
 
-	const sortIcon = (target: keyof SortState) => {
-		const iconSize = 16;
+	const toggleSortQuantity = useCallback(() => {
+		setSort((prevSort) => {
+			return {
+				quantity:
+					prevSort.quantity === "none"
+						? "ascending"
+						: prevSort.quantity === "ascending"
+							? "descending"
+							: "none",
+				name: "none",
+			};
+		});
+	}, []);
+
+	const iconSize = 16;
+
+	const iconName = useMemo(() => {
+		const target = "name";
 		if (sort[target] === "ascending") {
 			return <IconSortAscending size={iconSize} />;
 		}
@@ -84,14 +66,33 @@ export const InternalTableProvider: FC<InternalTableProviderProps> = (
 			return <IconSortDescending size={iconSize} />;
 		}
 		return <IconArrowsSort size={iconSize} />;
-	};
+	}, [sort["name"]]);
+
+	const iconQuantity = useMemo(() => {
+		const target = "quantity";
+		if (sort[target] === "ascending") {
+			return <IconSortAscending size={iconSize} />;
+		}
+		if (sort[target] === "descending") {
+			return <IconSortDescending size={iconSize} />;
+		}
+		return <IconArrowsSort size={iconSize} />;
+	}, [sort["quantity"]]);
 
 	return (
 		<InternalTableContext.Provider
 			value={{
-				sort: sort,
-				toggleSort: toggleSort,
-				sortIcon: sortIcon,
+				sort,
+				name: {
+					label: "name",
+					icon: iconName,
+					sort: toggleSortName,
+				},
+				quantity: {
+					label: "quantity",
+					icon: iconQuantity,
+					sort: toggleSortQuantity,
+				},
 			}}
 		>
 			{children}
@@ -101,39 +102,54 @@ export const InternalTableProvider: FC<InternalTableProviderProps> = (
 InternalTableProvider.displayName =
 	"component/presentations/InternalTable/InternalTableProvider";
 
+type ToggleSortButtonProps = {
+	label: string;
+	onClick: () => void;
+	icon: ReactNode;
+};
+
+const ToggleSortButton: FC<ToggleSortButtonProps> = (props) => {
+	const { label, onClick, icon } = props;
+	return (
+		<UnstyledButton onClick={onClick}>
+			<Group gap={"xs"}>
+				{label}
+				{icon}
+			</Group>
+		</UnstyledButton>
+	);
+};
+
+const MemoizedToggleSortButton = memo(ToggleSortButton);
+
 export type InternalTableHeaderProps = {};
 
 export const InternalTableHeader: FC<InternalTableHeaderProps> = (props) => {
 	const { ...rest } = props;
-	const { toggleSort, sortIcon } = useInternalTable();
+	const { quantity, name } = useInternalTable();
+
+	const SourceButton = useMemo(() => {
+		return <UnstyledButton>source</UnstyledButton>;
+	}, []);
 
 	return (
 		<Table.Thead>
 			<Table.Tr>
 				<Table.Th>
-					<UnstyledButton onClick={() => toggleSort("name")}>
-						<Group gap={"xs"}>
-							name
-							{sortIcon("name")}
-						</Group>
-					</UnstyledButton>
+					<MemoizedToggleSortButton
+						label={name.label}
+						onClick={name.sort}
+						icon={name.icon}
+					/>
 				</Table.Th>
-				<Table.Th w={rem(120)} align="center">
-					<UnstyledButton onClick={() => toggleSort("quantity")}>
-						<Group gap={"xs"}>
-							quantity
-							{sortIcon("quantity")}
-						</Group>
-					</UnstyledButton>
+				<Table.Th w={rem(120)}>
+					<MemoizedToggleSortButton
+						label={quantity.label}
+						onClick={quantity.sort}
+						icon={quantity.icon}
+					/>
 				</Table.Th>
-				<Table.Th w={rem(100)}>
-					<UnstyledButton onClick={() => toggleSort("job")}>
-						<Group gap={"xs"}>
-							source
-							{sortIcon("job")}
-						</Group>
-					</UnstyledButton>
-				</Table.Th>
+				<Table.Th w={rem(100)}>{SourceButton}</Table.Th>
 			</Table.Tr>
 		</Table.Thead>
 	);
@@ -160,7 +176,7 @@ export type InternalTableRowProps = {
 	total: number;
 };
 
-export const InternalTableRow: FC<InternalTableRowProps> = memo((props) => {
+export const InternalTableRow: FC<InternalTableRowProps> = (props) => {
 	const { name, total } = props;
 
 	return (
@@ -179,7 +195,9 @@ export const InternalTableRow: FC<InternalTableRowProps> = memo((props) => {
 			<Table.Td></Table.Td>
 		</Table.Tr>
 	);
-});
+};
+
+const MemoizedInternalTableRow = memo(InternalTableRow);
 
 export type InternalTableBodyProps = {
 	items: ChildItemType[];
@@ -189,20 +207,12 @@ export const InternalTableBody: FC<InternalTableBodyProps> = (props) => {
 	const { items, ...rest } = props;
 	const { sort } = useInternalTable();
 
-	if (items.length === 0) {
-		return (
-			<Table.Tbody>
-				<Table.Tr>
-					<Table.Td colSpan={3} align="center">
-						No data
-					</Table.Td>
-				</Table.Tr>
-			</Table.Tbody>
-		);
-	}
+	/**
+	 * NOTE: itemの集計とソートはそれぞれ異なるタイミングで実行されるため、別々にmemo化する
+	 */
 
+	const aggregateItems = useMemo(() => aggregateById(items), [items]);
 	const sortedItems = useMemo(() => {
-		const aggregateItems = aggregateById(items);
 		return aggregateItems.sort((a, b) => {
 			if (sort.name === "ascending") {
 				return a.itemName.localeCompare(b.itemName);
@@ -220,12 +230,24 @@ export const InternalTableBody: FC<InternalTableBodyProps> = (props) => {
 			}
 			return 0;
 		});
-	}, [items, sort]);
+	}, [aggregateItems, sort]);
+
+	if (items.length === 0) {
+		return (
+			<Table.Tbody>
+				<Table.Tr>
+					<Table.Td colSpan={3} align="center">
+						No data
+					</Table.Td>
+				</Table.Tr>
+			</Table.Tbody>
+		);
+	}
 
 	return (
 		<Table.Tbody>
 			{sortedItems.map((item) => (
-				<InternalTableRow
+				<MemoizedInternalTableRow
 					key={item.itemId}
 					name={item.itemName}
 					total={item.total}

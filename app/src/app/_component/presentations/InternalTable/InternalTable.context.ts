@@ -1,16 +1,21 @@
-import { createContext, useContext } from "react";
+import { createContext, ReactNode, useContext } from "react";
 
 export type SortType = "none" | "ascending" | "descending";
 export type SortState = {
 	name: SortType;
 	quantity: SortType;
-	job: SortType;
 };
+
+interface SortButtonContextValue {
+	label: string;
+	icon: ReactNode;
+	sort: () => void;
+}
 
 export interface InternalTableContextValue {
 	sort: SortState;
-	toggleSort: (target: keyof SortState) => void;
-	sortIcon: (target: keyof SortState) => JSX.Element;
+	name: SortButtonContextValue;
+	quantity: SortButtonContextValue;
 }
 
 export const InternalTableContext = createContext<
