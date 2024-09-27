@@ -31,9 +31,24 @@ const segments: SegmentedControlItem[] = [
 	{ value: "leaf", label: "素材" },
 ];
 
+type MaterialTableSwitcherProps = {};
+
+const MaterialTableSwitcher: FC<MaterialTableSwitcherProps> = (props) => {
+	const [segment, setSegment] = useState<string>("leaf");
+	return (
+		<>
+			<SegmentedControl value={segment} onChange={setSegment} data={segments} />
+			<ScrollArea h={740}>
+				{segment === "crystal" && <RecipeCrystalTable />}
+				{segment === "internal" && <RecipeInternalTable />}
+				{segment === "leaf" && <RecipeLeafTable />}
+			</ScrollArea>
+		</>
+	);
+};
+
 export const Recipe: FC<RecipeProps> = (props) => {
 	const { id, ...rest } = props;
-	const [segment, setSegment] = useState<string>("leaf");
 	return (
 		<RecipeProvider recipeId={id}>
 			<Grid>
@@ -57,16 +72,7 @@ export const Recipe: FC<RecipeProps> = (props) => {
 				</Grid.Col>
 				<Grid.Col span={5}>
 					<Stack gap={0}>
-						<SegmentedControl
-							value={segment}
-							onChange={setSegment}
-							data={segments}
-						/>
-						<ScrollArea h={740}>
-							{segment === "crystal" && <RecipeCrystalTable />}
-							{segment === "internal" && <RecipeInternalTable />}
-							{segment === "leaf" && <RecipeLeafTable />}
-						</ScrollArea>
+						<MaterialTableSwitcher />
 					</Stack>
 				</Grid.Col>
 			</Grid>
