@@ -1,4 +1,4 @@
-import { FC, memo, ReactNode, useMemo, useState } from "react";
+import { FC, memo, ReactNode, useCallback, useMemo, useState } from "react";
 import { ChildItemType, ClipBoardCopyButton, ItemType } from "../index";
 import { Group, Input, rem, Table, UnstyledButton } from "@mantine/core";
 import {
@@ -25,23 +25,21 @@ export const CrystalTableProvider: FC<CrystalTableProviderProps> = (props) => {
 	const { children, ...rest } = props;
 	const [sort, setSort] = useState<SortState>(defaultSortState);
 
-	const toggleSort = (target: keyof SortState) => {
-		if (target === "name") {
-			setSort((prevSort) => {
-				return {
-					quantity: "none",
-					name:
-						prevSort.name === "none"
-							? "ascending"
-							: prevSort.name === "ascending"
-								? "descending"
-								: "none",
-				};
-			});
-			return;
-		}
+	const toggleSortName = useCallback(() => {
+		setSort((prevSort) => {
+			return {
+				quantity: "none",
+				name:
+					prevSort.name === "none"
+						? "ascending"
+						: prevSort.name === "ascending"
+							? "descending"
+							: "none",
+			};
+		});
+	}, []);
 
-		// quantityのとき
+	const toggleSortQuantity = useCallback(() => {
 		setSort((prevSort) => {
 			return {
 				quantity:
@@ -53,10 +51,12 @@ export const CrystalTableProvider: FC<CrystalTableProviderProps> = (props) => {
 				name: "none",
 			};
 		});
-	};
+	}, []);
 
-	const sortIcon = (target: keyof SortState) => {
-		const iconSize = 16;
+	const iconSize = 16;
+
+	const iconName = useMemo(() => {
+		const target = "name";
 		if (sort[target] === "ascending") {
 			return <IconSortAscending size={iconSize} />;
 		}
@@ -64,14 +64,33 @@ export const CrystalTableProvider: FC<CrystalTableProviderProps> = (props) => {
 			return <IconSortDescending size={iconSize} />;
 		}
 		return <IconArrowsSort size={iconSize} />;
-	};
+	}, [sort["name"]]);
+
+	const iconQuantity = useMemo(() => {
+		const target = "quantity";
+		if (sort[target] === "ascending") {
+			return <IconSortAscending size={iconSize} />;
+		}
+		if (sort[target] === "descending") {
+			return <IconSortDescending size={iconSize} />;
+		}
+		return <IconArrowsSort size={iconSize} />;
+	}, [sort["quantity"]]);
 
 	return (
 		<CrystalTableContext.Provider
 			value={{
-				sort: sort,
-				toggleSort: toggleSort,
-				sortIcon: sortIcon,
+				sort,
+				name: {
+					label: "name",
+					icon: iconName,
+					sort: toggleSortName,
+				},
+				quantity: {
+					label: "quantity",
+					icon: iconQuantity,
+					sort: toggleSortQuantity,
+				},
 			}}
 		>
 			{children}
@@ -81,34 +100,54 @@ export const CrystalTableProvider: FC<CrystalTableProviderProps> = (props) => {
 CrystalTableProvider.displayName =
 	"component/presentations/CrystalTable/CrystalTableProvider";
 
+type ToggleSortButtonProps = {
+	label: string;
+	onClick: () => void;
+	icon: ReactNode;
+};
+
+const ToggleSortButton: FC<ToggleSortButtonProps> = (props) => {
+	const { label, onClick, icon } = props;
+	return (
+		<UnstyledButton onClick={onClick}>
+			<Group gap={"xs"}>
+				{label}
+				{icon}
+			</Group>
+		</UnstyledButton>
+	);
+};
+
+const MemoizedToggleSortButton = memo(ToggleSortButton);
+
 export type CrystalTableHeaderProps = {};
 
 export const CrystalTableHeader: FC<CrystalTableHeaderProps> = (props) => {
 	const { ...rest } = props;
-	const { toggleSort, sortIcon } = useCrystalTable();
+	const { quantity, name } = useCrystalTable();
+
+	const SourceButton = useMemo(() => {
+		return <UnstyledButton>source</UnstyledButton>;
+	}, []);
 
 	return (
 		<Table.Thead>
 			<Table.Tr>
 				<Table.Th>
-					<UnstyledButton onClick={() => toggleSort("name")}>
-						<Group gap={"xs"}>
-							name
-							{sortIcon("name")}
-						</Group>
-					</UnstyledButton>
+					<MemoizedToggleSortButton
+						label={name.label}
+						onClick={name.sort}
+						icon={name.icon}
+					/>
 				</Table.Th>
 				<Table.Th w={rem(120)}>
-					<UnstyledButton onClick={() => toggleSort("quantity")}>
-						<Group gap={"xs"}>
-							quantity
-							{sortIcon("quantity")}
-						</Group>
-					</UnstyledButton>
+					<MemoizedToggleSortButton
+						label={quantity.label}
+						onClick={quantity.sort}
+						icon={quantity.icon}
+					/>
 				</Table.Th>
-				<Table.Th w={rem(100)}>
-					<UnstyledButton>source</UnstyledButton>
-				</Table.Th>
+				<Table.Th w={rem(100)}>{SourceButton}</Table.Th>
 			</Table.Tr>
 		</Table.Thead>
 	);
@@ -135,7 +174,7 @@ export type CrystalTableRowProps = {
 	total: number;
 };
 
-export const CrystalTableRow: FC<CrystalTableRowProps> = memo((props) => {
+export const CrystalTableRow: FC<CrystalTableRowProps> = (props) => {
 	const { name, total } = props;
 
 	return (
@@ -154,30 +193,24 @@ export const CrystalTableRow: FC<CrystalTableRowProps> = memo((props) => {
 			<Table.Td>source</Table.Td>
 		</Table.Tr>
 	);
-});
+};
+
+const MemoizedCrystalTableRow = memo(CrystalTableRow);
 
 export type CrystalTableBodyProps = {
 	items: ChildItemType[];
 };
 
 export const CrystalTableBody: FC<CrystalTableBodyProps> = (props) => {
-	const { items, ...rest } = props;
+	const { items } = props;
 	const { sort } = useCrystalTable();
 
-	if (items.length === 0) {
-		return (
-			<Table.Tbody>
-				<Table.Tr>
-					<Table.Td colSpan={3} align="center">
-						No data
-					</Table.Td>
-				</Table.Tr>
-			</Table.Tbody>
-		);
-	}
+	/**
+	 * NOTE: itemの集計とソートはそれぞれ異なるタイミングで実行されるため、別々にmemo化する
+	 */
 
+	const aggregateItems = useMemo(() => aggregateById(items), [items]);
 	const sortedItems = useMemo(() => {
-		const aggregateItems = aggregateById(items);
 		return aggregateItems.sort((a, b) => {
 			if (sort.name === "ascending") {
 				return a.itemName.localeCompare(b.itemName);
@@ -195,12 +228,24 @@ export const CrystalTableBody: FC<CrystalTableBodyProps> = (props) => {
 			}
 			return 0;
 		});
-	}, [items, sort]);
+	}, [aggregateItems, sort]);
+
+	if (items.length === 0) {
+		return (
+			<Table.Tbody>
+				<Table.Tr>
+					<Table.Td colSpan={3} align="center">
+						No data
+					</Table.Td>
+				</Table.Tr>
+			</Table.Tbody>
+		);
+	}
 
 	return (
 		<Table.Tbody>
 			{sortedItems.map((item) => (
-				<CrystalTableRow
+				<MemoizedCrystalTableRow
 					key={item.itemId}
 					name={item.itemName}
 					total={item.total}
