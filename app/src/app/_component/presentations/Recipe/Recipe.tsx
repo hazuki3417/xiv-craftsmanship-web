@@ -21,9 +21,7 @@ export const Recipe: FC<RecipeProps> = (props) => {
 					<Stack gap={2}>
 						<SearchCombobox />
 						<RecipeInfoPanel />
-						<div style={{ height: "740px" }}>
-							<Diagram />
-						</div>
+						<div style={{ height: "740px" }}>{/* <Diagram /> */}</div>
 					</Stack>
 				</Grid.Col>
 				<Grid.Col span={5}>
