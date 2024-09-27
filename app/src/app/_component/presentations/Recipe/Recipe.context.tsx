@@ -13,7 +13,6 @@ export interface RecipeContextValue {
 		quantity: number;
 		countUp: () => void;
 		countDown: () => void;
-		onChange: (value: string | number) => void;
 		onClear: () => void;
 	};
 	dispatch: {

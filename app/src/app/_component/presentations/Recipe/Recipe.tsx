@@ -1,17 +1,9 @@
 import { FC } from "react";
 import { Diagram } from "../index";
+import { Grid, Group, Stack } from "@mantine/core";
 import {
-	Grid,
-	Group,
-	Stack,
-} from "@mantine/core";
-import {
-	InputCraftLevel,
-	InputItemLevel,
-	InputJob,
-	InputPieces,
 	MaterialTableSwitcher,
-	QuantityInput,
+	RecipeInfoPanel,
 	RecipeProvider,
 	SearchCombobox,
 } from "./";
@@ -28,16 +20,7 @@ export const Recipe: FC<RecipeProps> = (props) => {
 				<Grid.Col span={7}>
 					<Stack gap={2}>
 						<SearchCombobox />
-						<Group>
-							<Group gap="xs">
-								quantity:
-								<QuantityInput />
-							</Group>
-							<InputPieces />
-							<InputCraftLevel />
-							<InputItemLevel />
-							<InputJob />
-						</Group>
+						<RecipeInfoPanel />
 						<div style={{ height: "740px" }}>
 							<Diagram />
 						</div>

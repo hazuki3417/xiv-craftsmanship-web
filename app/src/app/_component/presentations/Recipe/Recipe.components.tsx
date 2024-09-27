@@ -1,4 +1,12 @@
-import { ReactNode, FC, useState, useEffect, useCallback } from "react";
+import {
+	ReactNode,
+	FC,
+	useState,
+	useEffect,
+	useCallback,
+	useMemo,
+	memo,
+} from "react";
 import { CraftItem, RecipeContext, useRecipe } from "./Recipe.context";
 import { Depth } from "@/lib";
 import { DiagramChildNodeProps, DiagramNodeProps } from "../Diagram";
@@ -126,10 +134,6 @@ export const RecipeProvider: FC<RecipeProviderProps> = (props) => {
 	const [nodes, setNodes] = useNodesState<DiagramNodeProps>([]);
 	const [edges, setEdges] = useEdgesState<Edge>([]);
 
-	const onChangeRootCount = useCallback((value: string | number) => {
-		setRootCount(Number(value));
-	}, []);
-
 	const onClear = useCallback(() => {
 		setCraftItem(null);
 		dispatch.craftItem({ recipeId, craftItem: null });
@@ -200,7 +204,6 @@ export const RecipeProvider: FC<RecipeProviderProps> = (props) => {
 					quantity: rootCount,
 					countUp: rootCountUp,
 					countDown: rootCountDown,
-					onChange: onChangeRootCount,
 					onClear: onClear,
 				},
 				dispatch: { craftitem: setCraftItem },
@@ -410,113 +413,134 @@ export const SearchCombobox: FC = () => {
 	);
 };
 
-export const QuantityInput: FC = () => {
-	const { root } = useRecipe();
+type RecipeInfoProps = {
+	pieces: string;
+	craftLevel: string;
+	itemLevel: string;
+	job: string;
+};
+
+const RecipeInfo: FC<RecipeInfoProps> = (props) => {
+	const { pieces, craftLevel, itemLevel, job } = props;
+	return (
+		<>
+			<Group gap="xs">
+				pieces:
+				<NumberInput
+					size="xs"
+					value={pieces}
+					style={{ width: "3ch" }}
+					readOnly
+					variant="unstyled"
+				/>
+			</Group>
+			<Group gap="xs">
+				craft lv:
+				<Input
+					size="xs"
+					value={craftLevel}
+					style={{ width: "3ch" }}
+					readOnly
+					variant="unstyled"
+				/>
+			</Group>
+			<Group gap="xs">
+				item lv:
+				<Input
+					size="xs"
+					value={itemLevel}
+					style={{ width: "3ch" }}
+					readOnly
+					variant="unstyled"
+				/>
+			</Group>
+			<Group gap="xs">
+				job:
+				<Input
+					size="xs"
+					value={job}
+					style={{ width: "5ch" }}
+					readOnly
+					variant="unstyled"
+				/>
+			</Group>
+		</>
+	);
+};
+
+const MemoizedRecipeInfo = memo(RecipeInfo);
+
+type QuanitityChangeInputProps = {
+	quantity: number;
+	onCountUp: () => void;
+	onCountDown: () => void;
+};
+
+const QuanitityChangeInput: FC<QuanitityChangeInputProps> = (props) => {
+	const { quantity, onCountUp, onCountDown } = props;
+
+	const CountUpIcon = useMemo(() => {
+		return (
+			<ActionIcon variant="subtle" style={{ marginLeft: 5 }}>
+				<IconPlus style={{ width: rem(16) }} onClick={onCountUp} />
+			</ActionIcon>
+		);
+	}, []);
+	const CountDownIcon = useMemo(() => {
+		return (
+			<ActionIcon variant="subtle" style={{ marginLeft: 5 }}>
+				<IconMinus style={{ width: rem(16) }} onClick={onCountDown} />
+			</ActionIcon>
+		);
+	}, []);
 
 	return (
-		<Group gap={0}>
-			<NumberInput
-				size="xs"
-				style={{ width: "4ch" }}
-				value={root.quantity}
-				hideControls
-				min={1}
-				max={99}
-				onChange={root.onChange}
-			/>
-			<ActionIcon variant="subtle" style={{ marginLeft: 5 }}>
-				<IconMinus
-					style={{ width: rem(16) }}
-					onClick={() => {
-						root.countDown();
-					}}
+		<Group gap="xs">
+			quantity:
+			<Group gap={0}>
+				<NumberInput
+					size="xs"
+					style={{ width: "4ch" }}
+					value={quantity}
+					hideControls
+					min={1}
+					max={99}
 				/>
-			</ActionIcon>
-			<ActionIcon variant="subtle" style={{ marginLeft: 5 }}>
-				<IconPlus
-					style={{ width: rem(16) }}
-					onClick={() => {
-						root.countUp();
-					}}
-				/>
-			</ActionIcon>
+				{CountUpIcon}
+				{CountDownIcon}
+			</Group>
 		</Group>
 	);
 };
 
-export const InputPieces: FC = () => {
+export type RecipeInfoPanelProps = {};
+
+export const RecipeInfoPanel: FC<RecipeInfoPanelProps> = (props) => {
 	const { root, fetch } = useRecipe();
 	const craftItem = fetch.craftItem();
 
-	let pieces = "-";
-	if (craftItem) {
-		pieces = (craftItem.spec.pieces * root.quantity).toString();
-	}
+	const recipe = craftItem
+		? {
+				pieces: craftItem.spec.pieces.toString(),
+				craftLevel: craftItem.spec.craftLevel?.toString() || "-",
+				itemLevel: craftItem.spec.itemLevel.toString(),
+				job: craftItem.spec.job,
+			}
+		: {
+				pieces: "-",
+				craftLevel: "-",
+				itemLevel: "-",
+				job: "-",
+			};
 
 	return (
-		<Group gap="xs">
-			pieces:
-			<NumberInput
-				size="xs"
-				value={pieces}
-				style={{ width: "3ch" }}
-				readOnly
-				variant="unstyled"
+		<Group>
+			<QuanitityChangeInput
+				quantity={root.quantity}
+				onCountUp={root.countUp}
+				onCountDown={root.countDown}
 			/>
-		</Group>
-	);
-};
-
-export const InputCraftLevel: FC = () => {
-	const { fetch } = useRecipe();
-	const craftItem = fetch.craftItem();
-
-	return (
-		<Group gap="xs">
-			craft lv:
-			<Input
-				size="xs"
-				value={craftItem?.spec.craftLevel || "-"}
-				style={{ width: "3ch" }}
-				readOnly
-				variant="unstyled"
-			/>
-		</Group>
-	);
-};
-
-export const InputItemLevel: FC = () => {
-	const { fetch } = useRecipe();
-	const craftItem = fetch.craftItem();
-
-	return (
-		<Group gap="xs">
-			item lv:
-			<Input
-				size="xs"
-				value={craftItem?.spec.itemLevel || "-"}
-				style={{ width: "3ch" }}
-				readOnly
-				variant="unstyled"
-			/>
-		</Group>
-	);
-};
-
-export const InputJob: FC = () => {
-	const { fetch } = useRecipe();
-	const craftItem = fetch.craftItem();
-
-	return (
-		<Group gap="xs">
-			job:
-			<Input
-				size="xs"
-				value={craftItem?.spec.job || "-"}
-				style={{ width: "5ch" }}
-				readOnly
-				variant="unstyled"
-			/>
+			<MemoizedRecipeInfo {...recipe} />
 		</Group>
 	);
 };
