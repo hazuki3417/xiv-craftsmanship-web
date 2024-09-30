@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { DiagramRootNode, DiagramChildNode } from "./Diagram.components";
+import { DiagramChildNode } from "./Diagram.components";
 import { ReactFlow } from "@xyflow/react";
 import { useRecipe } from "../Recipe";
 import { Center, useMantineTheme } from "@mantine/core";
@@ -18,7 +18,6 @@ export const Diagram: CompoundedComponent = (props) => {
 	return (
 		<ReactFlow
 			nodeTypes={{
-				rootNode: DiagramRootNode,
 				childNode: DiagramChildNode,
 			}}
 			nodes={nodes}
