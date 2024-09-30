@@ -1,20 +1,21 @@
-import { FC, ReactNode, useState } from "react";
+import { FC, ReactNode, useCallback, useState } from "react";
 import { MaterialManagerContext } from "./MaterialManagerProvider.context";
 import { ChildItemType } from "../Diagram";
 import { CraftItem } from "../Recipe";
 
-export type MaterialData = {
+type RecipeData = {
 	recipeId: string;
+};
+
+export type MaterialData = RecipeData & {
 	materials: ChildItemType[];
 };
 
-export type CraftData = {
-	recipeId: string;
+export type CraftData = RecipeData & {
 	craftItem: CraftItem | null;
 };
 
-export type QuantityData = {
-	recipeId: string;
+export type QuantityData = RecipeData & {
 	quantity: number;
 };
 
@@ -37,6 +38,9 @@ const aggregateItems = (materials: MaterialData[]): ChildItemType[] => {
 	return Object.values(itemMap);
 };
 
+/**
+ * 初期値を生成
+ */
 const limit = 3;
 const initMaterialData: MaterialData[] = Array.from(
 	{ length: limit },
@@ -60,44 +64,61 @@ export const MaterialManagerProvider: FC<MaterialManagerProviderProps> = (
 	const [craftItem, setCraftItem] = useState<CraftData[]>(initCraftData);
 	const [quantity, setQuantity] = useState<QuantityData[]>(initQuantityData);
 
-	const dispatchMaterials = (data: MaterialData) => {
-		setMaterials((prevItems) => {
-			const newMaterials = prevItems.filter(
-				(prevItem) => prevItem.recipeId !== data.recipeId,
-			);
-			return [...newMaterials, data];
+	/**
+	 * NOTE: パフォーマンスの観点からfor文を使用
+	 *       filter,mapなどは配列要素をすべて操作する。また新しい配列を生成するため、メモリ使用量が増える
+	 *       やりたいことは1つの配列要素値のみ更新するため、更新対象のみを操作するように実装
+	 */
+	const dispatchMaterials = useCallback((data: MaterialData) => {
+		setMaterials((recipes) => {
+			const limit = recipes.length;
+			for (let i = 0; i < limit; i++) {
+				if (recipes[i].recipeId === data.recipeId) {
+					recipes[i] = data;
+					break;
+				}
+			}
+			return [...recipes];
 		});
-	};
+	}, []);
 
-	const dispatchCraftItem = (data: CraftData) => {
-		setCraftItem((prevItems) => {
-			const newCraftItems = prevItems.filter(
-				(prevItem) => prevItem.recipeId !== data.recipeId,
-			);
-			return [...newCraftItems, data];
+	const dispatchCraftItem = useCallback((data: CraftData) => {
+		setCraftItem((recipes) => {
+			const limit = recipes.length;
+			for (let i = 0; i < limit; i++) {
+				if (recipes[i].recipeId === data.recipeId) {
+					recipes[i] = data;
+					break;
+				}
+			}
+			return [...recipes];
 		});
-	};
+	}, []);
 
-	const dispatchQuantity = (data: QuantityData) => {
-		setQuantity((prevItems) => {
-			const newQuantity = prevItems.filter(
-				(prevItem) => prevItem.recipeId !== data.recipeId,
-			);
-			return [...newQuantity, data];
+	const dispatchQuantity = useCallback((data: QuantityData) => {
+		setQuantity((recipes) => {
+			const limit = recipes.length;
+			for (let i = 0; i < limit; i++) {
+				if (recipes[i].recipeId === data.recipeId) {
+					recipes[i] = data;
+					break;
+				}
+			}
+			return [...recipes];
 		});
-	};
+	}, []);
 
-	const fetchCraftItem = (recipeId: string): CraftItem | null => {
+	const fetchCraftItem = useCallback((recipeId: string) => {
 		const result = craftItem.find(
 			(craftItem) => craftItem.recipeId === recipeId,
 		);
 		return result?.craftItem || null;
-	};
+	}, []);
 
-	const fetchQuantity = (recipeId: string): number => {
+	const fetchQuantity = useCallback((recipeId: string) => {
 		const result = quantity.find((data) => data.recipeId === recipeId);
 		return result?.quantity || 1;
-	};
+	}, []);
 
 	return (
 		<MaterialManagerContext.Provider
