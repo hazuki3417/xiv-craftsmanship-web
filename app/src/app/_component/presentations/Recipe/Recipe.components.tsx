@@ -271,7 +271,46 @@ type SearchState = {
 	keyTypeChange: boolean;
 };
 
-export const SearchCombobox: FC = () => {
+type RecipeSearchBoxProps = {
+	loading: boolean;
+	value: string;
+	onBlur: () => void;
+	onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+	onClear: () => void;
+};
+
+const RecipeSearchBox: FC<RecipeSearchBoxProps> = (props) => {
+	const { loading, value, onBlur, onChange, onClear } = props;
+
+	const MemorizeClearButton = useMemo(() => {
+		return (
+			<ActionIcon variant="subtle" onClick={onClear}>
+				<IconX style={{ width: rem(16) }} />
+			</ActionIcon>
+		);
+	}, [onClear]);
+
+	const MemorizeLoadingIcon = useMemo(() => {
+		return loading ? <Loader size={20} /> : <IconSearch />;
+	}, [loading]);
+
+	return (
+		<Combobox.Target>
+			<Input
+				size="xs"
+				placeholder="search"
+				value={value}
+				leftSection={MemorizeLoadingIcon}
+				rightSection={MemorizeClearButton}
+				rightSectionPointerEvents="all"
+				onChange={onChange}
+				onBlur={onBlur}
+			/>
+		</Combobox.Target>
+	);
+};
+
+export const RecipeSearch: FC = () => {
 	const combobox = useCombobox({
 		onDropdownClose: () => combobox.resetSelectedOption(),
 	});
@@ -364,24 +403,13 @@ export const SearchCombobox: FC = () => {
 
 	return (
 		<Combobox size="xs" store={combobox} onOptionSubmit={onOptionSubmit}>
-			<Combobox.Target>
-				<Input
-					size="xs"
-					placeholder="search"
-					value={search.value}
-					leftSection={
-						lazyCraft.loading ? <Loader size={20} /> : <IconSearch />
-					}
-					rightSection={
-						<ActionIcon variant="subtle" onClick={onClear}>
-							<IconX style={{ width: rem(16) }} />
-						</ActionIcon>
-					}
-					rightSectionPointerEvents="all"
-					onChange={onSerachChange}
-					onBlur={() => combobox.closeDropdown()}
-				/>
-			</Combobox.Target>
+			<RecipeSearchBox
+				loading={lazyCraft.loading}
+				value={search.value}
+				onBlur={combobox.closeDropdown}
+				onChange={onSerachChange}
+				onClear={onClear}
+			/>
 			<Combobox.Dropdown>
 				<Combobox.Options>
 					{crafts.length > 0 ? (
@@ -521,17 +549,17 @@ export const RecipeInfoPanel: FC<RecipeInfoPanelProps> = (props) => {
 
 	const recipe = craftItem
 		? {
-				pieces: craftItem.spec.pieces.toString(),
-				craftLevel: craftItem.spec.craftLevel?.toString() || "-",
-				itemLevel: craftItem.spec.itemLevel.toString(),
-				job: craftItem.spec.job,
-			}
+			pieces: craftItem.spec.pieces.toString(),
+			craftLevel: craftItem.spec.craftLevel?.toString() || "-",
+			itemLevel: craftItem.spec.itemLevel.toString(),
+			job: craftItem.spec.job,
+		}
 		: {
-				pieces: "-",
-				craftLevel: "-",
-				itemLevel: "-",
-				job: "-",
-			};
+			pieces: "-",
+			craftLevel: "-",
+			itemLevel: "-",
+			job: "-",
+		};
 
 	return (
 		<Group>

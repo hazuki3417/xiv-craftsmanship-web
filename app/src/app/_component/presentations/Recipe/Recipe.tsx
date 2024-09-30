@@ -5,7 +5,7 @@ import {
 	MaterialTableSwitcher,
 	RecipeInfoPanel,
 	RecipeProvider,
-	SearchCombobox,
+	RecipeSearch,
 } from "./";
 
 export interface RecipeProps {
@@ -19,7 +19,7 @@ export const Recipe: FC<RecipeProps> = (props) => {
 			<Grid>
 				<Grid.Col span={7}>
 					<Stack gap={2}>
-						<SearchCombobox />
+						<RecipeSearch />
 						<RecipeInfoPanel />
 						<div style={{ height: "740px" }}>{/* <Diagram /> */}</div>
 					</Stack>
