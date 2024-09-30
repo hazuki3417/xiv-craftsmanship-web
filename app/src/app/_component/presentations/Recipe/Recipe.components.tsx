@@ -310,6 +310,27 @@ const RecipeSearchBox: FC<RecipeSearchBoxProps> = (props) => {
 	);
 };
 
+type RecipeSearchDropdownProps = {
+	items: Craft[];
+};
+
+const RecipeSearchDropdown: FC<RecipeSearchDropdownProps> = (props) => {
+	const { items } = props;
+
+	const MemorizeOptions = useMemo(() => {
+		if (items.length === 0) {
+			return <Combobox.Empty>Nothing found</Combobox.Empty>;
+		}
+		return items.map((item) => (
+			<Combobox.Option key={item.recipeId} value={item.recipeId}>
+				{item.name}
+			</Combobox.Option>
+		));
+	}, [items]);
+
+	return <Combobox.Dropdown>{MemorizeOptions}</Combobox.Dropdown>;
+};
+
 export const RecipeSearch: FC = () => {
 	const combobox = useCombobox({
 		onDropdownClose: () => combobox.resetSelectedOption(),
@@ -410,33 +431,7 @@ export const RecipeSearch: FC = () => {
 				onChange={onSerachChange}
 				onClear={onClear}
 			/>
-			<Combobox.Dropdown>
-				<Combobox.Options>
-					{crafts.length > 0 ? (
-						crafts.map((craft) => (
-							<Combobox.Option key={craft.recipeId} value={craft.recipeId}>
-								<Grid>
-									<Grid.Col span={"auto"}>
-										<Text size="sm">{craft.name}</Text>
-									</Grid.Col>
-									<Grid.Col span={2}>
-										<Text size="xs" opacity={0.6}>
-											{craft.job}
-										</Text>
-									</Grid.Col>
-									<Grid.Col span={2}>
-										<Text size="xs" opacity={0.6}>
-											lv:{craft.craftLevel}
-										</Text>
-									</Grid.Col>
-								</Grid>
-							</Combobox.Option>
-						))
-					) : (
-						<Combobox.Empty>Nothing found</Combobox.Empty>
-					)}
-				</Combobox.Options>
-			</Combobox.Dropdown>
+			<RecipeSearchDropdown items={crafts} />
 		</Combobox>
 	);
 };
@@ -549,17 +544,17 @@ export const RecipeInfoPanel: FC<RecipeInfoPanelProps> = (props) => {
 
 	const recipe = craftItem
 		? {
-			pieces: craftItem.spec.pieces.toString(),
-			craftLevel: craftItem.spec.craftLevel?.toString() || "-",
-			itemLevel: craftItem.spec.itemLevel.toString(),
-			job: craftItem.spec.job,
-		}
+				pieces: craftItem.spec.pieces.toString(),
+				craftLevel: craftItem.spec.craftLevel?.toString() || "-",
+				itemLevel: craftItem.spec.itemLevel.toString(),
+				job: craftItem.spec.job,
+			}
 		: {
-			pieces: "-",
-			craftLevel: "-",
-			itemLevel: "-",
-			job: "-",
-		};
+				pieces: "-",
+				craftLevel: "-",
+				itemLevel: "-",
+				job: "-",
+			};
 
 	return (
 		<Group>
