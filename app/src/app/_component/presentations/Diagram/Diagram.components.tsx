@@ -5,8 +5,6 @@ import { memo } from "react";
 import type { Node, NodeProps } from "@xyflow/react";
 import { ClipBoardCopyButton } from "../ClipBoardCopyButton";
 
-export type NodeType = "root" | "internal" | "leaf";
-
 const MemolizeClipBoardCopyButton = memo(ClipBoardCopyButton);
 
 type NodeInputProps = Pick<InputProps, "style"> & {
@@ -80,6 +78,8 @@ const MemorizedItemNode = memo(ItemNode);
 /**
  * TODO: ドメインに関する型定義なので実装箇所を変更する
  */
+export type NodeType = "root" | "internal" | "leaf";
+
 export type ItemType = {
 	nodeType: NodeType;
 	itemId: string;

@@ -168,7 +168,7 @@ export const RecipeProvider: FC<RecipeProviderProps> = (props) => {
 			id: nanoid(),
 			type: "childNode",
 			data: {
-				nodeType: "internal",
+				nodeType: "root",
 				itemId: craftItem.spec.itemId,
 				itemName: craftItem.spec.name,
 				unit: rootCount,
