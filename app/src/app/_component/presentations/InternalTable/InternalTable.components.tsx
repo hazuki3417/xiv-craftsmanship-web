@@ -1,4 +1,4 @@
-import { FC, memo, ReactNode, useCallback, useMemo, useState } from "react";
+import { FC, memo, ReactNode, useCallback, useMemo, useReducer } from "react";
 import { ChildItemType, ClipBoardCopyButton, ItemType } from "../index";
 import { Group, Input, rem, Table, UnstyledButton } from "@mantine/core";
 import {
@@ -10,6 +10,7 @@ import {
 	InternalTableContext,
 	useInternalTable,
 	SortState,
+	SortField,
 } from "./InternalTable.context";
 
 export interface InternalTableProviderProps {
@@ -21,63 +22,65 @@ const defaultSortState: SortState = {
 	quantity: "none",
 };
 
-export const InternalTableProvider: FC<InternalTableProviderProps> = (
-	props,
-) => {
-	const { children, ...rest } = props;
-	const [sort, setSort] = useState<SortState>(defaultSortState);
+type Action = {
+	type: SortField;
+};
 
-	const toggleSortName = useCallback(() => {
-		setSort((prevSort) => {
+const reducer = (state: SortState, action: Action): SortState => {
+	switch (action.type) {
+		case "name":
 			return {
 				quantity: "none",
 				name:
-					prevSort.name === "none"
+					state.name === "none"
 						? "ascending"
-						: prevSort.name === "ascending"
+						: state.name === "ascending"
 							? "descending"
 							: "none",
 			};
-		});
-	}, []);
-
-	const toggleSortQuantity = useCallback(() => {
-		setSort((prevSort) => {
+		case "quantity":
 			return {
 				quantity:
-					prevSort.quantity === "none"
+					state.quantity === "none"
 						? "ascending"
-						: prevSort.quantity === "ascending"
+						: state.quantity === "ascending"
 							? "descending"
 							: "none",
 				name: "none",
 			};
-		});
-	}, []);
+		default:
+			return state;
+	}
+};
+
+export const InternalTableProvider: FC<InternalTableProviderProps> = (
+	props,
+) => {
+	const { children } = props;
+
+	const [sort, dispatch] = useReducer(reducer, defaultSortState);
 
 	const iconSize = 16;
 
 	const iconName = useMemo(() => {
-		const target = "name";
-		if (sort[target] === "ascending") {
+		if (sort.name === "ascending") {
 			return <IconSortAscending size={iconSize} />;
 		}
-		if (sort[target] === "descending") {
+		if (sort.name === "descending") {
 			return <IconSortDescending size={iconSize} />;
 		}
 		return <IconArrowsSort size={iconSize} />;
-	}, [sort["name"]]);
+	}, [sort.name]);
 
 	const iconQuantity = useMemo(() => {
-		const target = "quantity";
-		if (sort[target] === "ascending") {
+		if (sort.quantity === "ascending") {
 			return <IconSortAscending size={iconSize} />;
 		}
-		if (sort[target] === "descending") {
+		if (sort.quantity === "descending") {
 			return <IconSortDescending size={iconSize} />;
 		}
 		return <IconArrowsSort size={iconSize} />;
-	}, [sort["quantity"]]);
+	}, [sort.quantity]);
 
 	return (
 		<InternalTableContext.Provider
@@ -86,12 +89,12 @@ export const InternalTableProvider: FC<InternalTableProviderProps> = (
 				name: {
 					label: "name",
 					icon: iconName,
-					sort: toggleSortName,
+					sort: useCallback(() => dispatch({ type: "name" }), []),
 				},
 				quantity: {
 					label: "quantity",
 					icon: iconQuantity,
-					sort: toggleSortQuantity,
+					sort: useCallback(() => dispatch({ type: "quantity" }), []),
 				},
 			}}
 		>

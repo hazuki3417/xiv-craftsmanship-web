@@ -1,9 +1,9 @@
 import { createContext, ReactNode, useContext } from "react";
 
 export type SortType = "none" | "ascending" | "descending";
+export type SortField = "name" | "quantity";
 export type SortState = {
-	name: SortType;
-	quantity: SortType;
+	[K in SortField]: SortType;
 };
 
 interface SortButtonContextValue {
