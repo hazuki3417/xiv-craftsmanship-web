@@ -1,6 +1,6 @@
 import { ActionIcon, CopyButton, Tooltip, rem } from "@mantine/core";
 import { IconCheck, IconCopy } from "@tabler/icons-react";
-import { FC, memo } from "react";
+import { FC } from "react";
 
 export interface ClipBoardCopyButtonProps {
 	value: string;
