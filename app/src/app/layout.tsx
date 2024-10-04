@@ -6,7 +6,7 @@ import { FC } from "react";
 import { ReactNode } from "react";
 import type { Metadata } from "next";
 import { theme } from "@/lib/theme";
-import { Header } from "./_component/containers/Header";
+import { Header } from "./_component/containers";
 
 const metadata: Metadata = {
 	title: "xiv-craftsmanship",
