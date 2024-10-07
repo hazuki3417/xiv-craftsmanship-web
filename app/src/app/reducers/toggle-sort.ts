@@ -33,8 +33,3 @@ export const reducer = (state: SortState, action: Action): SortState => {
 			return state;
 	}
 };
-
-export const defaultState: SortState = {
-	name: "none",
-	quantity: "none",
-};

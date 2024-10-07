@@ -1,4 +1,4 @@
-import { FC, memo, ReactNode, useCallback, useMemo, useReducer } from "react";
+import { FC, memo, ReactNode, useMemo } from "react";
 import { ChildItemType, ClipBoardCopyButton, ItemType } from "../index";
 import { Group, Input, rem, Table, UnstyledButton } from "@mantine/core";
 import {
@@ -9,56 +9,19 @@ import {
 import {
 	InternalTableContext,
 	useInternalTable,
-	SortState,
-	SortField,
 } from "./InternalTable.context";
+import { defaultState, useToggleSort } from "@/app/hooks/useToggleSort";
 
 export interface InternalTableProviderProps {
 	children: ReactNode;
 }
-
-const defaultSortState: SortState = {
-	name: "none",
-	quantity: "none",
-};
-
-type Action = {
-	type: SortField;
-};
-
-const reducer = (state: SortState, action: Action): SortState => {
-	switch (action.type) {
-		case "name":
-			return {
-				quantity: "none",
-				name:
-					state.name === "none"
-						? "ascending"
-						: state.name === "ascending"
-							? "descending"
-							: "none",
-			};
-		case "quantity":
-			return {
-				quantity:
-					state.quantity === "none"
-						? "ascending"
-						: state.quantity === "ascending"
-							? "descending"
-							: "none",
-				name: "none",
-			};
-		default:
-			return state;
-	}
-};
 
 export const InternalTableProvider: FC<InternalTableProviderProps> = (
 	props,
 ) => {
 	const { children } = props;
 
-	const [sort, dispatch] = useReducer(reducer, defaultSortState);
+	const { sort, name, quantity } = useToggleSort(defaultState);
 
 	const iconSize = 16;
 
@@ -89,12 +52,12 @@ export const InternalTableProvider: FC<InternalTableProviderProps> = (
 				name: {
 					label: "name",
 					icon: iconName,
-					sort: useCallback(() => dispatch({ type: "name" }), []),
+					sort: name,
 				},
 				quantity: {
 					label: "quantity",
 					icon: iconQuantity,
-					sort: useCallback(() => dispatch({ type: "quantity" }), []),
+					sort: quantity,
 				},
 			}}
 		>
