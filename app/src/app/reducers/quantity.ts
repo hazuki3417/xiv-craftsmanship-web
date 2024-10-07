@@ -17,3 +17,7 @@ export const reducer = (
 			return { count: Math.max(1, state.count - 1) };
 	}
 };
+
+export const defaultState: QuantityState = {
+	count: 1,
+};

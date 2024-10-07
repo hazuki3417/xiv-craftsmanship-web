@@ -58,7 +58,7 @@ describe("quanitity reducer test", () => {
 			input: number;
 			expected: number;
 		}[] = [
-      			{ input: 0, expected: 1 },
+			{ input: 0, expected: 1 },
 			{ input: 1, expected: 1 },
 			{ input: 2, expected: 1 },
 			{ input: 3, expected: 2 },
