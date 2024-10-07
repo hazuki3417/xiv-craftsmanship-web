@@ -1,10 +1,5 @@
 import { createContext, ReactNode, useContext } from "react";
-
-export type SortType = "none" | "ascending" | "descending";
-export type SortField = "name" | "quantity";
-export type SortState = {
-	[K in SortField]: SortType;
-};
+import { SortState } from "@/app/hooks/useToggleSort";
 
 interface SortButtonContextValue {
 	label: string;

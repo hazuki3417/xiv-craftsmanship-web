@@ -1,5 +1,6 @@
 import { useCallback, useReducer } from "react";
 import { reducer, SortState } from "../reducers/toggle-sort";
+export type * from "../reducers/toggle-sort"
 
 export interface UseToggleSort {
 	sort: SortState;
