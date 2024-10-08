@@ -159,6 +159,7 @@ export const RecipeProvider: FC<RecipeProviderProps> = (props) => {
 			return;
 		}
 
+		console.log("select recipe", craftItem)
 		const depth = {
 			x: new Depth(),
 			y: new Depth(),
@@ -171,7 +172,7 @@ export const RecipeProvider: FC<RecipeProviderProps> = (props) => {
 				nodeType: "root",
 				itemId: craftItem.spec.itemId,
 				itemName: craftItem.spec.name,
-				unit: rootCount,
+				unit: craftItem.spec.pieces,
 				total: rootCount * craftItem.spec.pieces,
 				source: "",
 				type: "material",
@@ -544,17 +545,17 @@ export const RecipeInfoPanel: FC<RecipeInfoPanelProps> = (props) => {
 
 	const recipe = craftItem
 		? {
-				pieces: craftItem.spec.pieces.toString(),
-				craftLevel: craftItem.spec.craftLevel?.toString() || "-",
-				itemLevel: craftItem.spec.itemLevel.toString(),
-				job: craftItem.spec.job,
-			}
+			pieces: craftItem.spec.pieces.toString(),
+			craftLevel: craftItem.spec.craftLevel?.toString() || "-",
+			itemLevel: craftItem.spec.itemLevel.toString(),
+			job: craftItem.spec.job,
+		}
 		: {
-				pieces: "-",
-				craftLevel: "-",
-				itemLevel: "-",
-				job: "-",
-			};
+			pieces: "-",
+			craftLevel: "-",
+			itemLevel: "-",
+			job: "-",
+		};
 
 	return (
 		<Group>
