@@ -9,7 +9,6 @@ import {
 } from "react";
 import { CraftItem, RecipeContext, useRecipe } from "./Recipe.context";
 import { Depth } from "@/lib";
-import { useEdgesState, useNodesState } from "@xyflow/react";
 import { LeafTable } from "../LeafTable";
 import { InternalTable } from "../InternalTable";
 import { useMaterialManager } from "../MaterialManagerProvider";
@@ -21,19 +20,19 @@ import {
 	useCombobox,
 	rem,
 	Group,
-	NumberInput,
-	Text,
-	Grid,
 	SegmentedControl,
 	ScrollArea,
 	SegmentedControlItem,
 } from "@mantine/core";
 import { useDebouncedValue } from "@mantine/hooks";
-import { IconMinus, IconPlus, IconSearch, IconX } from "@tabler/icons-react";
 import { CrystalTable } from "../CrystalTable";
 import { Craft, Recipe, getCraft, getRecipe } from "@/openapi";
 import { nanoid } from "nanoid";
 import { Node, Edge, useQuantity, useMaterialTree } from "@/app/hooks";
+import { QuanitityChangeInput } from "./QuanitityChangeInput";
+import { RecipeInfo } from "./RecipeInfo";
+import { RecipeSearchBox } from "./RecipeSearchBox";
+import { RecipeSearchDropdown } from "./RecipeSearchDropdown";
 
 /**
  * レシピツリーを解析して、Diagram用のノードとエッジを構築する
@@ -138,10 +137,6 @@ export const RecipeProvider: FC<RecipeProviderProps> = (props) => {
 		edges: [],
 	});
 
-	// diagramのノードとエッジを管理
-	// const [nodes, setNodes] = useNodesState<Node>([]);
-	// const [edges, setEdges] = useEdgesState<Edge>([]);
-
 	const onClear = useCallback(() => {
 		setCraftItem(null);
 		dispatch.craftItem({ recipeId, craftItem: null });
@@ -197,8 +192,6 @@ export const RecipeProvider: FC<RecipeProviderProps> = (props) => {
 
 	useEffect(() => {
 		setQuantity(quantity);
-		console.debug("nodes", nodes);
-		console.debug("edges", edges);
 	}, [quantity]);
 
 	return (
@@ -275,66 +268,6 @@ export const RecipeInternalTable: FC = () => {
 type SearchState = {
 	value: string;
 	keyTypeChange: boolean;
-};
-
-type RecipeSearchBoxProps = {
-	loading: boolean;
-	value: string;
-	onBlur: () => void;
-	onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-	onClear: () => void;
-};
-
-const RecipeSearchBox: FC<RecipeSearchBoxProps> = (props) => {
-	const { loading, value, onBlur, onChange, onClear } = props;
-
-	const MemorizeClearButton = useMemo(() => {
-		return (
-			<ActionIcon variant="subtle" onClick={onClear}>
-				<IconX style={{ width: rem(16) }} />
-			</ActionIcon>
-		);
-	}, [onClear]);
-
-	const MemorizeLoadingIcon = useMemo(() => {
-		return loading ? <Loader size={20} /> : <IconSearch />;
-	}, [loading]);
-
-	return (
-		<Combobox.Target>
-			<Input
-				size="xs"
-				placeholder="search"
-				value={value}
-				leftSection={MemorizeLoadingIcon}
-				rightSection={MemorizeClearButton}
-				rightSectionPointerEvents="all"
-				onChange={onChange}
-				onBlur={onBlur}
-			/>
-		</Combobox.Target>
-	);
-};
-
-type RecipeSearchDropdownProps = {
-	items: Craft[];
-};
-
-const RecipeSearchDropdown: FC<RecipeSearchDropdownProps> = (props) => {
-	const { items } = props;
-
-	const MemorizeOptions = useMemo(() => {
-		if (items.length === 0) {
-			return <Combobox.Empty>Nothing found</Combobox.Empty>;
-		}
-		return items.map((item) => (
-			<Combobox.Option key={item.recipeId} value={item.recipeId}>
-				{item.name}
-			</Combobox.Option>
-		));
-	}, [items]);
-
-	return <Combobox.Dropdown>{MemorizeOptions}</Combobox.Dropdown>;
 };
 
 export const RecipeSearch: FC = () => {
@@ -442,105 +375,7 @@ export const RecipeSearch: FC = () => {
 	);
 };
 
-type RecipeInfoProps = {
-	pieces: string;
-	craftLevel: string;
-	itemLevel: string;
-	job: string;
-};
-
-const RecipeInfo: FC<RecipeInfoProps> = (props) => {
-	const { pieces, craftLevel, itemLevel, job } = props;
-	return (
-		<>
-			<Group gap="xs">
-				pieces:
-				<NumberInput
-					size="xs"
-					value={pieces}
-					style={{ width: "3ch" }}
-					readOnly
-					variant="unstyled"
-				/>
-			</Group>
-			<Group gap="xs">
-				craft lv:
-				<Input
-					size="xs"
-					value={craftLevel}
-					style={{ width: "3ch" }}
-					readOnly
-					variant="unstyled"
-				/>
-			</Group>
-			<Group gap="xs">
-				item lv:
-				<Input
-					size="xs"
-					value={itemLevel}
-					style={{ width: "3ch" }}
-					readOnly
-					variant="unstyled"
-				/>
-			</Group>
-			<Group gap="xs">
-				job:
-				<Input
-					size="xs"
-					value={job}
-					style={{ width: "5ch" }}
-					readOnly
-					variant="unstyled"
-				/>
-			</Group>
-		</>
-	);
-};
-
 const MemoizedRecipeInfo = memo(RecipeInfo);
-
-type QuanitityChangeInputProps = {
-	quantity: number;
-	onCountUp: () => void;
-	onCountDown: () => void;
-};
-
-const QuanitityChangeInput: FC<QuanitityChangeInputProps> = (props) => {
-	const { quantity, onCountUp, onCountDown } = props;
-
-	const CountUpIcon = useMemo(() => {
-		return (
-			<ActionIcon variant="subtle" style={{ marginLeft: 5 }}>
-				<IconPlus style={{ width: rem(16) }} onClick={onCountUp} />
-			</ActionIcon>
-		);
-	}, []);
-	const CountDownIcon = useMemo(() => {
-		return (
-			<ActionIcon variant="subtle" style={{ marginLeft: 5 }}>
-				<IconMinus style={{ width: rem(16) }} onClick={onCountDown} />
-			</ActionIcon>
-		);
-	}, []);
-
-	return (
-		<Group gap="xs">
-			quantity:
-			<Group gap={0}>
-				<NumberInput
-					size="xs"
-					style={{ width: "4ch" }}
-					value={quantity}
-					hideControls
-					min={1}
-					max={99}
-				/>
-				{CountUpIcon}
-				{CountDownIcon}
-			</Group>
-		</Group>
-	);
-};
 
 export type RecipeInfoPanelProps = {};
 
@@ -569,7 +404,7 @@ export const RecipeInfoPanel: FC<RecipeInfoPanelProps> = (props) => {
 				onCountUp={root.countUp}
 				onCountDown={root.countDown}
 			/>
-			<MemoizedRecipeInfo {...recipe} />
+			<RecipeInfo {...recipe} />
 		</Group>
 	);
 };
