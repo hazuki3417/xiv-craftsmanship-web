@@ -1,2 +1,2 @@
 export * from "./Diagram";
-export * from "./Diagram.components";
+export * from "./RFItemNode";
