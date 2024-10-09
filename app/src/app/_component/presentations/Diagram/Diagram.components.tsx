@@ -2,8 +2,9 @@ import { FC } from "react";
 import { Box, Checkbox, Grid, Input, InputProps } from "@mantine/core";
 import { Handle, Position } from "@xyflow/react";
 import { memo } from "react";
-import type { Node, NodeProps } from "@xyflow/react";
+import type { NodeProps } from "@xyflow/react";
 import { ClipBoardCopyButton } from "../ClipBoardCopyButton";
+import { Node } from "@/app/hooks";
 
 const MemolizeClipBoardCopyButton = memo(ClipBoardCopyButton);
 
@@ -31,11 +32,11 @@ const MemorizedNodeInput = memo(NodeInput);
 type ItemNodeProps = {
 	name: string;
 	unit: string;
-	total: string;
+	quantity: string;
 };
 
 const ItemNode: FC<ItemNodeProps> = (props) => {
-	const { name, unit, total } = props;
+	const { name, unit, quantity } = props;
 
 	return (
 		<Box
@@ -63,9 +64,9 @@ const ItemNode: FC<ItemNodeProps> = (props) => {
 						<Grid.Col span={4}>
 							<MemorizedNodeInput value={unit} style={{ width: "7ch" }} />
 						</Grid.Col>
-						<Grid.Col span={2}>total:</Grid.Col>
+						<Grid.Col span={2}>unit:</Grid.Col>
 						<Grid.Col span={4}>
-							<MemorizedNodeInput value={total} style={{ width: "7ch" }} />
+							<MemorizedNodeInput value={quantity} style={{ width: "7ch" }} />
 						</Grid.Col>
 					</Grid>
 				</Grid.Col>
@@ -75,32 +76,13 @@ const ItemNode: FC<ItemNodeProps> = (props) => {
 };
 const MemorizedItemNode = memo(ItemNode);
 
-/**
- * TODO: ドメインに関する型定義なので実装箇所を変更する
- */
-export type NodeType = "root" | "internal" | "leaf";
-
-export type ItemType = {
-	nodeType: NodeType;
-	itemId: string;
-	itemName: string;
-	unit: number;
-	total: number;
-	type: string;
-	source: string;
-};
-
-export type ChildItemType = ItemType;
-
-export type DiagramChildNodeProps = Node<ChildItemType>;
-
-export const DiagramChildNode = (props: NodeProps<DiagramChildNodeProps>) => {
-	const { itemName, unit, total } = props.data;
+export const DiagramChildNode = (props: NodeProps<Node>) => {
+	const { itemName, unit, quantity } = props.data;
 
 	const item: ItemNodeProps = {
 		name: itemName,
 		unit: unit.toString(),
-		total: total.toString(),
+		quantity: quantity.toString(),
 	};
 
 	return (
@@ -113,5 +95,3 @@ export const DiagramChildNode = (props: NodeProps<DiagramChildNodeProps>) => {
 };
 DiagramChildNode.displayName =
 	"component/presentations/Diagram/DiagramChildNode";
-
-export type DiagramNodeProps = DiagramChildNodeProps;

@@ -9,8 +9,7 @@ import {
 } from "react";
 import { CraftItem, RecipeContext, useRecipe } from "./Recipe.context";
 import { Depth } from "@/lib";
-import { DiagramChildNodeProps, DiagramNodeProps } from "../Diagram";
-import { Edge, useEdgesState, useNodesState } from "@xyflow/react";
+import { useEdgesState, useNodesState } from "@xyflow/react";
 import { LeafTable } from "../LeafTable";
 import { InternalTable } from "../InternalTable";
 import { useMaterialManager } from "../MaterialManagerProvider";
@@ -34,6 +33,7 @@ import { IconMinus, IconPlus, IconSearch, IconX } from "@tabler/icons-react";
 import { CrystalTable } from "../CrystalTable";
 import { Craft, Recipe, getCraft, getRecipe } from "@/openapi";
 import { nanoid } from "nanoid";
+import { Node, Edge, useQuantity, useMaterialTree } from "@/app/hooks";
 
 /**
  * レシピツリーを解析して、Diagram用のノードとエッジを構築する
@@ -43,8 +43,8 @@ const parseRecipeTree = (
 	parentNodeId: string,
 	parentCount: number,
 	depth: { x: Depth; y: Depth },
-): { nodes: DiagramChildNodeProps[]; edges: Edge[] } => {
-	const nodes: DiagramChildNodeProps[] = [];
+): { nodes: Node[]; edges: Edge[] } => {
+	const nodes: Node[] = [];
 	const edges: Edge[] = [];
 
 	const childBasePoint = { x: 0, y: 0 };
@@ -74,12 +74,14 @@ const parseRecipeTree = (
 			type: "childNode",
 			data: {
 				nodeType: existsRecipe ? "internal" : "leaf",
+				itemType: material.type,
 				itemId: material.itemId,
 				itemName: material.itemName,
+				pieces: 1,
 				unit: material.quantity,
-				total: total,
+				quantity: total,
 				source: "",
-				type: material.type,
+				depth: { x: depth.x.getDepth(), y: depth.y.getDepth() },
 			},
 			position: {
 				x: childBasePoint.x + depth.x.getDepth() * childNodeSpace.x,
@@ -127,12 +129,18 @@ export const RecipeProvider: FC<RecipeProviderProps> = (props) => {
 		fetch.craftItem(recipeId),
 	);
 
-	//  rootのアイテム数を管理
-	const [rootCount, setRootCount] = useState(fetch.quantity(recipeId));
+	const { quantity, countUp, countDown } = useQuantity({
+		count: fetch.quantity(recipeId),
+	});
+
+	const { nodes, edges, setTree, setQuantity } = useMaterialTree({
+		nodes: [],
+		edges: [],
+	});
 
 	// diagramのノードとエッジを管理
-	const [nodes, setNodes] = useNodesState<DiagramNodeProps>([]);
-	const [edges, setEdges] = useEdgesState<Edge>([]);
+	// const [nodes, setNodes] = useNodesState<Node>([]);
+	// const [edges, setEdges] = useEdgesState<Edge>([]);
 
 	const onClear = useCallback(() => {
 		setCraftItem(null);
@@ -140,42 +148,32 @@ export const RecipeProvider: FC<RecipeProviderProps> = (props) => {
 		dispatch.materials({ recipeId, materials: [] });
 	}, []);
 
-	const rootCountUp = useCallback(() => {
-		setRootCount((value) => {
-			return Math.min(99, value + 1);
-		});
-	}, []);
-
-	const rootCountDown = useCallback(() => {
-		setRootCount((value) => {
-			return Math.max(1, value - 1);
-		});
-	}, []);
-
 	useEffect(() => {
 		if (!craftItem) {
 			// 選択されていないとき
-			setNodes([]);
+			setTree([], []);
 			return;
 		}
 
-		console.log("select recipe", craftItem)
+		console.log("select recipe", craftItem);
 		const depth = {
 			x: new Depth(),
 			y: new Depth(),
 		};
 
-		const root: DiagramChildNodeProps = {
+		const root: Node = {
 			id: nanoid(),
 			type: "childNode",
 			data: {
 				nodeType: "root",
+				itemType: "material",
 				itemId: craftItem.spec.itemId,
 				itemName: craftItem.spec.name,
+				pieces: craftItem.spec.pieces,
 				unit: craftItem.spec.pieces,
-				total: rootCount * craftItem.spec.pieces,
+				quantity: quantity * craftItem.spec.pieces,
 				source: "",
-				type: "material",
+				depth: { x: depth.x.getDepth(), y: depth.y.getDepth() },
 			},
 			position: {
 				x: 0,
@@ -191,20 +189,25 @@ export const RecipeProvider: FC<RecipeProviderProps> = (props) => {
 			depth,
 		);
 
-		setNodes([root, ...nodes]);
-		setEdges(edges);
+		setTree([root, ...nodes], edges);
 		dispatch.craftItem({ recipeId, craftItem });
 		dispatch.materials({ recipeId, materials: nodes.map((node) => node.data) });
-		dispatch.quantity({ recipeId, quantity: rootCount });
-	}, [craftItem, rootCount]);
+		dispatch.quantity({ recipeId, quantity: quantity });
+	}, [craftItem]);
+
+	useEffect(() => {
+		setQuantity(quantity);
+		console.debug("nodes", nodes);
+		console.debug("edges", edges);
+	}, [quantity]);
 
 	return (
 		<RecipeContext.Provider
 			value={{
 				root: {
-					quantity: rootCount,
-					countUp: rootCountUp,
-					countDown: rootCountDown,
+					quantity: quantity,
+					countUp: countUp,
+					countDown: countDown,
 					onClear: onClear,
 				},
 				dispatch: { craftitem: setCraftItem },
@@ -222,8 +225,8 @@ RecipeProvider.displayName = "component/presentations/Recipe/RecipeProvider";
 export const RecipeCrystalTable: FC = () => {
 	const { nodes } = useRecipe();
 	const items = nodes
-		.filter((node): node is DiagramChildNodeProps => {
-			return node.data.type === "crystal";
+		.filter((node): node is Node => {
+			return node.data.itemType === "crystal";
 		})
 		.flatMap((node) => node.data);
 
@@ -238,8 +241,8 @@ export const RecipeCrystalTable: FC = () => {
 export const RecipeLeafTable: FC = () => {
 	const { nodes } = useRecipe();
 	const items = nodes
-		.filter((node): node is DiagramChildNodeProps => {
-			return node.data.nodeType === "leaf" && node.data.type === "material";
+		.filter((node): node is Node => {
+			return node.data.nodeType === "leaf" && node.data.itemType === "material";
 		})
 		.flatMap((node) => node.data);
 
@@ -254,8 +257,10 @@ export const RecipeLeafTable: FC = () => {
 export const RecipeInternalTable: FC = () => {
 	const { nodes } = useRecipe();
 	const items = nodes
-		.filter((node): node is DiagramChildNodeProps => {
-			return node.data.nodeType === "internal" && node.data.type === "material";
+		.filter((node): node is Node => {
+			return (
+				node.data.nodeType === "internal" && node.data.itemType === "material"
+			);
 		})
 		.flatMap((node) => node.data);
 
@@ -545,17 +550,17 @@ export const RecipeInfoPanel: FC<RecipeInfoPanelProps> = (props) => {
 
 	const recipe = craftItem
 		? {
-			pieces: craftItem.spec.pieces.toString(),
-			craftLevel: craftItem.spec.craftLevel?.toString() || "-",
-			itemLevel: craftItem.spec.itemLevel.toString(),
-			job: craftItem.spec.job,
-		}
+				pieces: craftItem.spec.pieces.toString(),
+				craftLevel: craftItem.spec.craftLevel?.toString() || "-",
+				itemLevel: craftItem.spec.itemLevel.toString(),
+				job: craftItem.spec.job,
+			}
 		: {
-			pieces: "-",
-			craftLevel: "-",
-			itemLevel: "-",
-			job: "-",
-		};
+				pieces: "-",
+				craftLevel: "-",
+				itemLevel: "-",
+				job: "-",
+			};
 
 	return (
 		<Group>

@@ -1,5 +1,5 @@
 import { FC, memo, ReactNode, useMemo } from "react";
-import { ChildItemType, ClipBoardCopyButton, ItemType } from "../index";
+import { ClipBoardCopyButton } from "../index";
 import { Group, Input, rem, Table, UnstyledButton } from "@mantine/core";
 import {
 	IconArrowsSort,
@@ -7,7 +7,11 @@ import {
 	IconSortDescending,
 } from "@tabler/icons-react";
 import { CrystalTableContext, useCrystalTable } from "./CrystalTable.context";
-import { defaultState, useToggleSort } from "@/app/hooks/useToggleSort";
+import {
+	defaultToogleSortState,
+	NodeDataType,
+	useToggleSort,
+} from "@/app/hooks";
 
 export interface CrystalTableProviderProps {
 	children: ReactNode;
@@ -16,7 +20,7 @@ export interface CrystalTableProviderProps {
 export const CrystalTableProvider: FC<CrystalTableProviderProps> = (props) => {
 	const { children } = props;
 
-	const { sort, name, quantity } = useToggleSort(defaultState);
+	const { sort, name, quantity } = useToggleSort(defaultToogleSortState);
 
 	const iconSize = 16;
 
@@ -118,12 +122,12 @@ export const CrystalTableHeader: FC<CrystalTableHeaderProps> = (props) => {
 CrystalTableHeader.displayName =
 	"component/presentations/CrystalTable/CrystalTableHeader";
 
-const aggregateById = (nodes: ItemType[]): ItemType[] => {
-	const idMap: { [id: string]: ItemType } = {};
+const aggregateById = (nodes: NodeDataType[]): NodeDataType[] => {
+	const idMap: { [id: string]: NodeDataType } = {};
 
 	nodes.forEach((node) => {
 		if (idMap[node.itemId]) {
-			idMap[node.itemId].total += node.total;
+			idMap[node.itemId].quantity += node.quantity;
 		} else {
 			idMap[node.itemId] = { ...node };
 		}
@@ -165,7 +169,7 @@ export const CrystalTableRow: FC<CrystalTableRowProps> = (props) => {
 const MemoizedCrystalTableRow = memo(CrystalTableRow);
 
 export type CrystalTableBodyProps = {
-	items: ChildItemType[];
+	items: NodeDataType[];
 };
 
 export const CrystalTableBody: FC<CrystalTableBodyProps> = (props) => {
@@ -187,11 +191,11 @@ export const CrystalTableBody: FC<CrystalTableBodyProps> = (props) => {
 			}
 
 			if (sort.quantity === "ascending") {
-				return a.total - b.total;
+				return a.quantity - b.quantity;
 			}
 
 			if (sort.quantity === "descending") {
-				return b.total - a.total;
+				return b.quantity - a.quantity;
 			}
 			return 0;
 		});
@@ -215,7 +219,7 @@ export const CrystalTableBody: FC<CrystalTableBodyProps> = (props) => {
 				<MemoizedCrystalTableRow
 					key={item.itemId}
 					name={item.itemName}
-					total={item.total}
+					total={item.quantity}
 				/>
 			))}
 		</Table.Tbody>

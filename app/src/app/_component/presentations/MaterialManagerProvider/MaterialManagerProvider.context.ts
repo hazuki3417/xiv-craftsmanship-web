@@ -1,14 +1,14 @@
 import { createContext, useContext } from "react";
-import { ChildItemType } from "../Diagram";
 import {
 	CraftData,
 	MaterialData,
 	QuantityData,
 } from "./MaterialManagerProvider";
 import { CraftItem } from "../Recipe";
+import { Node } from "@/app/hooks";
 
 export interface MaterialManagerContextValue {
-	materials: ChildItemType[];
+	materials: Node[];
 	dispatch: {
 		materials: (data: MaterialData) => void;
 		craftItem: (data: CraftData) => void;

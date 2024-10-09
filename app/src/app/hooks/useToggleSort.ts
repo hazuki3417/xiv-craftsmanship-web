@@ -1,6 +1,6 @@
 import { useCallback, useReducer } from "react";
 import { reducer, SortState } from "../reducers/toggle-sort";
-export type * from "../reducers/toggle-sort"
+export type * from "../reducers/toggle-sort";
 
 export interface UseToggleSort {
 	sort: SortState;
@@ -18,7 +18,7 @@ export const useToggleSort = (value: SortState): UseToggleSort => {
 	};
 };
 
-export const defaultState: SortState = {
+export const defaultToogleSortState: SortState = {
 	name: "none",
 	quantity: "none",
 };

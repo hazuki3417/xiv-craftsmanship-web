@@ -1,5 +1,5 @@
 import { FC, memo, ReactNode, useMemo } from "react";
-import { ChildItemType, ClipBoardCopyButton, ItemType } from "../index";
+import { ClipBoardCopyButton } from "../index";
 import { Group, Input, rem, Table, UnstyledButton } from "@mantine/core";
 import {
 	IconArrowsSort,
@@ -10,7 +10,11 @@ import {
 	InternalTableContext,
 	useInternalTable,
 } from "./InternalTable.context";
-import { defaultState, useToggleSort } from "@/app/hooks/useToggleSort";
+import {
+	defaultToogleSortState,
+	NodeDataType,
+	useToggleSort,
+} from "@/app/hooks";
 
 export interface InternalTableProviderProps {
 	children: ReactNode;
@@ -21,7 +25,7 @@ export const InternalTableProvider: FC<InternalTableProviderProps> = (
 ) => {
 	const { children } = props;
 
-	const { sort, name, quantity } = useToggleSort(defaultState);
+	const { sort, name, quantity } = useToggleSort(defaultToogleSortState);
 
 	const iconSize = 16;
 
@@ -123,12 +127,12 @@ export const InternalTableHeader: FC<InternalTableHeaderProps> = (props) => {
 InternalTableHeader.displayName =
 	"component/presentations/InternalTable/InternalTableHeader";
 
-const aggregateById = (nodes: ItemType[]): ItemType[] => {
-	const idMap: { [id: string]: ItemType } = {};
+const aggregateById = (nodes: NodeDataType[]): NodeDataType[] => {
+	const idMap: { [id: string]: NodeDataType } = {};
 
 	nodes.forEach((node) => {
 		if (idMap[node.itemId]) {
-			idMap[node.itemId].total += node.total;
+			idMap[node.itemId].quantity += node.quantity;
 		} else {
 			idMap[node.itemId] = { ...node };
 		}
@@ -170,7 +174,7 @@ export const InternalTableRow: FC<InternalTableRowProps> = (props) => {
 const MemoizedInternalTableRow = memo(InternalTableRow);
 
 export type InternalTableBodyProps = {
-	items: ChildItemType[];
+	items: NodeDataType[];
 };
 
 export const InternalTableBody: FC<InternalTableBodyProps> = (props) => {
@@ -192,11 +196,11 @@ export const InternalTableBody: FC<InternalTableBodyProps> = (props) => {
 			}
 
 			if (sort.quantity === "ascending") {
-				return a.total - b.total;
+				return a.quantity - b.quantity;
 			}
 
 			if (sort.quantity === "descending") {
-				return b.total - a.total;
+				return b.quantity - a.quantity;
 			}
 			return 0;
 		});
@@ -220,7 +224,7 @@ export const InternalTableBody: FC<InternalTableBodyProps> = (props) => {
 				<MemoizedInternalTableRow
 					key={item.itemId}
 					name={item.itemName}
-					total={item.total}
+					total={item.quantity}
 				/>
 			))}
 		</Table.Tbody>

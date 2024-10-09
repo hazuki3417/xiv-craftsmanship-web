@@ -1,7 +1,6 @@
 import { createContext, useContext } from "react";
 import { Craft, Recipe } from "@/openapi";
-import { DiagramNodeProps } from "../Diagram";
-import { Edge } from "@xyflow/react";
+import { Node, Edge } from "@/app/hooks";
 
 export type CraftItem = {
 	spec: Craft;
@@ -21,7 +20,7 @@ export interface RecipeContextValue {
 	fetch: {
 		craftItem: () => CraftItem | null;
 	};
-	nodes: DiagramNodeProps[];
+	nodes: Node[];
 	edges: Edge[];
 }
 
