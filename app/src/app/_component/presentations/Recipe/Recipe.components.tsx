@@ -385,17 +385,17 @@ export const RecipeInfoPanel: FC<RecipeInfoPanelProps> = (props) => {
 
 	const recipe = craftItem
 		? {
-				pieces: craftItem.spec.pieces.toString(),
-				craftLevel: craftItem.spec.craftLevel?.toString() || "-",
-				itemLevel: craftItem.spec.itemLevel.toString(),
-				job: craftItem.spec.job,
-			}
+			pieces: craftItem.spec.pieces.toString(),
+			craftLevel: craftItem.spec.craftLevel?.toString() || "-",
+			itemLevel: craftItem.spec.itemLevel.toString(),
+			job: craftItem.spec.job,
+		}
 		: {
-				pieces: "-",
-				craftLevel: "-",
-				itemLevel: "-",
-				job: "-",
-			};
+			pieces: "-",
+			craftLevel: "-",
+			itemLevel: "-",
+			job: "-",
+		};
 
 	return (
 		<Group>
@@ -404,7 +404,7 @@ export const RecipeInfoPanel: FC<RecipeInfoPanelProps> = (props) => {
 				onCountUp={root.countUp}
 				onCountDown={root.countDown}
 			/>
-			<RecipeInfo {...recipe} />
+			<MemoizedRecipeInfo {...recipe} />
 		</Group>
 	);
 };
