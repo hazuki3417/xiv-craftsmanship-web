@@ -1,4 +1,4 @@
-import { Box, Checkbox, Grid } from "@mantine/core";
+import { Box, Checkbox, Grid, Group, Stack } from "@mantine/core";
 import { memo } from "react";
 import { NodeInput } from "./NodeInput";
 
@@ -13,39 +13,31 @@ export type ItemNodeProps = {
 export const ItemNode = (props: ItemNodeProps) => {
 	const { name, unit, quantity } = props;
 
+	// 7ch: 3桁の数字の表示幅
 	return (
 		<Box
 			maw={500}
 			mx="auto"
 			style={{
-				padding: 10,
+				padding: 6,
 				border: "1px solid #aaa",
 				borderRadius: 5,
 				position: "relative",
 			}}
 		>
-			<Grid align="center">
-				<Grid.Col span={1}>
-					<Checkbox size="xs" />
-				</Grid.Col>
-				<Grid.Col span={11}>
-					<Grid align="center">
-						<Grid.Col span={12}>
-							<MemorizedNodeInput value={name} />
-						</Grid.Col>
-					</Grid>
-					<Grid align="center">
-						<Grid.Col span={2}>unit:</Grid.Col>
-						<Grid.Col span={4}>
-							<MemorizedNodeInput value={unit} style={{ width: "7ch" }} />
-						</Grid.Col>
-						<Grid.Col span={2}>total:</Grid.Col>
-						<Grid.Col span={4}>
-							<MemorizedNodeInput value={quantity} style={{ width: "7ch" }} />
-						</Grid.Col>
-					</Grid>
-				</Grid.Col>
-			</Grid>
+			<Stack gap={"4px"}>
+				<MemorizedNodeInput value={name} />
+				<Group gap={"xs"}>
+					<Group gap={"8px"}>
+						unit:
+						<MemorizedNodeInput value={unit} style={{ width: "7ch" }} />
+					</Group>
+					<Group gap={"8px"}>
+						total:
+						<MemorizedNodeInput value={quantity} style={{ width: "7ch" }} />
+					</Group>
+				</Group>
+			</Stack>
 		</Box>
 	);
 };
