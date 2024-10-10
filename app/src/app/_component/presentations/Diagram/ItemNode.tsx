@@ -39,7 +39,7 @@ export const ItemNode = (props: ItemNodeProps) => {
 						<Grid.Col span={4}>
 							<MemorizedNodeInput value={unit} style={{ width: "7ch" }} />
 						</Grid.Col>
-						<Grid.Col span={2}>unit:</Grid.Col>
+						<Grid.Col span={2}>total:</Grid.Col>
 						<Grid.Col span={4}>
 							<MemorizedNodeInput value={quantity} style={{ width: "7ch" }} />
 						</Grid.Col>
