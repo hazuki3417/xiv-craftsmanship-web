@@ -33,85 +33,7 @@ import { QuanitityChangeInput } from "./QuanitityChangeInput";
 import { RecipeInfo } from "./RecipeInfo";
 import { RecipeSearchBox } from "./RecipeSearchBox";
 import { RecipeSearchDropdown } from "./RecipeSearchDropdown";
-
-/**
- * レシピツリーを解析して、Diagram用のノードとエッジを構築する
- */
-const parseRecipeTree = (
-	recipe: Recipe,
-	parentNodeId: string,
-	parentCount: number,
-	depth: { x: Depth; y: Depth },
-): { nodes: Node[]; edges: Edge[] } => {
-	const nodes: Node[] = [];
-	const edges: Edge[] = [];
-
-	const childBasePoint = { x: 0, y: 0 };
-	const childNodeSpace = { x: 380, y: 140 };
-
-	depth.x.increase();
-
-	const materials = recipe.materials;
-	materials.forEach((material, i) => {
-		if (i > 0) {
-			// 1つ目の素材だけ親素材と同じ位置に配置する
-			// 2つ目以降の素材は親素材から1つ下の位置から配置する
-			depth.y.increase();
-		}
-
-		const existsRecipe = material.recipes.length > 0;
-
-		const total =
-			parentCount < recipe.pieces
-				? material.quantity
-				: parentCount * material.quantity;
-
-		const childNodeId = nanoid();
-		material.recipes;
-		nodes.push({
-			id: childNodeId,
-			type: "childNode",
-			data: {
-				nodeType: existsRecipe ? "internal" : "leaf",
-				itemType: material.type,
-				itemId: material.itemId,
-				itemName: material.itemName,
-				pieces: 1,
-				unit: material.quantity,
-				quantity: total,
-				source: "",
-				depth: { x: depth.x.getDepth(), y: depth.y.getDepth() },
-			},
-			position: {
-				x: childBasePoint.x + depth.x.getDepth() * childNodeSpace.x,
-				y: childBasePoint.y + depth.y.getDepth() * childNodeSpace.y,
-			},
-		});
-
-		edges.push({
-			id: `${parentNodeId}-${childNodeId}`,
-			source: parentNodeId,
-			target: childNodeId,
-			type: "smoothstep",
-		});
-
-		if (material.recipes.length > 0) {
-			// レシピが存在するとき
-			const recipe = material.recipes[0];
-			const { nodes: childNodes, edges: childEdges } = parseRecipeTree(
-				recipe,
-				childNodeId,
-				total,
-				{ x: depth.x, y: depth.y },
-			);
-			nodes.push(...childNodes);
-			edges.push(...childEdges);
-		}
-	});
-	depth.x.decrease();
-
-	return { nodes, edges };
-};
+import { parseRecipeTree } from "./parseRecipeTree";
 
 export interface RecipeProviderProps {
 	recipeId: string;
@@ -177,12 +99,7 @@ export const RecipeProvider: FC<RecipeProviderProps> = (props) => {
 		};
 
 		// 選択されたとき
-		const { nodes, edges } = parseRecipeTree(
-			craftItem.tree,
-			root.id,
-			root.data.unit,
-			depth,
-		);
+		const { nodes, edges } = parseRecipeTree(craftItem.tree, root, depth);
 
 		setTree([root, ...nodes], edges);
 		dispatch.craftItem({ recipeId, craftItem });
