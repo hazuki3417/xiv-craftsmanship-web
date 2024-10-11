@@ -1,20 +1,28 @@
-import { Box, Checkbox, Grid, Group, Stack } from "@mantine/core";
-import { memo, ReactNode } from "react";
-import { NodeInput } from "./NodeInput";
+import { Box, Group, Stack } from "@mantine/core";
+import { memo } from "react";
+import { ClipBoardCopyInput } from "@/component/presentations";
 
-const MemorizedNodeInput = memo(NodeInput);
+const MemorizedClipBoardCopyInput = memo(ClipBoardCopyInput);
 
 const Unit = ({ unit }: { unit: string }) => (
 	<Group gap={"8px"}>
 		unit:
-		<MemorizedNodeInput value={unit} style={{ width: "7ch" }} />
+		<MemorizedClipBoardCopyInput
+			size="xs"
+			value={unit}
+			style={{ width: "7ch" }}
+		/>
 	</Group>
 );
 
 const Quantity = ({ quantity }: { quantity: string }) => (
 	<Group gap={"8px"}>
 		total:
-		<MemorizedNodeInput value={quantity} style={{ width: "7ch" }} />
+		<MemorizedClipBoardCopyInput
+			size="xs"
+			value={quantity}
+			style={{ width: "7ch" }}
+		/>
 	</Group>
 );
 
@@ -42,7 +50,7 @@ export const ItemNode = (props: ItemNodeProps) => {
 			}}
 		>
 			<Stack gap={"4px"}>
-				<MemorizedNodeInput value={name} />
+				<MemorizedClipBoardCopyInput value={name} />
 				<Group gap={"xs"}>
 					<MemoizedUnit unit={unit} />
 					<Quantity quantity={quantity} />

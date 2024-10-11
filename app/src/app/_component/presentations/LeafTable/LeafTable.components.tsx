@@ -1,6 +1,6 @@
 import { FC, memo, ReactNode, useMemo } from "react";
-import { ClipBoardCopyButton } from "@/component/presentations";
-import { Group, Input, rem, Table, UnstyledButton } from "@mantine/core";
+import { ClipBoardCopyInput } from "@/component/presentations";
+import { Group, rem, Table, UnstyledButton } from "@mantine/core";
 import {
 	IconArrowsSort,
 	IconSortAscending,
@@ -135,25 +135,7 @@ const aggregateById = (nodes: NodeDataType[]): NodeDataType[] => {
 	return Object.values(idMap);
 };
 
-type CopyInputLabelProps = {
-	value: string;
-};
-
-const CopyInputLabel = (props: CopyInputLabelProps) => {
-	const { value } = props;
-	return (
-		<Input
-			size="xs"
-			leftSectionPointerEvents="all"
-			leftSection={<ClipBoardCopyButton value={value} />}
-			value={value}
-			readOnly
-			variant="unstyled"
-		/>
-	);
-};
-
-const MemoizedCopyInputLabel = memo(CopyInputLabel);
+const MemoizedClipBoardCopyInput = memo(ClipBoardCopyInput);
 
 export type LeafTableRowProps = {
 	name: string;
@@ -168,10 +150,14 @@ export const LeafTableRow: FC<LeafTableRowProps> = memo((props) => {
 	return (
 		<Table.Tr>
 			<Table.Td>
-				<MemoizedCopyInputLabel value={name} />
+				<MemoizedClipBoardCopyInput size="xs" variant="unstyled" value={name} />
 			</Table.Td>
 			<Table.Td>
-				<MemoizedCopyInputLabel value={quantity} />
+				<MemoizedClipBoardCopyInput
+					size="xs"
+					variant="unstyled"
+					value={quantity}
+				/>
 			</Table.Td>
 			<Table.Td>source</Table.Td>
 		</Table.Tr>

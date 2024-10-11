@@ -4,16 +4,18 @@ import { ClipBoardCopyButton } from "@/component/presentations";
 
 const MemolizeClipBoardCopyButton = memo(ClipBoardCopyButton);
 
-export type NodeInputProps = Pick<InputProps, "style"> & {
+export type ClipBoardCopyInputProps = Omit<
+	InputProps,
+	"leftSectionPointerEvents" | "leftSection" | "readOnly"
+> & {
 	value: string;
 };
 
-export const NodeInput = (props: NodeInputProps) => {
+export const ClipBoardCopyInput = (props: ClipBoardCopyInputProps) => {
 	const { value, ...rest } = props;
 
 	return (
 		<Input
-			size="xs"
 			leftSectionPointerEvents="all"
 			leftSection={<MemolizeClipBoardCopyButton value={value} />}
 			value={value}
@@ -22,3 +24,4 @@ export const NodeInput = (props: NodeInputProps) => {
 		/>
 	);
 };
+ClipBoardCopyInput.displayName = "@/component/presentations/ClipBoardCopyInput";
