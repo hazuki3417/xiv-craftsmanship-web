@@ -135,7 +135,25 @@ const aggregateById = (nodes: NodeDataType[]): NodeDataType[] => {
 
 	return Object.values(idMap);
 };
+type CopyInputLabelProps = {
+	value: string;
+};
 
+const CopyInputLabel = (props: CopyInputLabelProps) => {
+	const { value } = props;
+	return (
+		<Input
+			size="xs"
+			leftSectionPointerEvents="all"
+			leftSection={<ClipBoardCopyButton value={value} />}
+			value={value}
+			readOnly
+			variant="unstyled"
+		/>
+	);
+};
+
+const MemoizedCopyInputLabel = memo(CopyInputLabel);
 export type CrystalTableRowProps = {
 	name: string;
 	total: number;
@@ -144,23 +162,15 @@ export type CrystalTableRowProps = {
 export const CrystalTableRow: FC<CrystalTableRowProps> = (props) => {
 	const { name, total } = props;
 
-	const MemoNameColumn = useMemo(() => {
-		return (
-			<Input
-				size="xs"
-				leftSectionPointerEvents="all"
-				leftSection={<ClipBoardCopyButton value={name} />}
-				value={name}
-				readOnly
-				variant="unstyled"
-			/>
-		);
-	}, [name]);
-
+	const quantity = total.toString();
 	return (
 		<Table.Tr>
-			<Table.Td>{MemoNameColumn}</Table.Td>
-			<Table.Td>{total}</Table.Td>
+			<Table.Td>
+				<MemoizedCopyInputLabel value={name} />
+			</Table.Td>
+			<Table.Td>
+				<MemoizedCopyInputLabel value={quantity} />
+			</Table.Td>
 			<Table.Td>source</Table.Td>
 		</Table.Tr>
 	);
