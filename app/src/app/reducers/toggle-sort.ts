@@ -8,8 +8,15 @@ export type Action = {
 	type: SortField;
 };
 
+/**
+ * ascenging : 昇順（1, 2, 3...）
+ * descending: 降順（9, 8, 7...）
+ * @param type
+ * @returns
+ */
+
 const toggleSort = (type: SortType): SortType => {
-	// NOTE: ascending > descending > none...
+	// NOTE: none > ascending > descending > none...
 	return type === "none"
 		? "ascending"
 		: type === "ascending"
