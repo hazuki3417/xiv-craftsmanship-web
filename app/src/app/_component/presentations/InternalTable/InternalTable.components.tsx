@@ -156,10 +156,14 @@ export const InternalTableRow: FC<InternalTableRowProps> = (props) => {
 	return (
 		<Table.Tr>
 			<Table.Td>
-				<MemoizedClipBoardCopyInput value={name} />
+				<MemoizedClipBoardCopyInput size="xs" variant="unstyled" value={name} />
 			</Table.Td>
 			<Table.Td>
-				<MemoizedClipBoardCopyInput value={quantity} />
+				<MemoizedClipBoardCopyInput
+					size="xs"
+					variant="unstyled"
+					value={quantity}
+				/>
 			</Table.Td>
 			<Table.Td></Table.Td>
 		</Table.Tr>

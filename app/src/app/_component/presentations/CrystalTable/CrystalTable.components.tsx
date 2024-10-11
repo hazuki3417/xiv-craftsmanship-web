@@ -149,10 +149,14 @@ export const CrystalTableRow: FC<CrystalTableRowProps> = (props) => {
 	return (
 		<Table.Tr>
 			<Table.Td>
-				<MemoizedClipBoardCopyInput value={name} />
+				<MemoizedClipBoardCopyInput size="xs" variant="unstyled" value={name} />
 			</Table.Td>
 			<Table.Td>
-				<MemoizedClipBoardCopyInput value={quantity} />
+				<MemoizedClipBoardCopyInput
+					size="xs"
+					variant="unstyled"
+					value={quantity}
+				/>
 			</Table.Td>
 			<Table.Td>source</Table.Td>
 		</Table.Tr>
