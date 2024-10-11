@@ -1,39 +1,25 @@
-import {
-	ReactNode,
-	FC,
-	useState,
-	useEffect,
-	useCallback,
-	useMemo,
-	memo,
-} from "react";
+import { ReactNode, FC, useState, useEffect, useCallback, memo } from "react";
 import { CraftItem, RecipeContext, useRecipe } from "./Recipe.context";
 import { Depth } from "@/lib";
-import { LeafTable } from "../LeafTable";
-import { InternalTable } from "../InternalTable";
 import { useMaterialManager } from "../MaterialManagerProvider";
 import {
-	ActionIcon,
 	Combobox,
-	Input,
-	Loader,
 	useCombobox,
-	rem,
 	Group,
 	SegmentedControl,
 	ScrollArea,
 	SegmentedControlItem,
 } from "@mantine/core";
 import { useDebouncedValue } from "@mantine/hooks";
-import { CrystalTable } from "../CrystalTable";
-import { Craft, Recipe, getCraft, getRecipe } from "@/openapi";
+import { Craft, getCraft, getRecipe } from "@/openapi";
 import { nanoid } from "nanoid";
-import { Node, Edge, useQuantity, useMaterialTree } from "@/app/hooks";
+import { Node, useQuantity, useMaterialTree } from "@/app/hooks";
 import { QuanitityChangeInput } from "./QuanitityChangeInput";
 import { RecipeInfo } from "./RecipeInfo";
 import { RecipeSearchBox } from "./RecipeSearchBox";
 import { RecipeSearchDropdown } from "./RecipeSearchDropdown";
 import { parseRecipeTree } from "./parseRecipeTree";
+import { MaterialTable } from "@/component/presentations/MaterialTable";
 
 export interface RecipeProviderProps {
 	recipeId: string;
@@ -141,10 +127,10 @@ export const RecipeCrystalTable: FC = () => {
 		.flatMap((node) => node.data);
 
 	return (
-		<CrystalTable>
-			<CrystalTable.Header />
-			<CrystalTable.Body items={items} />
-		</CrystalTable>
+		<MaterialTable
+			items={items}
+			sort={{ name: "none", quantity: "descending" }}
+		/>
 	);
 };
 
@@ -157,10 +143,10 @@ export const RecipeLeafTable: FC = () => {
 		.flatMap((node) => node.data);
 
 	return (
-		<LeafTable>
-			<LeafTable.Header />
-			<LeafTable.Body items={items} />
-		</LeafTable>
+		<MaterialTable
+			items={items}
+			sort={{ name: "none", quantity: "descending" }}
+		/>
 	);
 };
 
@@ -175,10 +161,10 @@ export const RecipeInternalTable: FC = () => {
 		.flatMap((node) => node.data);
 
 	return (
-		<InternalTable>
-			<InternalTable.Header />
-			<InternalTable.Body items={items} />
-		</InternalTable>
+		<MaterialTable
+			items={items}
+			sort={{ name: "none", quantity: "descending" }}
+		/>
 	);
 };
 

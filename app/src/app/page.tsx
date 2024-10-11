@@ -1,9 +1,6 @@
 "use client";
 import { FC, useState } from "react";
 import {
-	CrystalTable,
-	InternalTable,
-	LeafTable,
 	MaterialManagerProvider,
 	Recipe,
 	withCrystalItemHOC,
@@ -24,6 +21,7 @@ import {
 
 // NOTE: 仮実装（いずれ消す）
 import axios from "axios";
+import { MaterialTable } from "@/component/presentations/MaterialTable";
 axios.defaults.baseURL = "http://localhost:3000/api/";
 
 const segments: SegmentedControlItem[] = [
@@ -31,9 +29,9 @@ const segments: SegmentedControlItem[] = [
 	{ value: "materials", label: "materials" },
 ];
 
-const CrystalTableBodyWithNodes = withCrystalItemHOC(CrystalTable.Body);
-const InternalTableBodyWithNodes = withInternalItemHOC(InternalTable.Body);
-const LeafTableBodyWithNodes = withLeafItemHOC(LeafTable.Body);
+const CrystalTableBodyWithNodes = withCrystalItemHOC(MaterialTable);
+const InternalTableBodyWithNodes = withInternalItemHOC(MaterialTable);
+const LeafTableBodyWithNodes = withLeafItemHOC(MaterialTable);
 
 const makeStyle = (theme: MantineTheme) => {
 	return {
@@ -66,19 +64,17 @@ const MaterialSegment: FC = () => {
 				<Stack gap={0}>
 					<Title order={6}>クリスタル</Title>
 					<ScrollArea h={384}>
-						<CrystalTable>
-							<CrystalTable.Header />
-							<CrystalTableBodyWithNodes />
-						</CrystalTable>
+						<CrystalTableBodyWithNodes
+							sort={{ name: "none", quantity: "descending" }}
+						/>
 					</ScrollArea>
 				</Stack>
 				<Stack gap={0}>
 					<Title order={6}>中間素材</Title>
 					<ScrollArea h={384}>
-						<InternalTable>
-							<InternalTable.Header />
-							<InternalTableBodyWithNodes />
-						</InternalTable>
+						<InternalTableBodyWithNodes
+							sort={{ name: "none", quantity: "descending" }}
+						/>
 					</ScrollArea>
 				</Stack>
 			</Grid.Col>
@@ -86,10 +82,9 @@ const MaterialSegment: FC = () => {
 				<Stack gap={0}>
 					<Title order={6}>素材</Title>
 					<ScrollArea h={740}>
-						<LeafTable>
-							<LeafTable.Header />
-							<LeafTableBodyWithNodes />
-						</LeafTable>
+						<LeafTableBodyWithNodes
+							sort={{ name: "none", quantity: "descending" }}
+						/>
 					</ScrollArea>
 				</Stack>
 			</Grid.Col>

@@ -65,7 +65,7 @@ export const MaterialTable = (props: MaterialTableProps) => {
 	const iconName = useMemo(() => sortIcon(sort.name, iconSize), [sort.name]);
 	const iconQuantity = useMemo(
 		() => sortIcon(sort.quantity, iconSize),
-		[sort.name],
+		[sort.quantity],
 	);
 
 	const aggregateItems = useMemo(() => aggregate(props.items), [props.items]);
@@ -73,7 +73,6 @@ export const MaterialTable = (props: MaterialTableProps) => {
 		() => sorting(aggregateItems, sort),
 		[aggregateItems, sort],
 	);
-
 
 	return (
 		<Table stickyHeader stickyHeaderOffset={0}>
