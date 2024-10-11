@@ -1,6 +1,6 @@
 import { Table } from "@mantine/core";
-import { MaterialTableBody } from "./MaterialTableBody";
-import { MaterialTableHeader } from "./MaterialTableHeader";
+import { MaterialMiniTableBody } from "./MaterialMiniTableBody";
+import { MaterialMiniTableHeader } from "./MaterialMiniTableHeader";
 import { NodeDataType, SortState, SortType, useToggleSort } from "@/app/hooks";
 import { ReactNode, useMemo } from "react";
 import {
@@ -53,12 +53,12 @@ const sortIcon = (sort: SortType, size: string): ReactNode => {
 	return <IconArrowsSort size={size} />;
 };
 
-export type MaterialTableProps = {
+export type MaterialMiniTableProps = {
 	items: NodeDataType[];
 	sort: SortState;
 };
 
-export const MaterialTable = (props: MaterialTableProps) => {
+export const MaterialMiniTable = (props: MaterialMiniTableProps) => {
 	const { sort, name, quantity } = useToggleSort(props.sort);
 
 	const iconSize = "16";
@@ -76,7 +76,7 @@ export const MaterialTable = (props: MaterialTableProps) => {
 
 	return (
 		<Table stickyHeader stickyHeaderOffset={0}>
-			<MaterialTableHeader
+			<MaterialMiniTableHeader
 				name={{
 					icon: iconName,
 					sort: name,
@@ -86,9 +86,9 @@ export const MaterialTable = (props: MaterialTableProps) => {
 					sort: quantity,
 				}}
 			/>
-			<MaterialTableBody items={sortedItems} />
+			<MaterialMiniTableBody items={sortedItems} />
 		</Table>
 	);
 };
 
-MaterialTable.displayName = "@/component/prestations/MaterialTable";
+MaterialMiniTable.displayName = "@/component/prestations/MaterialMiniTable";

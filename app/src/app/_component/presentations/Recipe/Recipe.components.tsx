@@ -19,7 +19,7 @@ import { RecipeInfo } from "./RecipeInfo";
 import { RecipeSearchBox } from "./RecipeSearchBox";
 import { RecipeSearchDropdown } from "./RecipeSearchDropdown";
 import { parseRecipeTree } from "./parseRecipeTree";
-import { MaterialTable } from "@/component/presentations/MaterialTable";
+import { MaterialMiniTable } from "@/component/presentations/MaterialMiniTable";
 
 export interface RecipeProviderProps {
 	recipeId: string;
@@ -127,7 +127,7 @@ export const RecipeCrystalTable: FC = () => {
 		.flatMap((node) => node.data);
 
 	return (
-		<MaterialTable
+		<MaterialMiniTable
 			items={items}
 			sort={{ name: "none", quantity: "descending" }}
 		/>
@@ -143,7 +143,7 @@ export const RecipeLeafTable: FC = () => {
 		.flatMap((node) => node.data);
 
 	return (
-		<MaterialTable
+		<MaterialMiniTable
 			items={items}
 			sort={{ name: "none", quantity: "descending" }}
 		/>
@@ -161,7 +161,7 @@ export const RecipeInternalTable: FC = () => {
 		.flatMap((node) => node.data);
 
 	return (
-		<MaterialTable
+		<MaterialMiniTable
 			items={items}
 			sort={{ name: "none", quantity: "descending" }}
 		/>
@@ -318,9 +318,9 @@ const segments: SegmentedControlItem[] = [
 	{ value: "leaf", label: "素材" },
 ];
 
-export type MaterialTableSwitcherProps = {};
+export type MaterialMiniTableSwitcherProps = {};
 
-export const MaterialTableSwitcher: FC<MaterialTableSwitcherProps> = (
+export const MaterialMiniTableSwitcher: FC<MaterialMiniTableSwitcherProps> = (
 	props,
 ) => {
 	const [segment, setSegment] = useState<string>("leaf");

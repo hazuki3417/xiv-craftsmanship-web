@@ -2,23 +2,19 @@ import { useCallback, useReducer } from "react";
 import { reducer, SortState } from "../reducers/toggle-sort";
 export type * from "../reducers/toggle-sort";
 
+type SortField = "name" | "quantity";
 export interface UseToggleSort {
-	sort: SortState;
+	sort: SortState<SortField>;
 	name: () => void;
 	quantity: () => void;
 }
 
-export const useToggleSort = (value: SortState): UseToggleSort => {
-	const [sort, dispatch] = useReducer(reducer, value);
+export const useToggleSort = (value: SortState<SortField>): UseToggleSort => {
+	const [sort, dispatch] = useReducer(reducer<SortField>, value);
 
 	return {
 		sort,
-		name: useCallback(() => dispatch({ type: "name" }), []),
-		quantity: useCallback(() => dispatch({ type: "quantity" }), []),
+		name: useCallback(() => dispatch({ field: "name" }), []),
+		quantity: useCallback(() => dispatch({ field: "quantity" }), []),
 	};
-};
-
-export const defaultToogleSortState: SortState = {
-	name: "none",
-	quantity: "none",
 };

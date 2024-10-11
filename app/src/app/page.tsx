@@ -21,7 +21,7 @@ import {
 
 // NOTE: 仮実装（いずれ消す）
 import axios from "axios";
-import { MaterialTable } from "@/component/presentations/MaterialTable";
+import { MaterialMiniTable } from "@/component/presentations/MaterialMiniTable";
 axios.defaults.baseURL = "http://localhost:3000/api/";
 
 const segments: SegmentedControlItem[] = [
@@ -29,9 +29,9 @@ const segments: SegmentedControlItem[] = [
 	{ value: "materials", label: "materials" },
 ];
 
-const CrystalTableBodyWithNodes = withCrystalItemHOC(MaterialTable);
-const InternalTableBodyWithNodes = withInternalItemHOC(MaterialTable);
-const LeafTableBodyWithNodes = withLeafItemHOC(MaterialTable);
+const CrystalTableBodyWithNodes = withCrystalItemHOC(MaterialMiniTable);
+const InternalTableBodyWithNodes = withInternalItemHOC(MaterialMiniTable);
+const LeafTableBodyWithNodes = withLeafItemHOC(MaterialMiniTable);
 
 const makeStyle = (theme: MantineTheme) => {
 	return {

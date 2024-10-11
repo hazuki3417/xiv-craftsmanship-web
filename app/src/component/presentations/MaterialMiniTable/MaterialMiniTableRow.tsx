@@ -4,13 +4,13 @@ import { Table } from "@mantine/core";
 
 const MemoizedClipBoardCopyInput = memo(ClipBoardCopyInput);
 
-export type MaterialTableRowProps = {
+export type MaterialMiniTableRowProps = {
 	name: string;
 	quantity: number;
 };
 
-export const MaterialTableRow: FC<MaterialTableRowProps> = (
-	props: MaterialTableRowProps,
+export const MaterialMiniTableRow: FC<MaterialMiniTableRowProps> = (
+	props: MaterialMiniTableRowProps,
 ) => {
 	const { name, quantity } = props;
 
@@ -31,5 +31,5 @@ export const MaterialTableRow: FC<MaterialTableRowProps> = (
 		</Table.Tr>
 	);
 };
-MaterialTableRow.displayName =
-	"@/component/presentations/MaterialTable/MaterialTableRow";
+MaterialMiniTableRow.displayName =
+	"@/component/presentations/MaterialMiniTable/MaterialMiniTableRow";

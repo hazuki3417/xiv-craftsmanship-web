@@ -2,7 +2,7 @@ import { FC } from "react";
 import { Diagram } from "../index";
 import { Grid, Group, Stack } from "@mantine/core";
 import {
-	MaterialTableSwitcher,
+	MaterialMiniTableSwitcher,
 	RecipeInfoPanel,
 	RecipeProvider,
 	RecipeSearch,
@@ -28,7 +28,7 @@ export const Recipe: FC<RecipeProps> = (props) => {
 				</Grid.Col>
 				<Grid.Col span={5}>
 					<Stack gap={0}>
-						<MaterialTableSwitcher />
+						<MaterialMiniTableSwitcher />
 					</Stack>
 				</Grid.Col>
 			</Grid>

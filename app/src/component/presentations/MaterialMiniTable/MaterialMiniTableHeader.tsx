@@ -9,12 +9,14 @@ type ColumnProps = {
 	sort: () => void;
 };
 
-export type MaterialTableHeaderProps = {
+export type MaterialMiniTableHeaderProps = {
 	name: ColumnProps;
 	quantity: ColumnProps;
 };
 
-export const MaterialTableHeader = (props: MaterialTableHeaderProps) => {
+export const MaterialMiniTableHeader = (
+	props: MaterialMiniTableHeaderProps,
+) => {
 	const { name, quantity } = props;
 
 	return (
@@ -38,5 +40,5 @@ export const MaterialTableHeader = (props: MaterialTableHeaderProps) => {
 		</Table.Thead>
 	);
 };
-MaterialTableHeader.displayName =
-	"@/component/presentations/MaterialTable/MaterialTableHeader";
+MaterialMiniTableHeader.displayName =
+	"@/component/presentations/MaterialMiniTable/MaterialMiniTableHeader";

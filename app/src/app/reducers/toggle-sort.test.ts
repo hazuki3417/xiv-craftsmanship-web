@@ -43,7 +43,7 @@ describe("toggle-sort reducer test", () => {
 		];
 		pattern.forEach((test) => {
 			it(test.name, () => {
-				const state = reducer(test.input, { type: "name" });
+				const state = reducer(test.input, { field: "name" });
 				expect(test.expected).toEqual(state);
 			});
 		});
@@ -90,7 +90,7 @@ describe("toggle-sort reducer test", () => {
 		];
 		pattern.forEach((test) => {
 			it(test.name, () => {
-				const state = reducer(test.input, { type: "quantity" });
+				const state = reducer(test.input, { field: "quantity" });
 				expect(test.expected).toEqual(state);
 			});
 		});

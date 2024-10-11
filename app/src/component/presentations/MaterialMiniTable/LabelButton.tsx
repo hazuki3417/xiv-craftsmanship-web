@@ -20,4 +20,5 @@ export const LabelButton = (props: LabelButtonProps) => {
 		</UnstyledButton>
 	);
 };
-LabelButton.displayName = "@/component/presentations/MaterialTable/LabelButton";
+LabelButton.displayName =
+	"@/component/presentations/MaterialMiniTable/LabelButton";

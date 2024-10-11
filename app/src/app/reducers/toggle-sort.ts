@@ -1,18 +1,16 @@
 export type SortType = "none" | "ascending" | "descending";
-export type SortField = "name" | "quantity";
-export type SortState = {
-	[K in SortField]: SortType;
+export type SortField = string;
+export type SortState<T extends string = string> = {
+	[K in T]: SortType;
 };
 
-export type Action = {
-	type: SortField;
+export type Action<T> = {
+	field: T;
 };
 
 /**
  * ascenging : 昇順（1, 2, 3...）
  * descending: 降順（9, 8, 7...）
- * @param type
- * @returns
  */
 
 const toggleSort = (type: SortType): SortType => {
@@ -24,19 +22,18 @@ const toggleSort = (type: SortType): SortType => {
 			: "none";
 };
 
-export const reducer = (state: SortState, action: Action): SortState => {
-	switch (action.type) {
-		case "name":
-			return {
-				quantity: "none",
-				name: toggleSort(state.name),
-			};
-		case "quantity":
-			return {
-				quantity: toggleSort(state.quantity),
-				name: "none",
-			};
-		default:
-			return state;
+export const reducer = <T extends string>(
+	state: SortState<T>,
+	action: Action<T>,
+): SortState<T> => {
+	const data = {} as SortState<T>;
+	for (const field in state) {
+		if (field === action.field) {
+			data[field] = toggleSort(state[field]);
+		} else {
+			// 他のフィールドのソート状態は "none" にリセット
+			data[field] = "none";
+		}
 	}
+	return data;
 };
