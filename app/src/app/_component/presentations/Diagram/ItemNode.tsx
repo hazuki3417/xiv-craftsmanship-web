@@ -1,8 +1,24 @@
 import { Box, Checkbox, Grid, Group, Stack } from "@mantine/core";
-import { memo } from "react";
+import { memo, ReactNode } from "react";
 import { NodeInput } from "./NodeInput";
 
 const MemorizedNodeInput = memo(NodeInput);
+
+const Unit = ({ unit }: { unit: string }) => (
+	<Group gap={"8px"}>
+		unit:
+		<MemorizedNodeInput value={unit} style={{ width: "7ch" }} />
+	</Group>
+);
+
+const Quantity = ({ quantity }: { quantity: string }) => (
+	<Group gap={"8px"}>
+		total:
+		<MemorizedNodeInput value={quantity} style={{ width: "7ch" }} />
+	</Group>
+);
+
+const MemoizedUnit = memo(Unit);
 
 export type ItemNodeProps = {
 	name: string;
@@ -28,14 +44,8 @@ export const ItemNode = (props: ItemNodeProps) => {
 			<Stack gap={"4px"}>
 				<MemorizedNodeInput value={name} />
 				<Group gap={"xs"}>
-					<Group gap={"8px"}>
-						unit:
-						<MemorizedNodeInput value={unit} style={{ width: "7ch" }} />
-					</Group>
-					<Group gap={"8px"}>
-						total:
-						<MemorizedNodeInput value={quantity} style={{ width: "7ch" }} />
-					</Group>
+					<MemoizedUnit unit={unit} />
+					<Quantity quantity={quantity} />
 				</Group>
 			</Stack>
 		</Box>
