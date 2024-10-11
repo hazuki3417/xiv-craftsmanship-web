@@ -1,5 +1,5 @@
 import { FC, memo, ReactNode, useMemo } from "react";
-import { ClipBoardCopyButton } from "../index";
+import { ClipBoardCopyButton } from "@/component/presentations";
 import { Group, Input, rem, Table, UnstyledButton } from "@mantine/core";
 import {
 	IconArrowsSort,

@@ -1,4 +1,3 @@
-export * from "./ClipBoardCopyButton";
 export * from "./CrystalTable";
 export * from "./Diagram";
 export * from "./InternalTable";
