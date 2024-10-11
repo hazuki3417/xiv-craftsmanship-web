@@ -2,14 +2,16 @@ import { useCallback, useReducer } from "react";
 import { reducer, SortState } from "../reducers/toggle-sort";
 export type * from "../reducers/toggle-sort";
 
-type SortField = "name" | "quantity";
+export type SortField = "name" | "quantity";
 export interface UseToggleSort {
 	sort: SortState<SortField>;
 	name: () => void;
 	quantity: () => void;
 }
 
-export const useToggleSort = (value: SortState<SortField>): UseToggleSort => {
+export const useMaterialMiniTable = (
+	value: SortState<SortField>,
+): UseToggleSort => {
 	const [sort, dispatch] = useReducer(reducer<SortField>, value);
 
 	return {

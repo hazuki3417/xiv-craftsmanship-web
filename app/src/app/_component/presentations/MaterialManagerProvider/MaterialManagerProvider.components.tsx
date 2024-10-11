@@ -1,5 +1,6 @@
 import React from "react";
 import { useMaterialManager } from "./MaterialManagerProvider.context";
+import { node } from "@/app/functions/node";
 
 /**
  * crystal itemの情報を注入するHOC
@@ -12,7 +13,7 @@ export const withCrystalItemHOC = <P extends object>(
 	const OriginComponent: React.FC<Omit<P, "items">> = (props) => {
 		const { materials } = useMaterialManager();
 
-		const items = materials.filter((item) => item.type === "crystal");
+		const items = materials; //.filter(node.filter.leaf);
 
 		return <WrapperComponent {...(props as P)} items={items} />;
 	};
@@ -33,9 +34,7 @@ export const withLeafItemHOC = <P extends object>(
 	const OriginComponent: React.FC<Omit<P, "items">> = (props) => {
 		const { materials } = useMaterialManager();
 
-		const items = materials.filter((item) => {
-			return item.nodeType === "leaf" && item.type === "material";
-		});
+		const items = materials; //.filter(node.filter.leaf);
 
 		return <WrapperComponent {...(props as P)} items={items} />;
 	};
@@ -56,9 +55,7 @@ export const withInternalItemHOC = <P extends object>(
 	const OriginComponent: React.FC<Omit<P, "items">> = (props) => {
 		const { materials } = useMaterialManager();
 
-		const items = materials.filter((item) => {
-			return item.nodeType === "internal" && item.type === "material";
-		});
+		const items = materials; //.filter(node.filter.internal);
 
 		return <WrapperComponent {...(props as P)} items={items} />;
 	};

@@ -20,6 +20,7 @@ import { RecipeSearchBox } from "./RecipeSearchBox";
 import { RecipeSearchDropdown } from "./RecipeSearchDropdown";
 import { parseRecipeTree } from "./parseRecipeTree";
 import { MaterialMiniTable } from "@/component/presentations/MaterialMiniTable";
+import { node } from "@/app/functions/node";
 
 export interface RecipeProviderProps {
 	recipeId: string;
@@ -120,11 +121,7 @@ RecipeProvider.displayName = "component/presentations/Recipe/RecipeProvider";
 
 export const RecipeCrystalTable: FC = () => {
 	const { nodes } = useRecipe();
-	const items = nodes
-		.filter((node): node is Node => {
-			return node.data.itemType === "crystal";
-		})
-		.flatMap((node) => node.data);
+	const items = nodes.filter(node.filter.crystal).flatMap(node.extract.data);
 
 	return (
 		<MaterialMiniTable
@@ -136,11 +133,7 @@ export const RecipeCrystalTable: FC = () => {
 
 export const RecipeLeafTable: FC = () => {
 	const { nodes } = useRecipe();
-	const items = nodes
-		.filter((node): node is Node => {
-			return node.data.nodeType === "leaf" && node.data.itemType === "material";
-		})
-		.flatMap((node) => node.data);
+	const items = nodes.filter(node.filter.leaf).flatMap(node.extract.data);
 
 	return (
 		<MaterialMiniTable
@@ -152,13 +145,7 @@ export const RecipeLeafTable: FC = () => {
 
 export const RecipeInternalTable: FC = () => {
 	const { nodes } = useRecipe();
-	const items = nodes
-		.filter((node): node is Node => {
-			return (
-				node.data.nodeType === "internal" && node.data.itemType === "material"
-			);
-		})
-		.flatMap((node) => node.data);
+	const items = nodes.filter(node.filter.internal).flatMap(node.extract.data);
 
 	return (
 		<MaterialMiniTable
