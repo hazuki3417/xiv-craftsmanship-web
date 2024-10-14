@@ -1,12 +1,8 @@
 import { FC } from "react";
 import { Diagram } from "../index";
 import { Grid, Group, Stack } from "@mantine/core";
-import {
-	MaterialMiniTableSwitcher,
-	RecipeInfoPanel,
-	RecipeProvider,
-	RecipeSearch,
-} from "./";
+import { MaterialMiniTableSwitcher, RecipeProvider, RecipeSearch } from "./";
+import { RecipeInfoPanel } from "./RecipeInfoPanel";
 
 export interface RecipeProps {
 	id: string;
@@ -15,7 +11,18 @@ export interface RecipeProps {
 export const Recipe: FC<RecipeProps> = (props) => {
 	const { id, ...rest } = props;
 	return (
-		<RecipeProvider recipeId={id}>
+		<RecipeProvider
+			id={id}
+			value={{
+				spec: null,
+				tree: null,
+				nodes: [],
+				edges: [],
+				quantity: {
+					count: 1,
+				},
+			}}
+		>
 			<Grid>
 				<Grid.Col span={7}>
 					<Stack gap={2}>

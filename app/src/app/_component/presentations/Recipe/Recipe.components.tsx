@@ -1,5 +1,5 @@
 import { ReactNode, FC, useState, useEffect, useCallback, memo } from "react";
-import { CraftItem, RecipeContext, useRecipe } from "./Recipe.context";
+import { RecipeContext, RecipeContextValue, useRecipe } from "./Recipe.context";
 import { Depth } from "@/lib";
 import { useMaterialManager } from "../MaterialManagerProvider";
 import {
@@ -11,55 +11,49 @@ import {
 	SegmentedControlItem,
 } from "@mantine/core";
 import { useDebouncedValue } from "@mantine/hooks";
-import { Craft, getCraft, getRecipe } from "@/openapi";
+import { Craft, getCraft, getRecipe, Recipe } from "@/openapi";
 import { nanoid } from "nanoid";
 import { Node, useQuantity, useMaterialTree } from "@/app/hooks";
-import { QuanitityChangeInput } from "./QuanitityChangeInput";
-import { RecipeInfo } from "./RecipeInfo";
 import { RecipeSearchBox } from "./RecipeSearchBox";
 import { RecipeSearchDropdown } from "./RecipeSearchDropdown";
 import { parseRecipeTree } from "./parseRecipeTree";
 import { MaterialMiniTable } from "@/component/presentations/MaterialMiniTable";
 import { node } from "@/app/functions/node";
 
-export interface RecipeProviderProps {
-	recipeId: string;
+export interface RecipeProviderProps extends Pick<RecipeContextValue, "value"> {
+	id: string;
 	children: ReactNode;
 }
 
 export const RecipeProvider: FC<RecipeProviderProps> = (props) => {
-	const { recipeId, children, ...rest } = props;
+	const { id, children, value, ...rest } = props;
 
-	const { fetch, dispatch } = useMaterialManager();
-
-	// craftするアイテムの情報を管理
-	const [craftItem, setCraftItem] = useState<CraftItem | null>(
-		fetch.craftItem(recipeId),
-	);
+	const [craft, setCraft] = useState(value.spec);
+	const [recipe, setRecipe] = useState(value.tree);
 
 	const { quantity, countUp, countDown } = useQuantity({
-		count: fetch.quantity(recipeId),
+		count: value.quantity.count,
 	});
 
 	const { nodes, edges, setTree, setQuantity } = useMaterialTree({
-		nodes: [],
-		edges: [],
+		nodes: value.nodes,
+		edges: value.edges,
 	});
 
-	const onClear = useCallback(() => {
-		setCraftItem(null);
-		dispatch.craftItem({ recipeId, craftItem: null });
-		dispatch.materials({ recipeId, materials: [] });
-	}, []);
-
 	useEffect(() => {
-		if (!craftItem) {
+		if (!craft) {
 			// 選択されていないとき
 			setTree([], []);
 			return;
 		}
 
-		console.log("select recipe", craftItem);
+		if (!recipe) {
+			// 選択されていないとき
+			setTree([], []);
+			return;
+		}
+
+		console.log("select recipe", craft);
 		const depth = {
 			x: new Depth(),
 			y: new Depth(),
@@ -71,11 +65,11 @@ export const RecipeProvider: FC<RecipeProviderProps> = (props) => {
 			data: {
 				nodeType: "root",
 				itemType: "material",
-				itemId: craftItem.spec.itemId,
-				itemName: craftItem.spec.name,
-				pieces: craftItem.spec.pieces,
-				unit: craftItem.spec.pieces,
-				quantity: quantity * craftItem.spec.pieces,
+				itemId: craft.itemId,
+				itemName: craft.name,
+				pieces: craft.pieces,
+				unit: craft.pieces,
+				quantity: quantity * craft.pieces,
 				source: "",
 				depth: { x: depth.x.getDepth(), y: depth.y.getDepth() },
 			},
@@ -86,13 +80,13 @@ export const RecipeProvider: FC<RecipeProviderProps> = (props) => {
 		};
 
 		// 選択されたとき
-		const { nodes, edges } = parseRecipeTree(craftItem.tree, root, depth);
+		const { nodes, edges } = parseRecipeTree(recipe, root, depth);
 
 		setTree([root, ...nodes], edges);
-		dispatch.craftItem({ recipeId, craftItem });
-		dispatch.materials({ recipeId, materials: nodes.map((node) => node.data) });
-		dispatch.quantity({ recipeId, quantity: quantity });
-	}, [craftItem]);
+		// dispatch.craftItem({ recipeId, craftItem });
+		// dispatch.materials({ recipeId, materials: nodes.map((node) => node.data) });
+		// dispatch.quantity({ recipeId, quantity: quantity });
+	}, [craft]);
 
 	useEffect(() => {
 		setQuantity(quantity);
@@ -101,27 +95,52 @@ export const RecipeProvider: FC<RecipeProviderProps> = (props) => {
 	return (
 		<RecipeContext.Provider
 			value={{
-				root: {
-					quantity: quantity,
-					countUp: countUp,
-					countDown: countDown,
-					onClear: onClear,
+				value: {
+					spec: craft,
+					quantity: {
+						count: quantity,
+					},
+					tree: recipe,
+					nodes,
+					edges,
 				},
-				dispatch: { craftitem: setCraftItem },
-				fetch: { craftItem: () => craftItem },
-				nodes,
-				edges,
+				action: {
+					spec: {
+						set: useCallback((craft: Craft) => {
+							console.debug("spec.set", craft);
+							setCraft(craft);
+						}, []),
+						clear: useCallback(() => {
+							setCraft(null);
+						}, []),
+					},
+					tree: {
+						set: useCallback((recipe: Recipe) => {
+							console.debug("spec.tree", recipe);
+							setRecipe(recipe);
+						}, []),
+						clear: useCallback(() => {
+							setRecipe(null);
+						}, []),
+					},
+					quantity: {
+						countUp: countUp,
+						countDown: countDown,
+					},
+				},
 			}}
 		>
 			{children}
 		</RecipeContext.Provider>
 	);
 };
-RecipeProvider.displayName = "component/presentations/Recipe/RecipeProvider";
+RecipeProvider.displayName = "@/component/presentations/Recipe/RecipeProvider";
 
 export const RecipeCrystalTable: FC = () => {
-	const { nodes } = useRecipe();
-	const items = nodes.filter(node.filter.crystal).flatMap(node.extract.data);
+	const { value } = useRecipe();
+	const items = value.nodes
+		.filter(node.filter.crystal)
+		.flatMap(node.extract.data);
 
 	return (
 		<MaterialMiniTable
@@ -132,8 +151,8 @@ export const RecipeCrystalTable: FC = () => {
 };
 
 export const RecipeLeafTable: FC = () => {
-	const { nodes } = useRecipe();
-	const items = nodes.filter(node.filter.leaf).flatMap(node.extract.data);
+	const { value } = useRecipe();
+	const items = value.nodes.filter(node.filter.leaf).flatMap(node.extract.data);
 
 	return (
 		<MaterialMiniTable
@@ -144,8 +163,10 @@ export const RecipeLeafTable: FC = () => {
 };
 
 export const RecipeInternalTable: FC = () => {
-	const { nodes } = useRecipe();
-	const items = nodes.filter(node.filter.internal).flatMap(node.extract.data);
+	const { value } = useRecipe();
+	const items = value.nodes
+		.filter(node.filter.internal)
+		.flatMap(node.extract.data);
 
 	return (
 		<MaterialMiniTable
@@ -165,9 +186,9 @@ export const RecipeSearch: FC = () => {
 		onDropdownClose: () => combobox.resetSelectedOption(),
 	});
 
-	const { root, fetch, dispatch } = useRecipe();
+	const { value, action } = useRecipe();
 
-	const name = fetch.craftItem()?.spec.name || "";
+	const name = value.spec?.name || "";
 
 	const [search, setSearch] = useState<SearchState>({
 		value: name,
@@ -183,7 +204,7 @@ export const RecipeSearch: FC = () => {
 
 	const [debouncedSearch] = useDebouncedValue(search, 500);
 
-	const onOptionSubmit = (value: string) => {
+	const onOptionSubmit = async (value: string) => {
 		const craft = lazyCraft.data?.find((craft) => craft.recipeId === value);
 		if (!craft) {
 			return;
@@ -192,16 +213,14 @@ export const RecipeSearch: FC = () => {
 		setSearch({ value: craft.name, keyTypeChange: false });
 		combobox.closeDropdown();
 
-		getRecipe(craft.recipeId)
+		await getRecipe(craft.recipeId)
 			.then((res) => {
 				if (!res.data) {
+					console.error("response data not found");
 					return;
 				}
-
-				dispatch.craftitem({
-					spec: craft,
-					tree: res.data,
-				});
+				action.spec.set(craft);
+				action.tree.set(res.data);
 			})
 			.catch((error) => {
 				console.error(error);
@@ -217,7 +236,8 @@ export const RecipeSearch: FC = () => {
 
 	const onClear = useCallback(() => {
 		setSearch({ value: "", keyTypeChange: false });
-		root.onClear();
+		action.spec.clear();
+		action.tree.clear();
 	}, []);
 
 	useEffect(() => {
@@ -262,40 +282,6 @@ export const RecipeSearch: FC = () => {
 			/>
 			<RecipeSearchDropdown items={crafts} />
 		</Combobox>
-	);
-};
-
-const MemoizedRecipeInfo = memo(RecipeInfo);
-
-export type RecipeInfoPanelProps = {};
-
-export const RecipeInfoPanel: FC<RecipeInfoPanelProps> = (props) => {
-	const { root, fetch } = useRecipe();
-	const craftItem = fetch.craftItem();
-
-	const recipe = craftItem
-		? {
-				pieces: craftItem.spec.pieces.toString(),
-				craftLevel: craftItem.spec.craftLevel?.toString() || "-",
-				itemLevel: craftItem.spec.itemLevel.toString(),
-				job: craftItem.spec.job,
-			}
-		: {
-				pieces: "-",
-				craftLevel: "-",
-				itemLevel: "-",
-				job: "-",
-			};
-
-	return (
-		<Group>
-			<QuanitityChangeInput
-				quantity={root.quantity}
-				onCountUp={root.countUp}
-				onCountDown={root.countDown}
-			/>
-			<MemoizedRecipeInfo {...recipe} />
-		</Group>
 	);
 };
 

@@ -1,30 +1,41 @@
 import { createContext, useContext } from "react";
-import { Craft, Recipe } from "@/openapi";
 import { Node, Edge } from "@/app/hooks";
-
-export type CraftItem = {
-	spec: Craft;
-	tree: Recipe;
-};
+import { Craft, Recipe } from "@/openapi";
 
 export interface RecipeContextValue {
-	root: {
-		quantity: number;
-		countUp: () => void;
-		countDown: () => void;
-		onClear: () => void;
+	value: {
+		spec: Craft | null;
+		tree: Recipe | null;
+		nodes: Node[];
+		edges: Edge[];
+		quantity: {
+			count: number;
+		};
 	};
-	dispatch: {
-		craftitem: (data: CraftItem | null) => void;
-	};
-	fetch: {
-		craftItem: () => CraftItem | null;
-	};
-	nodes: Node[];
-	edges: Edge[];
 }
 
-export const RecipeContext = createContext<RecipeContextValue | undefined>(
+export interface RecipeContextAction {
+	action: {
+		spec: {
+			set: (spce: Craft) => void;
+			clear: () => void;
+		};
+		tree: {
+			set: (tree: Recipe) => void;
+			clear: () => void;
+		};
+		quantity: {
+			countUp: () => void;
+			countDown: () => void;
+		};
+	};
+}
+
+export interface RecipeContextType
+	extends RecipeContextValue,
+		RecipeContextAction {}
+
+export const RecipeContext = createContext<RecipeContextType | undefined>(
 	undefined,
 );
 
