@@ -1,15 +1,8 @@
-import { ReactNode, FC, useState, useEffect, useCallback, memo } from "react";
+import { ReactNode, FC, useState, useEffect, useCallback } from "react";
 import { RecipeContext, RecipeContextValue, useRecipe } from "./Recipe.context";
 import { Depth } from "@/lib";
-import { useMaterialManager } from "../MaterialManagerProvider";
-import {
-	Combobox,
-	useCombobox,
-	Group,
-	SegmentedControl,
-	ScrollArea,
-	SegmentedControlItem,
-} from "@mantine/core";
+
+import { Combobox, useCombobox, SegmentedControlItem } from "@mantine/core";
 import { useDebouncedValue } from "@mantine/hooks";
 import { Craft, getCraft, getRecipe, Recipe } from "@/openapi";
 import { nanoid } from "nanoid";
@@ -17,8 +10,6 @@ import { Node, useQuantity, useMaterialTree } from "@/app/hooks";
 import { RecipeSearchBox } from "./RecipeSearchBox";
 import { RecipeSearchDropdown } from "./RecipeSearchDropdown";
 import { parseRecipeTree } from "./parseRecipeTree";
-import { MaterialMiniTable } from "@/component/presentations/MaterialMiniTable";
-import { node } from "@/app/functions/node";
 
 export interface RecipeProviderProps extends Pick<RecipeContextValue, "value"> {
 	id: string;
@@ -136,46 +127,6 @@ export const RecipeProvider: FC<RecipeProviderProps> = (props) => {
 };
 RecipeProvider.displayName = "@/component/presentations/Recipe/RecipeProvider";
 
-export const RecipeCrystalTable: FC = () => {
-	const { value } = useRecipe();
-	const items = value.nodes
-		.filter(node.filter.crystal)
-		.flatMap(node.extract.data);
-
-	return (
-		<MaterialMiniTable
-			items={items}
-			sort={{ name: "none", quantity: "descending" }}
-		/>
-	);
-};
-
-export const RecipeLeafTable: FC = () => {
-	const { value } = useRecipe();
-	const items = value.nodes.filter(node.filter.leaf).flatMap(node.extract.data);
-
-	return (
-		<MaterialMiniTable
-			items={items}
-			sort={{ name: "none", quantity: "descending" }}
-		/>
-	);
-};
-
-export const RecipeInternalTable: FC = () => {
-	const { value } = useRecipe();
-	const items = value.nodes
-		.filter(node.filter.internal)
-		.flatMap(node.extract.data);
-
-	return (
-		<MaterialMiniTable
-			items={items}
-			sort={{ name: "none", quantity: "descending" }}
-		/>
-	);
-};
-
 type SearchState = {
 	value: string;
 	keyTypeChange: boolean;
@@ -290,21 +241,3 @@ const segments: SegmentedControlItem[] = [
 	{ value: "internal", label: "中間素材" },
 	{ value: "leaf", label: "素材" },
 ];
-
-export type MaterialMiniTableSwitcherProps = {};
-
-export const MaterialMiniTableSwitcher: FC<MaterialMiniTableSwitcherProps> = (
-	props,
-) => {
-	const [segment, setSegment] = useState<string>("leaf");
-	return (
-		<>
-			<SegmentedControl value={segment} onChange={setSegment} data={segments} />
-			<ScrollArea h={740}>
-				{segment === "crystal" && <RecipeCrystalTable />}
-				{segment === "internal" && <RecipeInternalTable />}
-				{segment === "leaf" && <RecipeLeafTable />}
-			</ScrollArea>
-		</>
-	);
-};
