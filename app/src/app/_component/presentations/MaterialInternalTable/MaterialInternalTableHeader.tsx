@@ -9,12 +9,14 @@ type ColumnProps = {
 	sort: () => void;
 };
 
-export type MaterialTableHeaderProps = {
+export type MaterialInternalTableHeaderProps = {
 	name: ColumnProps;
 	quantity: ColumnProps;
 };
 
-export const MaterialTableHeader = (props: MaterialTableHeaderProps) => {
+export const MaterialInternalTableHeader = (
+	props: MaterialInternalTableHeaderProps,
+) => {
 	const { name, quantity } = props;
 
 	return (
@@ -38,5 +40,5 @@ export const MaterialTableHeader = (props: MaterialTableHeaderProps) => {
 		</Table.Thead>
 	);
 };
-MaterialTableHeader.displayName =
-	"@/_component/presentations/MaterialTable/MaterialTableHeader";
+MaterialInternalTableHeader.displayName =
+	"@/_component/presentations/MaterialInternalTable/MaterialInternalTableHeader";

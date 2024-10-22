@@ -9,7 +9,7 @@ export interface UseToggleSort {
 	quantity: () => void;
 }
 
-export const useMaterialTable = (
+export const useMaterialCrystalTable = (
 	value: SortState<SortField>,
 ): UseToggleSort => {
 	const [sort, dispatch] = useReducer(reducer<SortField>, value);

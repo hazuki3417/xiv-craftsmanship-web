@@ -1,5 +1,7 @@
 import { Grid, ScrollArea, Stack, Title } from "@mantine/core";
-import { MaterialTable } from "../MaterialTable";
+import { MaterialCrystalTable } from "../MaterialCrystalTable";
+import { MaterialInternalTable } from "../MaterialInternalTable";
+import { MaterialLeafTable } from "../MaterialLeafTable";
 
 export type MaterialProps = {};
 
@@ -10,7 +12,7 @@ export const Material = (props: MaterialProps) => {
 				<Stack gap={0}>
 					<Title order={6}>クリスタル</Title>
 					<ScrollArea h={384}>
-						<MaterialTable
+						<MaterialCrystalTable
 							items={[]}
 							sort={{ name: "none", quantity: "descending" }}
 						/>
@@ -19,7 +21,7 @@ export const Material = (props: MaterialProps) => {
 				<Stack gap={0}>
 					<Title order={6}>中間素材</Title>
 					<ScrollArea h={384}>
-						<MaterialTable
+						<MaterialInternalTable
 							items={[]}
 							sort={{ name: "none", quantity: "descending" }}
 						/>
@@ -28,7 +30,7 @@ export const Material = (props: MaterialProps) => {
 				<Stack gap={0}>
 					<Title order={6}>素材</Title>
 					<ScrollArea h={740}>
-						<MaterialTable
+						<MaterialLeafTable
 							items={[]}
 							sort={{ name: "none", quantity: "descending" }}
 						/>

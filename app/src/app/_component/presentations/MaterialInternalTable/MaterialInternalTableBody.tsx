@@ -1,15 +1,17 @@
 import { memo } from "react";
 import { Table } from "@mantine/core";
 import { NodeDataType } from "@/app/hooks";
-import { MaterialTableRow } from "./MaterialTableRow";
+import { MaterialInternalTableRow } from "./MaterialInternalTableRow";
 
-const MemoizedMaterialTableRow = memo(MaterialTableRow);
+const MemoizedMaterialInternalTableRow = memo(MaterialInternalTableRow);
 
-export type MaterialTableBodyProps = {
+export type MaterialInternalTableBodyProps = {
 	items: NodeDataType[];
 };
 
-export const MaterialTableBody = (props: MaterialTableBodyProps) => {
+export const MaterialInternalTableBody = (
+	props: MaterialInternalTableBodyProps,
+) => {
 	const { items } = props;
 
 	if (items.length === 0) {
@@ -27,7 +29,7 @@ export const MaterialTableBody = (props: MaterialTableBodyProps) => {
 	return (
 		<Table.Tbody>
 			{items.map((item) => (
-				<MemoizedMaterialTableRow
+				<MemoizedMaterialInternalTableRow
 					key={item.itemId}
 					name={item.itemName}
 					quantity={item.quantity}
@@ -36,5 +38,5 @@ export const MaterialTableBody = (props: MaterialTableBodyProps) => {
 		</Table.Tbody>
 	);
 };
-MaterialTableBody.displayName =
-	"@/_component/presentations/MaterialTable/MaterialTableBody";
+MaterialInternalTableBody.displayName =
+	"@/_component/presentations/MaterialInternalTable/MaterialInternalTableBody";
