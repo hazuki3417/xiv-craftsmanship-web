@@ -21,7 +21,7 @@ import {
 
 // NOTE: 仮実装（いずれ消す）
 import axios from "axios";
-import { MaterialMiniTable } from "@/component/presentations/MaterialMiniTable";
+import { MaterialMiniTable } from "@/app/_component/presentations/MaterialMiniTable";
 axios.defaults.baseURL = "http://localhost:3000/api/";
 
 const segments: SegmentedControlItem[] = [

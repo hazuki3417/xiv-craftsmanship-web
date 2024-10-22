@@ -48,4 +48,4 @@ export const MaterialMiniTable = (props: MaterialMiniTableProps) => {
 	);
 };
 
-MaterialMiniTable.displayName = "@/component/prestations/MaterialMiniTable";
+MaterialMiniTable.displayName = "@/_component/prestations/MaterialMiniTable";

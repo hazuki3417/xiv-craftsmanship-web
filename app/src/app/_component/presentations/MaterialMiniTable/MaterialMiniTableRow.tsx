@@ -32,4 +32,4 @@ export const MaterialMiniTableRow: FC<MaterialMiniTableRowProps> = (
 	);
 };
 MaterialMiniTableRow.displayName =
-	"@/component/presentations/MaterialMiniTable/MaterialMiniTableRow";
+	"@/_component/presentations/MaterialMiniTable/MaterialMiniTableRow";

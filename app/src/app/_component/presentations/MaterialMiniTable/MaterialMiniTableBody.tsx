@@ -37,4 +37,4 @@ export const MaterialMiniTableBody = (props: MaterialMiniTableBodyProps) => {
 	);
 };
 MaterialMiniTableBody.displayName =
-	"@/component/presentations/MaterialMiniTable/MaterialMiniTableBody";
+	"@/_component/presentations/MaterialMiniTable/MaterialMiniTableBody";

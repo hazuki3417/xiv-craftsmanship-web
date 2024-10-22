@@ -1,6 +1,6 @@
 import { memo, ReactNode } from "react";
 import { rem, Table } from "@mantine/core";
-import { LabelButton } from "./LabelButton";
+import { LabelButton } from "../../../../component/presentations/Table/LabelButton";
 
 const MemoizedLabelButton = memo(LabelButton);
 
@@ -41,4 +41,4 @@ export const MaterialMiniTableHeader = (
 	);
 };
 MaterialMiniTableHeader.displayName =
-	"@/component/presentations/MaterialMiniTable/MaterialMiniTableHeader";
+	"@/_component/presentations/MaterialMiniTable/MaterialMiniTableHeader";

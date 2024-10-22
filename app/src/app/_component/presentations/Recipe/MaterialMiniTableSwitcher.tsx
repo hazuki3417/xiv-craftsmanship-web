@@ -7,7 +7,7 @@ import {
 	SegmentedControlItem,
 } from "@mantine/core";
 
-import { MaterialMiniTable } from "@/component/presentations/MaterialMiniTable";
+import { MaterialMiniTable } from "@/app/_component/presentations/MaterialMiniTable";
 import { node } from "@/app/functions/node";
 
 const segments: SegmentedControlItem[] = [
