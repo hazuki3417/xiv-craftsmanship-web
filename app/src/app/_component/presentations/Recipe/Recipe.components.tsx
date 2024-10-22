@@ -235,9 +235,3 @@ export const RecipeSearch: FC = () => {
 		</Combobox>
 	);
 };
-
-const segments: SegmentedControlItem[] = [
-	{ value: "crystal", label: "クリスタル" },
-	{ value: "internal", label: "中間素材" },
-	{ value: "leaf", label: "素材" },
-];
