@@ -1,6 +1,6 @@
 export type SortType = "none" | "ascending" | "descending";
-export type SortField = string;
-export type SortState<T extends string = string> = {
+export type SortFieldType = string;
+export type SortState<T extends SortFieldType = SortFieldType> = {
 	[K in T]: SortType;
 };
 
@@ -22,7 +22,7 @@ const toggleSort = (type: SortType): SortType => {
 			: "none";
 };
 
-export const reducer = <T extends string>(
+export const reducer = <T extends SortFieldType>(
 	state: SortState<T>,
 	action: Action<T>,
 ): SortState<T> => {

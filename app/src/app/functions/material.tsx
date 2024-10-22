@@ -1,4 +1,5 @@
-import { NodeDataType, SortState, SortType } from "@/app/hooks";
+import { NodeDataType } from "@/app/hooks";
+import { SortState, SortType } from "@/app/reducers/toggle-sort";
 import { ReactNode } from "react";
 import {
 	IconArrowsSort,

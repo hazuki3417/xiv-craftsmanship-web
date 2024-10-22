@@ -1,14 +1,15 @@
 import { Table } from "@mantine/core";
 import { MaterialMiniTableBody } from "./MaterialMiniTableBody";
 import { MaterialMiniTableHeader } from "./MaterialMiniTableHeader";
+import { NodeDataType } from "@/app/hooks";
 import {
-	NodeDataType,
 	SortField,
 	SortState,
 	useMaterialMiniTable,
-} from "@/app/hooks";
+} from "./useMaterialMiniTable";
 import { useMemo } from "react";
-import { aggregate, sorting, sortingIcon } from "@/app/functions/material";
+import { sorting, sortingIcon } from "@/app/functions/material";
+import { useAggregateItems } from "@/app/hooks/useAggregateItems";
 
 export type MaterialMiniTableProps = {
 	items: NodeDataType[];
@@ -25,11 +26,8 @@ export const MaterialMiniTable = (props: MaterialMiniTableProps) => {
 		[sort.quantity],
 	);
 
-	const aggregateItems = useMemo(() => aggregate(props.items), [props.items]);
-	const sortedItems = useMemo(
-		() => sorting(aggregateItems, sort),
-		[aggregateItems, sort],
-	);
+	const aggregateItems = useAggregateItems(props.items);
+	const sortedItems = sorting(aggregateItems, sort);
 
 	return (
 		<Table stickyHeader stickyHeaderOffset={0}>
