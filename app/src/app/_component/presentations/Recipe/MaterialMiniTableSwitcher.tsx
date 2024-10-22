@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { memo, useState } from "react";
 import { useRecipe } from "./Recipe.context";
 
 import {
@@ -15,6 +15,8 @@ const segments: SegmentedControlItem[] = [
 	{ value: "internal", label: "中間素材" },
 	{ value: "leaf", label: "素材" },
 ];
+
+const MemorizeSegmentedControl = memo(SegmentedControl);
 
 export type MaterialMiniTableSwitcherProps = {};
 
@@ -46,7 +48,11 @@ export const MaterialMiniTableSwitcher = (
 
 	return (
 		<>
-			<SegmentedControl value={segment} onChange={setSegment} data={segments} />
+			<MemorizeSegmentedControl
+				value={segment}
+				onChange={setSegment}
+				data={segments}
+			/>
 			<ScrollArea h={740}>
 				<MaterialMiniTable
 					items={items}
