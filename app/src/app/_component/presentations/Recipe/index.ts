@@ -1,3 +1,3 @@
-export * from "./Recipe.components";
+export * from "./RecipeSearch";
 export * from "./Recipe.context";
 export * from "./Recipe";

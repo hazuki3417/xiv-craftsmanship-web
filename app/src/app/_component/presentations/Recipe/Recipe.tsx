@@ -1,9 +1,10 @@
 import { FC } from "react";
 import { Diagram } from "../index";
 import { Grid, Stack } from "@mantine/core";
-import { RecipeProvider, RecipeSearch } from "./";
+import { RecipeSearch } from "./RecipeSearch";
 import { RecipeInfoPanel } from "./RecipeInfoPanel";
 import { MaterialMiniTableSwitcher } from "./MaterialMiniTableSwitcher";
+import { RecipeProvider } from "./RecipeProvider";
 
 export interface RecipeProps {
 	id: string;
