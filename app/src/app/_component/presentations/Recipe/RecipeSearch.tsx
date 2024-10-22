@@ -11,13 +11,11 @@ const MemorizeRecipeSearchDropdown = memo(RecipeSearchDropdown);
 
 type SearchState = {
 	value: string;
-	keyTypeChange: boolean;
+	isOnChange: boolean;
 };
 
 export const RecipeSearch: FC = () => {
-	const combobox = useCombobox({
-		onDropdownClose: () => combobox.resetSelectedOption(),
-	});
+	const combobox = useCombobox();
 
 	const { value, action } = useRecipe();
 
@@ -25,8 +23,9 @@ export const RecipeSearch: FC = () => {
 
 	const [search, setSearch] = useState<SearchState>({
 		value: name,
-		keyTypeChange: false,
+		isOnChange: false,
 	});
+	const [debouncedSearch] = useDebouncedValue(search, 500);
 
 	const [lazyCraft, setLazyCraft] = useState<{
 		loading: boolean;
@@ -35,7 +34,7 @@ export const RecipeSearch: FC = () => {
 		loading: false,
 	});
 
-	const [debouncedSearch] = useDebouncedValue(search, 500);
+
 
 	const onOptionSubmit = async (value: string) => {
 		const craft = lazyCraft.data?.find((craft) => craft.recipeId === value);
@@ -43,7 +42,7 @@ export const RecipeSearch: FC = () => {
 			return;
 		}
 
-		setSearch({ value: craft.name, keyTypeChange: false });
+		setSearch({ value: craft.name, isOnChange: false });
 		combobox.closeDropdown();
 
 		await getRecipe(craft.recipeId)
@@ -66,13 +65,13 @@ export const RecipeSearch: FC = () => {
 
 	const onSerachChange = useCallback(
 		(event: React.ChangeEvent<HTMLInputElement>) => {
-			setSearch({ value: event.target.value, keyTypeChange: true });
+			setSearch({ value: event.target.value, isOnChange: true });
 		},
 		[],
 	);
 
 	const onClear = useCallback(() => {
-		setSearch({ value: "", keyTypeChange: false });
+		setSearch({ value: "", isOnChange: false });
 		action.spec.clear();
 		action.tree.clear();
 	}, []);
@@ -80,7 +79,7 @@ export const RecipeSearch: FC = () => {
 	useEffect(() => {
 		// NOTE: debounceにより最後の入力から一定時間後に発火する
 
-		if (debouncedSearch.keyTypeChange === false) {
+		if (debouncedSearch.isOnChange === false) {
 			// NOTE: Option選択による変更の場合は検索を行わない
 			return;
 		}
