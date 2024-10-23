@@ -7,6 +7,16 @@ import {
 import { node } from "@/app/functions/node";
 import { RecipeContextValue } from "../Recipe";
 
+const defaultContext: RecipeContextValue = {
+	spec: null,
+	tree: null,
+	nodes: [],
+	edges: [],
+	quantity: {
+		count: 1,
+	},
+};
+
 export type MaterialManagerProviderProps = {
 	children: ReactNode;
 };
@@ -17,18 +27,18 @@ export const MaterialManagerProvider: FC<MaterialManagerProviderProps> = (
 	const { children } = props;
 
 	const [recipes, setRecipes] = useState<RecipeData[]>([
-		{
-			id: "1",
-			value: {
-				spec: null,
-				tree: null,
-				nodes: [],
-				edges: [],
-				quantity: {
-					count: 1,
-				},
-			},
-		},
+		{ id: "1", value: defaultContext },
+		{ id: "2", value: defaultContext },
+		{ id: "3", value: defaultContext },
+		{ id: "4", value: defaultContext },
+		{ id: "5", value: defaultContext },
+		{ id: "6", value: defaultContext },
+		{ id: "7", value: defaultContext },
+		{ id: "8", value: defaultContext },
+		{ id: "9", value: defaultContext },
+		{ id: "10", value: defaultContext },
+		{ id: "11", value: defaultContext },
+		{ id: "12", value: defaultContext },
 	]);
 
 	/**
