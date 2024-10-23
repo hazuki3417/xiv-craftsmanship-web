@@ -1,20 +1,18 @@
-import { Node } from "../hooks";
+import { Node, NodeDataType } from "../hooks";
 
 /**
  * array.{function}用のコールバック関数
  */
 export const node = {
 	filter: {
-		crystal: (node: Node) => {
-			return node.data.itemType === "crystal";
+		crystal: (node: NodeDataType) => {
+			return node.itemType === "crystal";
 		},
-		internal: (node: Node) => {
-			return (
-				node.data.nodeType === "internal" && node.data.itemType === "material"
-			);
+		internal: (node: NodeDataType) => {
+			return node.nodeType === "internal" && node.itemType === "material";
 		},
-		leaf: (node: Node) => {
-			return node.data.nodeType === "leaf" && node.data.itemType === "material";
+		leaf: (node: NodeDataType) => {
+			return node.nodeType === "leaf" && node.itemType === "material";
 		},
 	},
 	extract: {

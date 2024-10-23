@@ -9,6 +9,7 @@ import {
 } from "./useMaterialInternalTable";
 import { useMemo } from "react";
 import { sorting, sortingIcon } from "@/app/functions/material";
+import { node } from "@/app/functions/node";
 
 export type MaterialInternalTableProps = {
 	items: NodeDataType[];
@@ -25,7 +26,10 @@ export const MaterialInternalTable = (props: MaterialInternalTableProps) => {
 		[sort.quantity],
 	);
 
-	const aggregateItems = useAggregateItems(props.items);
+	const filterItems = useMemo(() => {
+		return props.items.filter(node.filter.internal);
+	}, [props.items]);
+	const aggregateItems = useAggregateItems(filterItems);
 	const sortedItems = sorting(aggregateItems, sort);
 
 	return (

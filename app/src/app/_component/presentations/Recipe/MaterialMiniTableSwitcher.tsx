@@ -31,16 +31,16 @@ export const MaterialMiniTableSwitcher = (
 	switch (segment) {
 		case "crystal":
 			items = value.nodes
-				.filter(node.filter.crystal)
-				.flatMap(node.extract.data);
+				.flatMap(node.extract.data)
+				.filter(node.filter.crystal);
 			break;
 		case "internal":
 			items = value.nodes
-				.filter(node.filter.internal)
-				.flatMap(node.extract.data);
+				.flatMap(node.extract.data)
+				.filter(node.filter.internal);
 			break;
 		case "leaf":
-			items = value.nodes.filter(node.filter.leaf).flatMap(node.extract.data);
+			items = value.nodes.flatMap(node.extract.data).filter(node.filter.leaf);
 			break;
 		default:
 			throw new Error("予期しないエラー");

@@ -9,6 +9,7 @@ import {
 } from "./useMaterialLeafTable";
 import { useMemo } from "react";
 import { sorting, sortingIcon } from "@/app/functions/material";
+import { node } from "@/app/functions/node";
 
 export type MaterialLeafTableProps = {
 	items: NodeDataType[];
@@ -25,7 +26,10 @@ export const MaterialLeafTable = (props: MaterialLeafTableProps) => {
 		[sort.quantity],
 	);
 
-	const aggregateItems = useAggregateItems(props.items);
+	const filterItems = useMemo(() => {
+		return props.items.filter(node.filter.leaf);
+	}, [props.items]);
+	const aggregateItems = useAggregateItems(filterItems);
 	const sortedItems = sorting(aggregateItems, sort);
 
 	return (
