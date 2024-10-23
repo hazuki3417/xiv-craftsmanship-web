@@ -55,7 +55,7 @@ export const RecipeInfo = (props: RecipeInfoProps) => {
 					name="_job"
 					size="xs"
 					value={job}
-					style={{ width: "5ch" }}
+					style={{ width: "6ch" }}
 					readOnly
 					variant="unstyled"
 				/>
