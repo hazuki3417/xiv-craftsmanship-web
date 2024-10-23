@@ -25,9 +25,14 @@ export const RecipeSearchBox = (props: RecipeSearchBoxProps) => {
 		return loading ? <Loader size={20} /> : <IconSearch />;
 	}, [loading]);
 
+	/**
+	 * NOTE: _から始まる値をname属性に指定 > 情報エラーの出力を抑制する意図。
+	 *       ロジックで使用はしていない。
+	 */
 	return (
 		<Combobox.Target>
 			<Input
+				name="_search"
 				size="xs"
 				placeholder="search"
 				value={value}

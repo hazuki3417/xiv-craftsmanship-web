@@ -9,13 +9,22 @@ export type ClipBoardCopyInputProps = Omit<
 	"leftSectionPointerEvents" | "leftSection" | "readOnly"
 > & {
 	value: string;
+	name?: string;
 };
 
-export const ClipBoardCopyInput = (props: ClipBoardCopyInputProps) => {
+/**
+ * NOTE: name属性を省略した場合、情報エラーが出力される。
+ * 　　　それを防ぐためにダミーの初期値を指定。
+ */
+export const ClipBoardCopyInput = ({
+	name = "_dummy",
+	...props
+}: ClipBoardCopyInputProps) => {
 	const { value, ...rest } = props;
 
 	return (
 		<Input
+			name={name}
 			leftSectionPointerEvents="all"
 			leftSection={<MemolizeClipBoardCopyButton value={value} />}
 			value={value}
