@@ -1,5 +1,5 @@
-import { FC } from "react";
-import { Diagram } from "../index";
+import { FC, useMemo } from "react";
+import { Diagram, useMaterialManager } from "../index";
 import { Grid, Stack } from "@mantine/core";
 import { RecipeSearch } from "./RecipeSearch";
 import { RecipeInfoPanel } from "./RecipeInfoPanel";
@@ -10,21 +10,14 @@ export interface RecipeProps {
 	id: string;
 }
 
-export const Recipe: FC<RecipeProps> = (props) => {
-	const { id, ...rest } = props;
+export const Recipe = (props: RecipeProps) => {
+	const { id } = props;
+	const manager = useMaterialManager();
+	const context = useMemo(() => {
+		return manager.action.fetch(id);
+	}, [id]);
 	return (
-		<RecipeProvider
-			id={id}
-			value={{
-				spec: null,
-				tree: null,
-				nodes: [],
-				edges: [],
-				quantity: {
-					count: 1,
-				},
-			}}
-		>
+		<RecipeProvider id={id} value={context}>
 			<Grid>
 				<Grid.Col span={7}>
 					<Stack gap={2}>

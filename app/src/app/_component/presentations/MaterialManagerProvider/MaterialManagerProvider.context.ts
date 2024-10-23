@@ -1,27 +1,31 @@
 import { createContext, useContext } from "react";
-import {
-	CraftData,
-	MaterialData,
-	QuantityData,
-} from "./MaterialManagerProvider";
-import { CraftItem } from "../Recipe";
-import { Node } from "@/app/hooks";
+import { RecipeContextValue } from "../Recipe";
+import { NodeDataType } from "@/app/hooks";
 
-export interface MaterialManagerContextValue {
-	materials: Node[];
-	dispatch: {
-		materials: (data: MaterialData) => void;
-		craftItem: (data: CraftData) => void;
-		quantity: (data: QuantityData) => void;
-	};
-	fetch: {
-		craftItem: (recipeId: string) => CraftItem | null;
-		quantity: (recipeId: string) => number;
-	};
+export type RecipeDataId = string;
+export type RecipeData = {
+	id: RecipeDataId;
+	value: RecipeContextValue;
+};
+
+export interface MaterialManagerContextValue {}
+
+export interface MaterialManagerContextAction {
+	fetch: (id: RecipeDataId) => RecipeContextValue;
+	dispatch: (
+		id: RecipeDataId,
+		callback: (recipe: RecipeContextValue) => RecipeContextValue,
+	) => void;
+	aggregate: () => NodeDataType[];
 }
 
+export type MaterialManagerContextType = {
+	value: MaterialManagerContextValue;
+	action: MaterialManagerContextAction;
+};
+
 export const MaterialManagerContext = createContext<
-	MaterialManagerContextValue | undefined
+	MaterialManagerContextType | undefined
 >(undefined);
 
 export const useMaterialManager = () => {

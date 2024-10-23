@@ -3,37 +3,33 @@ import { Node, Edge } from "@/app/hooks";
 import { Craft, Recipe } from "@/openapi";
 
 export interface RecipeContextValue {
-	value: {
-		spec: Craft | null;
-		tree: Recipe | null;
-		nodes: Node[];
-		edges: Edge[];
-		quantity: {
-			count: number;
-		};
+	spec: Craft | null;
+	tree: Recipe | null;
+	nodes: Node[];
+	edges: Edge[];
+	quantity: {
+		count: number;
 	};
 }
 
 export interface RecipeContextAction {
-	action: {
-		spec: {
-			set: (spce: Craft) => void;
-			clear: () => void;
-		};
-		tree: {
-			set: (tree: Recipe) => void;
-			clear: () => void;
-		};
-		quantity: {
-			countUp: () => void;
-			countDown: () => void;
-		};
+	spec: {
+		set: (spce: Craft) => void;
 	};
+	tree: {
+		set: (tree: Recipe) => void;
+	};
+	quantity: {
+		countUp: () => void;
+		countDown: () => void;
+	};
+	clear: () => void;
 }
 
-export interface RecipeContextType
-	extends RecipeContextValue,
-		RecipeContextAction {}
+export type RecipeContextType = {
+	value: RecipeContextValue;
+	action: RecipeContextAction;
+};
 
 export const RecipeContext = createContext<RecipeContextType | undefined>(
 	undefined,

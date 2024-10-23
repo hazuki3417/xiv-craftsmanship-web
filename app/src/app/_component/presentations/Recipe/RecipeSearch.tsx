@@ -34,8 +34,6 @@ export const RecipeSearch: FC = () => {
 		loading: false,
 	});
 
-
-
 	const onOptionSubmit = async (value: string) => {
 		const craft = lazyCraft.data?.find((craft) => craft.recipeId === value);
 		if (!craft) {
@@ -72,8 +70,7 @@ export const RecipeSearch: FC = () => {
 
 	const onClear = useCallback(() => {
 		setSearch({ value: "", isOnChange: false });
-		action.spec.clear();
-		action.tree.clear();
+		action.clear();
 	}, []);
 
 	useEffect(() => {

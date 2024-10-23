@@ -1,4 +1,4 @@
-import { ReactNode, FC, useState, useEffect, useCallback } from "react";
+import { ReactNode, FC, useState, useEffect, useCallback, useRef } from "react";
 import { RecipeContext, RecipeContextValue } from "./Recipe.context";
 import { Depth } from "@/lib";
 import { Craft, Recipe } from "@/openapi";
@@ -6,14 +6,18 @@ import { nanoid } from "nanoid";
 import { Node, useQuantity, useMaterialTree } from "@/app/hooks";
 
 import { parseRecipeTree } from "./parseRecipeTree";
+import { useMaterialManager } from "../MaterialManagerProvider";
 
-export interface RecipeProviderProps extends Pick<RecipeContextValue, "value"> {
+export interface RecipeProviderProps {
 	id: string;
+	value: RecipeContextValue;
 	children: ReactNode;
 }
 
 export const RecipeProvider: FC<RecipeProviderProps> = (props) => {
-	const { id, children, value, ...rest } = props;
+	const { id, children, value } = props;
+
+	const manager = useMaterialManager();
 
 	const [craft, setCraft] = useState(value.spec);
 	const [recipe, setRecipe] = useState(value.tree);
@@ -27,20 +31,18 @@ export const RecipeProvider: FC<RecipeProviderProps> = (props) => {
 		edges: value.edges,
 	});
 
+	/**
+	 * NOTE: recipe treeをレンダリングするuseEffect
+	 * 　　　 APIリクエストの結果を保持するstateの更新がトリガーとなって下記の処理が実行される。
+	 */
 	useEffect(() => {
-		if (!craft) {
-			// 選択されていないとき
-			setTree([], []);
+		const isEmptyData = !craft || !recipe;
+		if (isEmptyData) {
+			// recipe treeのレンダリングに必要な情報がないときはスキップする
+			console.debug("skip drawing tree diagrams.");
 			return;
 		}
 
-		if (!recipe) {
-			// 選択されていないとき
-			setTree([], []);
-			return;
-		}
-
-		console.log("select recipe", craft);
 		const depth = {
 			x: new Depth(),
 			y: new Depth(),
@@ -66,18 +68,41 @@ export const RecipeProvider: FC<RecipeProviderProps> = (props) => {
 			},
 		};
 
-		// 選択されたとき
 		const { nodes, edges } = parseRecipeTree(recipe, root, depth);
-
 		setTree([root, ...nodes], edges);
-		// dispatch.craftItem({ recipeId, craftItem });
-		// dispatch.materials({ recipeId, materials: nodes.map((node) => node.data) });
-		// dispatch.quantity({ recipeId, quantity: quantity });
-	}, [craft]);
+	}, [craft, recipe]);
 
+	/**
+	 * NOTE: 作成個数を変更したときの処理
+	 */
 	useEffect(() => {
+		const isEmptyData = !craft || !recipe;
+		if (isEmptyData) {
+			// recipe treeのレンダリングに必要な情報がないときはスキップする
+			console.debug("skip drawing tree diagrams.");
+			return;
+		}
+
 		setQuantity(quantity);
 	}, [quantity]);
+
+	/**
+	 * NOTE: 親のcontextへ状態を同期する処理
+	 */
+	useEffect(() => {
+		manager.action.dispatch(id, (prev) => {
+			return {
+				...prev,
+				spec: craft,
+				tree: recipe,
+				nodes,
+				edges,
+				quantity: {
+					count: quantity,
+				},
+			};
+		});
+	}, [craft, recipe, nodes, edges, quantity]);
 
 	return (
 		<RecipeContext.Provider
@@ -94,26 +119,23 @@ export const RecipeProvider: FC<RecipeProviderProps> = (props) => {
 				action: {
 					spec: {
 						set: useCallback((craft: Craft) => {
-							console.debug("spec.set", craft);
 							setCraft(craft);
-						}, []),
-						clear: useCallback(() => {
-							setCraft(null);
 						}, []),
 					},
 					tree: {
 						set: useCallback((recipe: Recipe) => {
-							console.debug("spec.tree", recipe);
 							setRecipe(recipe);
-						}, []),
-						clear: useCallback(() => {
-							setRecipe(null);
 						}, []),
 					},
 					quantity: {
 						countUp: countUp,
 						countDown: countDown,
 					},
+					clear: useCallback(() => {
+						setCraft(null);
+						setRecipe(null);
+						setTree([], []);
+					}, []),
 				},
 			}}
 		>
