@@ -17,6 +17,8 @@ export interface RecipeProviderProps {
 export const RecipeProvider: FC<RecipeProviderProps> = (props) => {
 	const { id, children, value } = props;
 
+	const isFirstRender = useRef(true);
+
 	const manager = useMaterialManager();
 
 	const [craft, setCraft] = useState(value.spec);
@@ -39,9 +41,21 @@ export const RecipeProvider: FC<RecipeProviderProps> = (props) => {
 		const isEmptyData = !craft || !recipe;
 		if (isEmptyData) {
 			// recipe treeのレンダリングに必要な情報がないときはスキップする
-			console.debug("skip drawing tree diagrams.");
+			console.debug("skip drawing tree diagrams. craft or recipe empty.");
 			return;
 		}
+
+		if (isFirstRender.current) {
+			// 最初のレンダリング時はカスタムフックに初期値が設定されてレンダリングされるためスキップ
+			console.debug("skip drawing tree diagrams. first render.");
+			return;
+		}
+
+		console.debug("drawing tree diagrams. change craft or recipe data.");
+
+		/**
+		 * APIの情報からrecipe treeの情報を生成しツリーダイアグラムをレンダリングする
+		 */
 
 		const depth = {
 			x: new Depth(),
@@ -79,9 +93,17 @@ export const RecipeProvider: FC<RecipeProviderProps> = (props) => {
 		const isEmptyData = !craft || !recipe;
 		if (isEmptyData) {
 			// recipe treeのレンダリングに必要な情報がないときはスキップする
-			console.debug("skip drawing tree diagrams.");
+			console.debug("skip drawing tree diagrams. craft or recipe empty.");
 			return;
 		}
+
+		if (isFirstRender.current) {
+			// 最初のレンダリング時はカスタムフックに初期値が設定されてレンダリングされるためスキップ
+			console.debug("skip drawing tree diagrams. first render.");
+			return;
+		}
+
+		console.debug("drawing tree diagrams. change quantity number.");
 
 		setQuantity(quantity);
 	}, [quantity]);
@@ -90,6 +112,12 @@ export const RecipeProvider: FC<RecipeProviderProps> = (props) => {
 	 * NOTE: 親のcontextへ状態を同期する処理
 	 */
 	useEffect(() => {
+		if (isFirstRender.current) {
+			// 最初のレンダリング時はProvidreから受け取った値のままなので同期する必要がない。
+			console.debug("skip dispatch. first render.");
+			return;
+		}
+
 		manager.action.dispatch(id, (prev) => {
 			return {
 				...prev,
@@ -103,6 +131,10 @@ export const RecipeProvider: FC<RecipeProviderProps> = (props) => {
 			};
 		});
 	}, [craft, recipe, nodes, edges, quantity]);
+
+	useEffect(() => {
+		isFirstRender.current = false;
+	}, []);
 
 	return (
 		<RecipeContext.Provider

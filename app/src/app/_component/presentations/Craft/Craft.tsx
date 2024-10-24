@@ -43,7 +43,7 @@ export const Craft = (props: CraftProps) => {
 				 *       DOMはアクティブなときのみレンダリングするようにする。
 				 */
 				tabs.push(
-					<Tabs.Panel style={style.tabPanel} value={id}>
+					<Tabs.Panel key={id} style={style.tabPanel} value={id}>
 						{activeTab === id && <Recipe id={id} />}
 					</Tabs.Panel>,
 				);
