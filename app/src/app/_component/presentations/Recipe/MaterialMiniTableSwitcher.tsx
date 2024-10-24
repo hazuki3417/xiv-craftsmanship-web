@@ -52,6 +52,7 @@ export const MaterialMiniTableSwitcher = (
 				value={segment}
 				onChange={setSegment}
 				data={segments}
+				size="xs"
 			/>
 			<ScrollArea h={740}>
 				<MaterialMiniTable
