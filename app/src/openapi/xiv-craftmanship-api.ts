@@ -18,6 +18,9 @@ import type {
 import axios from "axios";
 import type { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
 export type GetCraftParams = {
+	/**
+	 * 製作アイテム名
+	 */
 	name: string;
 };
 
@@ -64,19 +67,11 @@ export type ItemId = string;
 export type RecipeId = string;
 
 export interface Craft {
-	/**
-	 * @minimum 1
-	 * @maximum 999
-	 * @nullable
-	 */
-	readonly craftLevel: number | null;
+	craftLevel: number;
 	/** @pattern ^[0-9a-z]{11} */
 	itemId: string;
-	/**
-	 * @minimum 1
-	 * @maximum 999
-	 */
-	readonly itemLevel: number;
+	/** @nullable */
+	itemLevel: number | null;
 	job: string;
 	name: string;
 	/**
