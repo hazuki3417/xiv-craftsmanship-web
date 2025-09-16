@@ -13,17 +13,17 @@ export const RecipeInfoPanel = (props: RecipeInfoPanelProps) => {
 
 	const recipe = value.spec
 		? {
-				pieces: value.spec.pieces.toString(),
-				craftLevel: value.spec.craftLevel?.toString() || "-",
-				itemLevel: value.spec.itemLevel.toString(),
-				job: value.spec.job,
-			}
+			pieces: value.spec.pieces.toString(),
+			craftLevel: value.spec.craftLevel?.toString() || "-",
+			itemLevel: value.spec.itemLevel?.toString() || "-",
+			job: value.spec.job,
+		}
 		: {
-				pieces: "-",
-				craftLevel: "-",
-				itemLevel: "-",
-				job: "-",
-			};
+			pieces: "-",
+			craftLevel: "-",
+			itemLevel: "-",
+			job: "-",
+		};
 
 	return (
 		<Group>
