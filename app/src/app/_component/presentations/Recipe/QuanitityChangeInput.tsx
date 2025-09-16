@@ -13,14 +13,14 @@ export const QuanitityChangeInput = (props: QuanitityChangeInputProps) => {
 
 	const CountUpIcon = useMemo(() => {
 		return (
-			<ActionIcon variant="subtle" style={{ marginLeft: 5 }}>
+			<ActionIcon variant="light">
 				<IconPlus style={{ width: rem(16) }} onClick={onCountUp} />
 			</ActionIcon>
 		);
 	}, []);
 	const CountDownIcon = useMemo(() => {
 		return (
-			<ActionIcon variant="subtle" style={{ marginLeft: 5 }}>
+			<ActionIcon variant="light">
 				<IconMinus style={{ width: rem(16) }} onClick={onCountDown} />
 			</ActionIcon>
 		);
@@ -29,14 +29,14 @@ export const QuanitityChangeInput = (props: QuanitityChangeInputProps) => {
 	return (
 		<Group gap="xs">
 			quantity:
-			<Group gap={0}>
+			<Group gap={4}>
 				<NumberInput
 					size="xs"
-					style={{ width: "4ch" }}
+					style={{ width: "6ch" }}
 					value={quantity}
 					hideControls
 					min={1}
-					max={99}
+					max={9999}
 				/>
 				{CountUpIcon}
 				{CountDownIcon}

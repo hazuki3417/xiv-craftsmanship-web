@@ -1,6 +1,11 @@
 import { FC, useState, useEffect, useCallback, memo } from "react";
 import { useRecipe } from "./Recipe.context";
-import { Combobox, useCombobox } from "@mantine/core";
+import {
+	Combobox,
+	ComboboxProps,
+	InputProps,
+	useCombobox,
+} from "@mantine/core";
 import { useDebouncedValue } from "@mantine/hooks";
 import { Craft, getCraft, getRecipe } from "@/openapi";
 import { RecipeSearchBox } from "./RecipeSearchBox";
@@ -14,7 +19,10 @@ type SearchState = {
 	isOnChange: boolean;
 };
 
-export const RecipeSearch: FC = () => {
+export type RecipeSearchProps = Pick<InputProps, "style"> & {};
+
+export const RecipeSearch = (props: RecipeSearchProps) => {
+	const { style } = props;
 	const combobox = useCombobox();
 
 	const { value, action } = useRecipe();
@@ -68,10 +76,13 @@ export const RecipeSearch: FC = () => {
 		[],
 	);
 
-	const onClear = useCallback(() => {
-		setSearch({ value: "", isOnChange: false });
-		action.clear();
-	}, []);
+	const onClear = useCallback(
+		(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+			setSearch({ value: "", isOnChange: false });
+			action.clear();
+		},
+		[],
+	);
 
 	useEffect(() => {
 		// NOTE: debounceにより最後の入力から一定時間後に発火する
@@ -107,6 +118,7 @@ export const RecipeSearch: FC = () => {
 	return (
 		<Combobox size="xs" store={combobox} onOptionSubmit={onOptionSubmit}>
 			<MemorizeRecipeSearchBox
+				style={style}
 				loading={lazyCraft.loading}
 				value={search.value}
 				onBlur={onCloseDropdown}

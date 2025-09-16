@@ -1,72 +1,49 @@
-import { Grid, MantineTheme, Tabs, useMantineTheme } from "@mantine/core";
-import { Recipe } from "../Recipe";
-import { useCallback, useMemo, useState } from "react";
-
-const makeStyle = (theme: MantineTheme) => {
-	return {
-		tabPanel: {
-			padding: "8px",
-		},
-	};
-};
+import { ActionIcon, Divider, Flex, Grid, rem } from "@mantine/core";
+import { Recipe, RecipeSearch } from "../Recipe";
+import { useMemo } from "react";
+import { RecipeProvider } from "../Recipe/RecipeProvider";
+import { useMaterialManager } from "../MaterialManagerProvider";
+import { CraftItem, CraftItemSelect } from "@/component";
+import { IconPlus } from "@tabler/icons-react";
 
 export type CraftProps = {};
 
 export const Craft = (props: CraftProps) => {
-	const style = makeStyle(useMantineTheme());
+	const id = "1";
+	const manager = useMaterialManager();
 
-	const [activeTab, setActiveTab] = useState<string>("1");
+	const items = useMemo((): CraftItem[] => {
+		const recipes = manager.value.recipes;
+		return recipes.map((recipe) => {
+			return {
+				value: recipe.id,
+				label: recipe.value.spec?.name || "",
+				quantity: recipe.value.quantity.count.toString(),
+			};
+		});
+	}, [manager.value.recipes]);
 
-	const max = 12;
-	const tabHeader = useMemo(() => {
-		const tabs = [];
-		for (let i = 0; i < max; i++) {
-			const id = i + 1;
-			tabs.push(
-				<Tabs.Tab key={id} value={id.toString()}>
-					{id}
-				</Tabs.Tab>,
-			);
-		}
-		return tabs;
-	}, [max]);
-
-	const tabPanels = useCallback(
-		(activeTab: string) => {
-			const tabs = [];
-			for (let i = 0; i < max; i++) {
-				const id = (i + 1).toString();
-				/**
-				 * NOTE: Tabs.Panelは要素の表示の切り替えをCSSで行う。
-				 *       DOMとして存在するためstateの更新がある場合はレンダリングの対象となる。
-				 *       非表示のコンポーネントレンダリングは避けたいため、非表示の時はパネルの枠だけ残し、
-				 *       DOMはアクティブなときのみレンダリングするようにする。
-				 */
-				tabs.push(
-					<Tabs.Panel key={id} style={style.tabPanel} value={id}>
-						{activeTab === id && <Recipe id={id} />}
-					</Tabs.Panel>,
-				);
-			}
-			return tabs;
-		},
-		[max],
-	);
-
-	const onChangeTab = useCallback((value: string | null) => {
-		if (value === null) {
-			throw new Error("logic error.");
-		}
-		setActiveTab(value);
-	}, []);
+	const context = useMemo(() => {
+		return manager.action.fetch(id);
+	}, [id]);
 
 	return (
 		<Grid>
-			<Grid.Col span={12}>
-				<Tabs variant="outline" value={activeTab} onChange={onChangeTab}>
-					<Tabs.List>{tabHeader}</Tabs.List>
-					{tabPanels(activeTab)}
-				</Tabs>
+			<Grid.Col
+				span={12}
+				style={{ display: "flex", flexDirection: "column", gap: "8px" }}
+			>
+				<RecipeProvider id={id} value={context}>
+					<Flex gap={4} w={"100%"} style={{}}>
+						<RecipeSearch style={{ flex: "1" }} />
+						<ActionIcon variant="light">
+							<IconPlus style={{ width: rem(16) }} />
+						</ActionIcon>
+						<CraftItemSelect items={items} />
+					</Flex>
+					<Divider />
+					<Recipe />
+				</RecipeProvider>
 			</Grid.Col>
 		</Grid>
 	);

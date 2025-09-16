@@ -8,7 +8,9 @@ export type RecipeData = {
 	value: RecipeContextValue;
 };
 
-export interface MaterialManagerContextValue {}
+export interface MaterialManagerContextValue {
+	recipes: RecipeData[];
+}
 
 export interface MaterialManagerContextAction {
 	fetch: (id: RecipeDataId) => RecipeContextValue;

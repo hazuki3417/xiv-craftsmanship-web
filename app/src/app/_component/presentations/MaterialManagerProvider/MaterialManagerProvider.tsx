@@ -93,7 +93,9 @@ export const MaterialManagerProvider: FC<MaterialManagerProviderProps> = (
 	return (
 		<MaterialManagerContext.Provider
 			value={{
-				value: {},
+				value: {
+					recipes,
+				},
 				action: {
 					fetch,
 					dispatch,

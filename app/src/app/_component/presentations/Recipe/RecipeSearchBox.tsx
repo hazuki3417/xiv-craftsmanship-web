@@ -1,17 +1,25 @@
-import { ActionIcon, Combobox, Input, Loader, rem } from "@mantine/core";
+import {
+	ActionIcon,
+	BoxProps,
+	Combobox,
+	Input,
+	InputProps,
+	Loader,
+	rem,
+} from "@mantine/core";
 import { IconSearch, IconX } from "@tabler/icons-react";
-import { useMemo } from "react";
+import React, { useMemo } from "react";
 
-export type RecipeSearchBoxProps = {
+export type RecipeSearchBoxProps = Pick<InputProps, "style"> & {
 	loading: boolean;
 	value: string;
-	onBlur: () => void;
-	onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-	onClear: () => void;
+	onBlur: React.FocusEventHandler<HTMLInputElement>;
+	onChange: React.ChangeEventHandler<HTMLInputElement>;
+	onClear: React.MouseEventHandler<HTMLButtonElement>;
 };
 
 export const RecipeSearchBox = (props: RecipeSearchBoxProps) => {
-	const { loading, value, onBlur, onChange, onClear } = props;
+	const { loading, value, onBlur, onChange, onClear, ...rest } = props;
 
 	const MemorizeClearButton = useMemo(() => {
 		return (
@@ -32,7 +40,7 @@ export const RecipeSearchBox = (props: RecipeSearchBoxProps) => {
 	return (
 		<Combobox.Target>
 			<Input
-				name="_search"
+				{...rest}
 				size="xs"
 				placeholder="search"
 				value={value}
