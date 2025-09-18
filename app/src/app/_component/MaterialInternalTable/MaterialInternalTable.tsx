@@ -49,5 +49,4 @@ export const MaterialInternalTable = (props: MaterialInternalTableProps) => {
 	);
 };
 
-MaterialInternalTable.displayName =
-	"@/_component/MaterialInternalTable";
+MaterialInternalTable.displayName = "@/_component/MaterialInternalTable";

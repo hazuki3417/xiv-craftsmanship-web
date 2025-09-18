@@ -49,5 +49,4 @@ export const MaterialCrystalTable = (props: MaterialCrystalTableProps) => {
 	);
 };
 
-MaterialCrystalTable.displayName =
-	"@/_component/MaterialCrystalTable";
+MaterialCrystalTable.displayName = "@/_component/MaterialCrystalTable";

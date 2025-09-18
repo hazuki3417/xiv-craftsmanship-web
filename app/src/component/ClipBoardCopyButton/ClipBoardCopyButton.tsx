@@ -19,5 +19,4 @@ export const ClipBoardCopyButton = (props: ClipBoardCopyButtonProps) => {
 	const memoToggleIcon = useCallback(toggleIcon, []);
 	return <CopyButton value={value} timeout={2000} children={memoToggleIcon} />;
 };
-ClipBoardCopyButton.displayName =
-	"@/component/ClipBoardCopyButton";
+ClipBoardCopyButton.displayName = "@/component/ClipBoardCopyButton";
