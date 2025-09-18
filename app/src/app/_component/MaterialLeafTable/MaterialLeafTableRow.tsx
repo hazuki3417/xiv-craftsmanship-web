@@ -37,4 +37,4 @@ export const MaterialLeafTableRow: FC<MaterialLeafTableRowProps> = (
 	);
 };
 MaterialLeafTableRow.displayName =
-	"@/_component/presentations/MaterialLeafTable/MaterialLeafTableRow";
+	"@/_component/MaterialLeafTable/MaterialLeafTableRow";

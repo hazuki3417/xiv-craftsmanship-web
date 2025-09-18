@@ -24,4 +24,4 @@ export const CopyActionIcon = (props: CopyActionIconProps) => {
 		</Tooltip>
 	);
 };
-CopyActionIcon.displayName = "@/component/presentations/CopyActionIcon";
+CopyActionIcon.displayName = "@/component/CopyActionIcon";

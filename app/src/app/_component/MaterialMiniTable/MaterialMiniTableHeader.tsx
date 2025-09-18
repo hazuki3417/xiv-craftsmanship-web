@@ -41,4 +41,4 @@ export const MaterialMiniTableHeader = (
 	);
 };
 MaterialMiniTableHeader.displayName =
-	"@/_component/presentations/MaterialMiniTable/MaterialMiniTableHeader";
+	"@/_component/MaterialMiniTable/MaterialMiniTableHeader";

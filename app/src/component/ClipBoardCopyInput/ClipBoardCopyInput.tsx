@@ -33,4 +33,4 @@ export const ClipBoardCopyInput = ({
 		/>
 	);
 };
-ClipBoardCopyInput.displayName = "@/component/presentations/ClipBoardCopyInput";
+ClipBoardCopyInput.displayName = "@/component/ClipBoardCopyInput";

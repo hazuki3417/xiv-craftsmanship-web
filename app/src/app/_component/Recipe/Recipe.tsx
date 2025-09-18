@@ -3,10 +3,10 @@ import { Grid, Stack } from "@mantine/core";
 import { RecipeInfoPanel } from "./RecipeInfoPanel";
 import { MaterialMiniTableSwitcher } from "./MaterialMiniTableSwitcher";
 
-export interface RecipeProps {}
+export interface RecipeProps { }
 
 export const Recipe = (props: RecipeProps) => {
-	const {} = props;
+	const { } = props;
 	return (
 		<Grid>
 			<Grid.Col span={7}>
@@ -25,4 +25,4 @@ export const Recipe = (props: RecipeProps) => {
 		</Grid>
 	);
 };
-Recipe.displayName = "component/presentations/Recipe";
+Recipe.displayName = "component/Recipe";

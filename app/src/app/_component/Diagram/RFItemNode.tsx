@@ -30,4 +30,4 @@ export const RFItemNode = (props: RFItemNodeProps) => {
 		</>
 	);
 };
-RFItemNode.displayName = "component/presentations/Diagram/RFItemNode";
+RFItemNode.displayName = "component/Diagram/RFItemNode";

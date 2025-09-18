@@ -41,4 +41,4 @@ export const MaterialLeafTableHeader = (
 	);
 };
 MaterialLeafTableHeader.displayName =
-	"@/_component/presentations/MaterialLeafTable/MaterialLeafTableHeader";
+	"@/_component/MaterialLeafTable/MaterialLeafTableHeader";

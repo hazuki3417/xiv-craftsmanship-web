@@ -1,23 +1,23 @@
 import { Table } from "@mantine/core";
-import { MaterialInternalTableBody } from "./MaterialInternalTableBody";
-import { MaterialInternalTableHeader } from "./MaterialInternalTableHeader";
+import { MaterialCrystalTableBody } from "./MaterialCrystalTableBody";
+import { MaterialCrystalTableHeader } from "./MaterialCrystalTableHeader";
 import { NodeDataType, useAggregateItems } from "@/hooks";
 import {
 	SortField,
 	SortState,
-	useMaterialInternalTable,
-} from "./useMaterialInternalTable";
+	useMaterialCrystalTable,
+} from "./useMaterialCrystalTable";
 import { useMemo } from "react";
 import { sorting, sortingIcon } from "@/functions/material";
 import { node } from "@/functions/node";
 
-export type MaterialInternalTableProps = {
+export type MaterialCrystalTableProps = {
 	items: NodeDataType[];
 	sort: SortState<SortField>;
 };
 
-export const MaterialInternalTable = (props: MaterialInternalTableProps) => {
-	const { sort, name, quantity } = useMaterialInternalTable(props.sort);
+export const MaterialCrystalTable = (props: MaterialCrystalTableProps) => {
+	const { sort, name, quantity } = useMaterialCrystalTable(props.sort);
 
 	const iconSize = "16";
 	const iconName = useMemo(() => sortingIcon(sort.name, iconSize), [sort.name]);
@@ -27,14 +27,14 @@ export const MaterialInternalTable = (props: MaterialInternalTableProps) => {
 	);
 
 	const filterItems = useMemo(() => {
-		return props.items.filter(node.filter.internal);
+		return props.items.filter(node.filter.crystal);
 	}, [props.items]);
 	const aggregateItems = useAggregateItems(filterItems);
 	const sortedItems = sorting(aggregateItems, sort);
 
 	return (
 		<Table stickyHeader stickyHeaderOffset={0}>
-			<MaterialInternalTableHeader
+			<MaterialCrystalTableHeader
 				name={{
 					icon: iconName,
 					sort: name,
@@ -44,10 +44,10 @@ export const MaterialInternalTable = (props: MaterialInternalTableProps) => {
 					sort: quantity,
 				}}
 			/>
-			<MaterialInternalTableBody items={sortedItems} />
+			<MaterialCrystalTableBody items={sortedItems} />
 		</Table>
 	);
 };
 
-MaterialInternalTable.displayName =
-	"@/_component/prestations/MaterialInternalTable";
+MaterialCrystalTable.displayName =
+	"@/_component/MaterialCrystalTable";

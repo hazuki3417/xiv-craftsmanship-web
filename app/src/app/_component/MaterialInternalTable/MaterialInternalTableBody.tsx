@@ -39,4 +39,4 @@ export const MaterialInternalTableBody = (
 	);
 };
 MaterialInternalTableBody.displayName =
-	"@/_component/presentations/MaterialInternalTable/MaterialInternalTableBody";
+	"@/_component/MaterialInternalTable/MaterialInternalTableBody";

@@ -4,7 +4,7 @@ import {
 	Craft,
 	Material,
 	MaterialManagerProvider,
-} from "./_component/presentations";
+} from "./_component";
 import { Grid, SegmentedControl, SegmentedControlItem } from "@mantine/core";
 
 // NOTE: 仮実装（いずれ消す）

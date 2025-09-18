@@ -176,4 +176,4 @@ export const RecipeProvider: FC<RecipeProviderProps> = (props) => {
 		</RecipeContext.Provider>
 	);
 };
-RecipeProvider.displayName = "@/_component/presentations/Recipe/RecipeProvider";
+RecipeProvider.displayName = "@/_component/Recipe/RecipeProvider";

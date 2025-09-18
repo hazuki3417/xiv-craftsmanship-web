@@ -1,15 +1,17 @@
 import { memo } from "react";
 import { Table } from "@mantine/core";
 import { NodeDataType } from "@/hooks";
-import { MaterialLeafTableRow } from "./MaterialLeafTableRow";
+import { MaterialCrystalTableRow } from "./MaterialCrystalTableRow";
 
-const MemoizedMaterialLeafTableRow = memo(MaterialLeafTableRow);
+const MemoizedMaterialCrystalTableRow = memo(MaterialCrystalTableRow);
 
-export type MaterialLeafTableBodyProps = {
+export type MaterialCrystalTableBodyProps = {
 	items: NodeDataType[];
 };
 
-export const MaterialLeafTableBody = (props: MaterialLeafTableBodyProps) => {
+export const MaterialCrystalTableBody = (
+	props: MaterialCrystalTableBodyProps,
+) => {
 	const { items } = props;
 
 	if (items.length === 0) {
@@ -27,7 +29,7 @@ export const MaterialLeafTableBody = (props: MaterialLeafTableBodyProps) => {
 	return (
 		<Table.Tbody>
 			{items.map((item) => (
-				<MemoizedMaterialLeafTableRow
+				<MemoizedMaterialCrystalTableRow
 					key={item.itemId}
 					name={item.itemName}
 					quantity={item.quantity}
@@ -36,5 +38,5 @@ export const MaterialLeafTableBody = (props: MaterialLeafTableBodyProps) => {
 		</Table.Tbody>
 	);
 };
-MaterialLeafTableBody.displayName =
-	"@/_component/presentations/MaterialLeafTable/MaterialLeafTableBody";
+MaterialCrystalTableBody.displayName =
+	"@/_component/MaterialCrystalTable/MaterialCrystalTableBody";

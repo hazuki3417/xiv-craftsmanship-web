@@ -37,4 +37,4 @@ export const MaterialCrystalTableRow: FC<MaterialCrystalTableRowProps> = (
 	);
 };
 MaterialCrystalTableRow.displayName =
-	"@/_component/presentations/MaterialCrystalTable/MaterialCrystalTableRow";
+	"@/_component/MaterialCrystalTable/MaterialCrystalTableRow";

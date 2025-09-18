@@ -20,4 +20,4 @@ export const ClipBoardCopyButton = (props: ClipBoardCopyButtonProps) => {
 	return <CopyButton value={value} timeout={2000} children={memoToggleIcon} />;
 };
 ClipBoardCopyButton.displayName =
-	"@/component/presentations/ClipBoardCopyButton";
+	"@/component/ClipBoardCopyButton";

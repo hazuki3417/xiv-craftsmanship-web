@@ -9,13 +9,13 @@ const styleTdProps = {
 	pb: 0,
 };
 
-export type MaterialMiniTableRowProps = {
+export type MaterialInternalTableRowProps = {
 	name: string;
 	quantity: number;
 };
 
-export const MaterialMiniTableRow: FC<MaterialMiniTableRowProps> = (
-	props: MaterialMiniTableRowProps,
+export const MaterialInternalTableRow: FC<MaterialInternalTableRowProps> = (
+	props: MaterialInternalTableRowProps,
 ) => {
 	const { name, quantity } = props;
 
@@ -36,5 +36,5 @@ export const MaterialMiniTableRow: FC<MaterialMiniTableRowProps> = (
 		</Table.Tr>
 	);
 };
-MaterialMiniTableRow.displayName =
-	"@/_component/presentations/MaterialMiniTable/MaterialMiniTableRow";
+MaterialInternalTableRow.displayName =
+	"@/_component/MaterialInternalTable/MaterialInternalTableRow";

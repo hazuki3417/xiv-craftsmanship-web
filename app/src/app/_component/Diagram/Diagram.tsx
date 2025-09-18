@@ -31,4 +31,4 @@ export const Diagram = (props: DiagramProps) => {
 		</ReactFlow>
 	);
 };
-Diagram.displayName = "@/component/presentations/Diagram";
+Diagram.displayName = "@/component/Diagram";

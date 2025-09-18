@@ -108,4 +108,4 @@ export const MaterialManagerProvider: FC<MaterialManagerProviderProps> = (
 	);
 };
 MaterialManagerProvider.displayName =
-	"component/presentations/MaterialManagerProvider";
+	"component/MaterialManagerProvider";

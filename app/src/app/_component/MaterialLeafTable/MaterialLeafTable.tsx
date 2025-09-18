@@ -1,23 +1,23 @@
 import { Table } from "@mantine/core";
-import { MaterialCrystalTableBody } from "./MaterialCrystalTableBody";
-import { MaterialCrystalTableHeader } from "./MaterialCrystalTableHeader";
+import { MaterialLeafTableBody } from "./MaterialLeafTableBody";
+import { MaterialLeafTableHeader } from "./MaterialLeafTableHeader";
 import { NodeDataType, useAggregateItems } from "@/hooks";
 import {
 	SortField,
 	SortState,
-	useMaterialCrystalTable,
-} from "./useMaterialCrystalTable";
+	useMaterialLeafTable,
+} from "./useMaterialLeafTable";
 import { useMemo } from "react";
 import { sorting, sortingIcon } from "@/functions/material";
 import { node } from "@/functions/node";
 
-export type MaterialCrystalTableProps = {
+export type MaterialLeafTableProps = {
 	items: NodeDataType[];
 	sort: SortState<SortField>;
 };
 
-export const MaterialCrystalTable = (props: MaterialCrystalTableProps) => {
-	const { sort, name, quantity } = useMaterialCrystalTable(props.sort);
+export const MaterialLeafTable = (props: MaterialLeafTableProps) => {
+	const { sort, name, quantity } = useMaterialLeafTable(props.sort);
 
 	const iconSize = "16";
 	const iconName = useMemo(() => sortingIcon(sort.name, iconSize), [sort.name]);
@@ -27,14 +27,14 @@ export const MaterialCrystalTable = (props: MaterialCrystalTableProps) => {
 	);
 
 	const filterItems = useMemo(() => {
-		return props.items.filter(node.filter.crystal);
+		return props.items.filter(node.filter.leaf);
 	}, [props.items]);
 	const aggregateItems = useAggregateItems(filterItems);
 	const sortedItems = sorting(aggregateItems, sort);
 
 	return (
 		<Table stickyHeader stickyHeaderOffset={0}>
-			<MaterialCrystalTableHeader
+			<MaterialLeafTableHeader
 				name={{
 					icon: iconName,
 					sort: name,
@@ -44,10 +44,9 @@ export const MaterialCrystalTable = (props: MaterialCrystalTableProps) => {
 					sort: quantity,
 				}}
 			/>
-			<MaterialCrystalTableBody items={sortedItems} />
+			<MaterialLeafTableBody items={sortedItems} />
 		</Table>
 	);
 };
 
-MaterialCrystalTable.displayName =
-	"@/_component/prestations/MaterialCrystalTable";
+MaterialLeafTable.displayName = "@/_component/MaterialLeafTable";
