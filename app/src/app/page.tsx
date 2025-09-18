@@ -1,10 +1,11 @@
 "use client";
 import { useState } from "react";
-import { Craft, Material, MaterialManagerProvider } from "./_component";
+import { Craft, defaultRecipeContext, Material, MaterialManagerProvider } from "./_component";
 import { Grid, SegmentedControl, SegmentedControlItem } from "@mantine/core";
 
 // NOTE: 仮実装（いずれ消す）
 import axios from "axios";
+import { RecipeProvider } from "./_component/Recipe/RecipeProvider";
 axios.defaults.baseURL = "http://localhost:3000/api/";
 
 const segments: SegmentedControlItem[] = [
@@ -31,7 +32,12 @@ export default function Home() {
 			</section>
 			<section>
 				<MaterialManagerProvider>
-					{segment === "crafts" ? <Craft /> : <Material />}
+					{segment === "crafts" ?
+
+						<RecipeProvider value={defaultRecipeContext}>
+							<Craft />
+						</RecipeProvider>
+						: <Material />}
 				</MaterialManagerProvider>
 			</section>
 		</>
