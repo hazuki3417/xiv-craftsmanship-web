@@ -48,9 +48,11 @@ export const RecipeSearch = (props: RecipeSearchProps) => {
 			return;
 		}
 
+		// 選択したアイテムの名称を検索Textに設定
 		setSearch({ value: craft.name, isOnChange: false });
 		combobox.closeDropdown();
 
+		// 選択したアイテムの詳細情報を取得
 		await getRecipe(craft.recipeId)
 			.then((res) => {
 				if (!res.data) {
