@@ -20,6 +20,7 @@ export interface RecipeContextAction {
 		set: (tree: Recipe) => void;
 	};
 	quantity: {
+		set: (value: string | number) => void;
 		countUp: () => void;
 		countDown: () => void;
 	};

@@ -24,7 +24,7 @@ export const RecipeProvider: FC<RecipeProviderProps> = (props) => {
 	const [craft, setCraft] = useState(value.spec);
 	const [recipe, setRecipe] = useState(value.tree);
 
-	const { quantity, countUp, countDown } = useQuantity({
+	const { quantity, countUp, countDown, set } = useQuantity({
 		count: value.quantity.count,
 	});
 
@@ -160,6 +160,7 @@ export const RecipeProvider: FC<RecipeProviderProps> = (props) => {
 						}, []),
 					},
 					quantity: {
+						set: set,
 						countUp: countUp,
 						countDown: countDown,
 					},

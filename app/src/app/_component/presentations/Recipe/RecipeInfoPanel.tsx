@@ -1,4 +1,4 @@
-import { memo } from "react";
+import { memo, useCallback } from "react";
 import { useRecipe } from "./Recipe.context";
 import { Group } from "@mantine/core";
 import { QuanitityChangeInput } from "./QuanitityChangeInput";
@@ -31,6 +31,7 @@ export const RecipeInfoPanel = (props: RecipeInfoPanelProps) => {
 				quantity={value.quantity.count}
 				onCountUp={action.quantity.countUp}
 				onCountDown={action.quantity.countDown}
+				onChange={action.quantity.set}
 			/>
 			<MemoizedRecipeInfo {...recipe} />
 		</Group>

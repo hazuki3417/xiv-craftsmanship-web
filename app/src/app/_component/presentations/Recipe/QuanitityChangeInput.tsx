@@ -4,12 +4,13 @@ import { useMemo } from "react";
 
 export type QuanitityChangeInputProps = {
 	quantity: number;
-	onCountUp: () => void;
-	onCountDown: () => void;
+	onCountUp: React.MouseEventHandler<SVGSVGElement>;
+	onCountDown: React.MouseEventHandler<SVGSVGElement>;
+	onChange: (value: string | number) => void;
 };
 
 export const QuanitityChangeInput = (props: QuanitityChangeInputProps) => {
-	const { quantity, onCountUp, onCountDown } = props;
+	const { quantity, onCountUp, onCountDown, onChange } = props;
 
 	const CountUpIcon = useMemo(() => {
 		return (
@@ -35,8 +36,9 @@ export const QuanitityChangeInput = (props: QuanitityChangeInputProps) => {
 					style={{ width: "6ch" }}
 					value={quantity}
 					hideControls
+					onChange={onChange}
 					min={1}
-					max={9999}
+					max={999}
 				/>
 				{CountUpIcon}
 				{CountDownIcon}
