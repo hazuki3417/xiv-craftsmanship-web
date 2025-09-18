@@ -1,12 +1,11 @@
 import "@mantine/core/styles.css";
 import "@xyflow/react/dist/style.css";
-import { ApolloProvider, ThemeProvider } from "@/component/containers";
 import { ColorSchemeScript, Container } from "@mantine/core";
 import { FC } from "react";
 import { ReactNode } from "react";
 import type { Metadata } from "next";
 import { theme } from "@/lib/theme";
-import { Header } from "./_component/containers";
+import { Header, ApolloProvider, ThemeProvider } from "@/component";
 
 const metadata: Metadata = {
 	title: "xiv-craftsmanship",
