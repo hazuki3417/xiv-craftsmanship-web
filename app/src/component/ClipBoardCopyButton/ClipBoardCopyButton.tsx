@@ -1,6 +1,6 @@
 import { CopyButton } from "@mantine/core";
 import { ReactNode, useCallback } from "react";
-import { CopyActionIcon } from "@/component/presentations";
+import { CopyActionIcon } from "@/component";
 
 export interface ClipBoardCopyButtonProps {
 	value: string;

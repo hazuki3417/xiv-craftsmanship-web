@@ -1,5 +1,5 @@
 import { FC, memo } from "react";
-import { ClipBoardCopyInput } from "@/component/presentations";
+import { ClipBoardCopyInput } from "@/component";
 import { Table } from "@mantine/core";
 
 const MemoizedClipBoardCopyInput = memo(ClipBoardCopyInput);

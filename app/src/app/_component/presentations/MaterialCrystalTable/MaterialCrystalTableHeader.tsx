@@ -1,6 +1,6 @@
 import { memo, ReactNode } from "react";
 import { rem, Table } from "@mantine/core";
-import { LabelButton } from "@/component/presentations/Table/LabelButton";
+import { LabelButton } from "@/component/Table/LabelButton";
 
 const MemoizedLabelButton = memo(LabelButton);
 

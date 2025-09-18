@@ -1,6 +1,6 @@
 import { Input, InputProps } from "@mantine/core";
 import { memo } from "react";
-import { ClipBoardCopyButton } from "@/component/presentations";
+import { ClipBoardCopyButton } from "../ClipBoardCopyButton";
 
 const MemolizeClipBoardCopyButton = memo(ClipBoardCopyButton);
 

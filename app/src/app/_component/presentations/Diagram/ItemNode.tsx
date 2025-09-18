@@ -1,6 +1,6 @@
 import { Box, Group, Stack } from "@mantine/core";
 import { memo } from "react";
-import { ClipBoardCopyInput } from "@/component/presentations";
+import { ClipBoardCopyInput } from "@/component";
 
 const MemorizedClipBoardCopyInput = memo(ClipBoardCopyInput);
 
