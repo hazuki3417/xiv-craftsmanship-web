@@ -11,11 +11,6 @@ export interface CraftItem {
 export interface CraftItemSelectProps {
 	items: CraftItem[];
 }
-const data: CraftItem[] = [
-	{ value: "apple", label: "Apple", quantity: "1" },
-	{ value: "banana", label: "Banana", quantity: "12" },
-	{ value: "orange", label: "Orange", quantity: "1111" },
-];
 
 export const CraftItemSelect = (props: CraftItemSelectProps) => {
 	const { items } = props;
