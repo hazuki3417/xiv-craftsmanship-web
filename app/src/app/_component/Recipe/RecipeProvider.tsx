@@ -4,22 +4,17 @@ import { Depth } from "@/lib";
 import { Craft, Recipe } from "@/openapi";
 import { nanoid } from "nanoid";
 import { Node, useQuantity, useMaterialTree } from "@/hooks";
-
 import { parseRecipeTree } from "./parseRecipeTree";
-import { useMaterialManager } from "../MaterialManagerProvider";
 
 export interface RecipeProviderProps {
-	id: string;
 	value: RecipeContextValue;
 	children: ReactNode;
 }
 
 export const RecipeProvider: FC<RecipeProviderProps> = (props) => {
-	const { id, children, value } = props;
+	const { children, value } = props;
 
 	const isFirstRender = useRef(true);
-
-	const manager = useMaterialManager();
 
 	const [craft, setCraft] = useState(value.spec);
 	const [recipe, setRecipe] = useState(value.tree);
@@ -107,30 +102,6 @@ export const RecipeProvider: FC<RecipeProviderProps> = (props) => {
 
 		setQuantity(quantity);
 	}, [quantity]);
-
-	/**
-	 * NOTE: 親のcontextへ状態を同期する処理
-	 */
-	useEffect(() => {
-		if (isFirstRender.current) {
-			// 最初のレンダリング時はProvidreから受け取った値のままなので同期する必要がない。
-			console.debug("skip dispatch. first render.");
-			return;
-		}
-
-		manager.action.dispatch(id, (prev) => {
-			return {
-				...prev,
-				spec: craft,
-				tree: recipe,
-				nodes,
-				edges,
-				quantity: {
-					count: quantity,
-				},
-			};
-		});
-	}, [craft, recipe, nodes, edges, quantity]);
 
 	useEffect(() => {
 		isFirstRender.current = false;
