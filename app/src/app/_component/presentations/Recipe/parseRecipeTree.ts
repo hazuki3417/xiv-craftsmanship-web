@@ -1,7 +1,7 @@
 import { Depth } from "@/lib";
 import { Recipe } from "@/openapi";
 import { nanoid } from "nanoid";
-import { Node, Edge } from "@/app/hooks";
+import { Node, Edge } from "@/hooks";
 
 /**
  * レシピツリーを解析して、Diagram用のノードとエッジを構築する

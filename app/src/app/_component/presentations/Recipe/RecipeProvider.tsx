@@ -3,7 +3,7 @@ import { RecipeContext, RecipeContextValue } from "./Recipe.context";
 import { Depth } from "@/lib";
 import { Craft, Recipe } from "@/openapi";
 import { nanoid } from "nanoid";
-import { Node, useQuantity, useMaterialTree } from "@/app/hooks";
+import { Node, useQuantity, useMaterialTree } from "@/hooks";
 
 import { parseRecipeTree } from "./parseRecipeTree";
 import { useMaterialManager } from "../MaterialManagerProvider";

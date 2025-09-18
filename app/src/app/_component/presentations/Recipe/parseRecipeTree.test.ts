@@ -1,8 +1,8 @@
 import { describe, it, expect } from "vitest";
 import { parseRecipeTree } from "./parseRecipeTree";
-import { Node } from "@/app/hooks";
+import { Node } from "@/hooks";
 import { nanoid } from "nanoid";
-import { Depth } from "./../../../../lib";
+import { Depth } from "./../../../lib";
 import { Craft, Recipe } from "@/openapi";
 
 describe("tree reducer test", () => {

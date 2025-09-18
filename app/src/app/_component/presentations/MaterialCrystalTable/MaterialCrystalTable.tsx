@@ -1,15 +1,15 @@
 import { Table } from "@mantine/core";
 import { MaterialCrystalTableBody } from "./MaterialCrystalTableBody";
 import { MaterialCrystalTableHeader } from "./MaterialCrystalTableHeader";
-import { NodeDataType, useAggregateItems } from "@/app/hooks";
+import { NodeDataType, useAggregateItems } from "@/hooks";
 import {
 	SortField,
 	SortState,
 	useMaterialCrystalTable,
 } from "./useMaterialCrystalTable";
 import { useMemo } from "react";
-import { sorting, sortingIcon } from "@/app/functions/material";
-import { node } from "@/app/functions/node";
+import { sorting, sortingIcon } from "@/functions/material";
+import { node } from "@/functions/node";
 
 export type MaterialCrystalTableProps = {
 	items: NodeDataType[];

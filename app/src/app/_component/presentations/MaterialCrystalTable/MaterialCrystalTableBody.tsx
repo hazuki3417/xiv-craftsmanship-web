@@ -1,6 +1,6 @@
 import { memo } from "react";
 import { Table } from "@mantine/core";
-import { NodeDataType } from "@/app/hooks";
+import { NodeDataType } from "@/hooks";
 import { MaterialCrystalTableRow } from "./MaterialCrystalTableRow";
 
 const MemoizedMaterialCrystalTableRow = memo(MaterialCrystalTableRow);

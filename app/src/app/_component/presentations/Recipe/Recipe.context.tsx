@@ -1,5 +1,5 @@
 import { createContext, useContext } from "react";
-import { Node, Edge } from "@/app/hooks";
+import { Node, Edge } from "@/hooks";
 import { Craft, Recipe } from "@/openapi";
 
 export interface RecipeContextValue {

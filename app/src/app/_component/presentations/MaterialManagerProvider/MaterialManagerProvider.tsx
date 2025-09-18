@@ -4,7 +4,7 @@ import {
 	RecipeData,
 	RecipeDataId,
 } from "./MaterialManagerProvider.context";
-import { node } from "@/app/functions/node";
+import { node } from "@/functions/node";
 import { RecipeContextValue } from "../Recipe";
 
 const defaultContext: RecipeContextValue = {

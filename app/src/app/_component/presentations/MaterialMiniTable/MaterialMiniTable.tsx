@@ -1,15 +1,15 @@
 import { Table } from "@mantine/core";
 import { MaterialMiniTableBody } from "./MaterialMiniTableBody";
 import { MaterialMiniTableHeader } from "./MaterialMiniTableHeader";
-import { NodeDataType } from "@/app/hooks";
+import { NodeDataType } from "@/hooks";
 import {
 	SortField,
 	SortState,
 	useMaterialMiniTable,
 } from "./useMaterialMiniTable";
 import { useMemo } from "react";
-import { sorting, sortingIcon } from "@/app/functions/material";
-import { useAggregateItems } from "@/app/hooks/useAggregateItems";
+import { sorting, sortingIcon } from "@/functions/material";
+import { useAggregateItems } from "@/hooks/useAggregateItems";
 
 export type MaterialMiniTableProps = {
 	items: NodeDataType[];

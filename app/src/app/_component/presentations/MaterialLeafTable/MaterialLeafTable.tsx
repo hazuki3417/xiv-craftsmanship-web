@@ -1,15 +1,15 @@
 import { Table } from "@mantine/core";
 import { MaterialLeafTableBody } from "./MaterialLeafTableBody";
 import { MaterialLeafTableHeader } from "./MaterialLeafTableHeader";
-import { NodeDataType, useAggregateItems } from "@/app/hooks";
+import { NodeDataType, useAggregateItems } from "@/hooks";
 import {
 	SortField,
 	SortState,
 	useMaterialLeafTable,
 } from "./useMaterialLeafTable";
 import { useMemo } from "react";
-import { sorting, sortingIcon } from "@/app/functions/material";
-import { node } from "@/app/functions/node";
+import { sorting, sortingIcon } from "@/functions/material";
+import { node } from "@/functions/node";
 
 export type MaterialLeafTableProps = {
 	items: NodeDataType[];

@@ -1,7 +1,7 @@
 import { Handle, Position } from "@xyflow/react";
 import { memo } from "react";
 import type { NodeProps } from "@xyflow/react";
-import { Node } from "@/app/hooks";
+import { Node } from "@/hooks";
 import { ItemNode, ItemNodeProps } from "./ItemNode";
 
 const MemorizedItemNode = memo(ItemNode);

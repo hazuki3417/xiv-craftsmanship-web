@@ -1,6 +1,6 @@
 import { createContext, useContext } from "react";
 import { RecipeContextValue } from "../Recipe";
-import { NodeDataType } from "@/app/hooks";
+import { NodeDataType } from "@/hooks";
 
 export type RecipeDataId = string;
 export type RecipeData = {

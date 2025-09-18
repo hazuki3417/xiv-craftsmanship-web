@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import { Stack } from "../../lib";
+import { Stack } from "../lib";
 import {
 	Node as ReactFlowNode,
 	Edge as ReactFlowEdge,

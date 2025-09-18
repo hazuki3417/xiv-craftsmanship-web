@@ -1,5 +1,5 @@
 import { useCallback, useReducer } from "react";
-import { reducer, SortState } from "@/app/reducers/toggle-sort";
+import { reducer, SortState } from "@/reducers/toggle-sort";
 
 export type { SortState };
 export type SortField = "name" | "quantity";
