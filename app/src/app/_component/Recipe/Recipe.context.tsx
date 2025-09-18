@@ -12,6 +12,16 @@ export interface RecipeContextValue {
 	};
 }
 
+export const defaultRecipeContext: RecipeContextValue = {
+	spec: null,
+	tree: null,
+	nodes: [],
+	edges: [],
+	quantity: {
+		count: 1,
+	},
+};
+
 export interface RecipeContextAction {
 	spec: {
 		set: (spce: Craft) => void;

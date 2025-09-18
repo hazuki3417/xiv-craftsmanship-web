@@ -1,21 +1,11 @@
-import { FC, ReactNode, useCallback, useMemo, useState } from "react";
+import { FC, ReactNode, useCallback, useState } from "react";
 import {
 	MaterialManagerContext,
 	RecipeData,
 	RecipeDataId,
 } from "./MaterialManagerProvider.context";
 import { node } from "@/functions/node";
-import { RecipeContextValue } from "../Recipe";
-
-const defaultContext: RecipeContextValue = {
-	spec: null,
-	tree: null,
-	nodes: [],
-	edges: [],
-	quantity: {
-		count: 1,
-	},
-};
+import { defaultRecipeContext, RecipeContextValue } from "../Recipe";
 
 export type MaterialManagerProviderProps = {
 	children: ReactNode;
@@ -26,20 +16,35 @@ export const MaterialManagerProvider: FC<MaterialManagerProviderProps> = (
 ) => {
 	const { children } = props;
 
-	const [recipes, setRecipes] = useState<RecipeData[]>([
-		{ id: "1", value: defaultContext },
-		{ id: "2", value: defaultContext },
-		{ id: "3", value: defaultContext },
-		{ id: "4", value: defaultContext },
-		{ id: "5", value: defaultContext },
-		{ id: "6", value: defaultContext },
-		{ id: "7", value: defaultContext },
-		{ id: "8", value: defaultContext },
-		{ id: "9", value: defaultContext },
-		{ id: "10", value: defaultContext },
-		{ id: "11", value: defaultContext },
-		{ id: "12", value: defaultContext },
-	]);
+	const [recipes, setRecipes] = useState<RecipeData[]>([]);
+
+	const add = useCallback(
+		(
+			id: RecipeDataId,
+			callback: (recipe: RecipeContextValue) => RecipeContextValue,
+		) => {
+			setRecipes((prev) => {
+				if (prev.some((recipe) => recipe.id === id)) {
+					// 存在するときの処理
+					return prev;
+				}
+				// 存在しないときの処理
+				return [...prev, { id, value: callback(defaultRecipeContext) }];
+			});
+		},
+		[],
+	);
+
+	const remove = useCallback((id: RecipeDataId) => {
+		setRecipes((prev) => {
+			if (!prev.some((recipe) => recipe.id === id)) {
+				// 存在しないときの処理
+				return prev;
+			}
+			// 存在するときの処理
+			return prev.filter((recipe) => recipe.id !== id);
+		});
+	}, []);
 
 	/**
 	 * NOTE: パフォーマンスの観点からfor文を使用
@@ -72,7 +77,7 @@ export const MaterialManagerProvider: FC<MaterialManagerProviderProps> = (
 		(id: RecipeDataId) => {
 			const result = recipes.find((recipe) => recipe.id === id);
 			if (result === undefined) {
-				throw new Error("");
+				throw new Error("recipe not found: " + id);
 			}
 			return result.value;
 		},
@@ -97,6 +102,8 @@ export const MaterialManagerProvider: FC<MaterialManagerProviderProps> = (
 					recipes,
 				},
 				action: {
+					add,
+					remove,
 					fetch,
 					dispatch,
 					aggregate,
@@ -107,5 +114,4 @@ export const MaterialManagerProvider: FC<MaterialManagerProviderProps> = (
 		</MaterialManagerContext.Provider>
 	);
 };
-MaterialManagerProvider.displayName =
-	"component/MaterialManagerProvider";
+MaterialManagerProvider.displayName = "component/MaterialManagerProvider";

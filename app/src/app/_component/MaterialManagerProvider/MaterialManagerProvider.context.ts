@@ -13,6 +13,11 @@ export interface MaterialManagerContextValue {
 }
 
 export interface MaterialManagerContextAction {
+	add: (
+		id: RecipeDataId,
+		callback: (recipe: RecipeContextValue) => RecipeContextValue,
+	) => void;
+	remove: (id: RecipeDataId) => void;
 	fetch: (id: RecipeDataId) => RecipeContextValue;
 	dispatch: (
 		id: RecipeDataId,
