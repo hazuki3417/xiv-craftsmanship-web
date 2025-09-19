@@ -1,8 +1,11 @@
-import { ActionIcon, Divider, Flex, Grid, rem } from "@mantine/core";
-import { CraftItem, CraftItemSelect, Recipe, RecipeSearch, useRecipe } from "../Recipe";
+import { ActionIcon, Divider, Flex, Grid, rem, Stack } from "@mantine/core";
+import { CraftItem, CraftItemSelect, RecipeSearch, useRecipe } from "../Recipe";
 import { useCallback, useMemo } from "react";
 import { useMaterialManager } from "../MaterialManagerProvider";
 import { IconPlus } from "@tabler/icons-react";
+import { RecipeInfoPanel } from "../Recipe/RecipeInfoPanel";
+import { Diagram } from "../Diagram";
+import { MaterialMiniTableSwitcher } from "../Recipe/MaterialMiniTableSwitcher";
 
 export type CraftProps = {};
 
@@ -22,7 +25,6 @@ export const Craft = (props: CraftProps) => {
 	}, [manager.value.recipes]);
 
 	const addRecipe = useCallback(() => {
-		console.debug("debug", recipe.value);
 		if (recipe.value.spec === null) {
 			// 選択されていないときの処理
 			return;
@@ -41,19 +43,34 @@ export const Craft = (props: CraftProps) => {
 
 	return (
 		<Grid>
+			<Grid.Col span={7}>
+				<Flex>
+					<RecipeSearch style={{ flex: "1" }} />
+				</Flex>
+			</Grid.Col>
+			<Grid.Col span={5}>
+				<CraftItemSelect items={items} onRemove={removeRecipe} />
+			</Grid.Col>
 			<Grid.Col
 				span={12}
 				style={{ display: "flex", flexDirection: "column", gap: "8px" }}
 			>
-				<Flex gap={4} w={"100%"} style={{}}>
-					<RecipeSearch style={{ flex: "1" }} />
-					<ActionIcon variant="light" onClick={addRecipe}>
-						<IconPlus style={{ width: rem(16) }} />
-					</ActionIcon>
-					<CraftItemSelect items={items} onRemove={removeRecipe} />
-				</Flex>
 				<Divider />
-				<Recipe />
+				<Grid>
+					<Grid.Col span={7}>
+						<Stack gap={4}>
+							<RecipeInfoPanel onAddRecipe={addRecipe} />
+							<div style={{ height: "740px" }}>
+								<Diagram />
+							</div>
+						</Stack>
+					</Grid.Col>
+					<Grid.Col span={5}>
+						<Stack gap={0}>
+							<MaterialMiniTableSwitcher />
+						</Stack>
+					</Grid.Col>
+				</Grid>
 			</Grid.Col>
 		</Grid>
 	);

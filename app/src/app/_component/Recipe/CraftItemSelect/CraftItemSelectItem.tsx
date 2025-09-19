@@ -14,16 +14,21 @@ export interface CraftItemSelectItemProps {
 
 export const CraftItemSelectItem = (props: CraftItemSelectItemProps) => {
 	const { item, onRemove } = props;
-	const recipeId = item.value
+	const recipeId = item.value;
 
 	return (
 		<Group justify="space-between">
-			<Text size="xs" style={{
-				flex: 1,
-				whiteSpace: "nowrap",
-				overflow: "hidden",
-				textOverflow: "ellipsis",
-			}} >{item.label}</Text>
+			<Text
+				size="xs"
+				style={{
+					flex: 1,
+					whiteSpace: "nowrap",
+					overflow: "hidden",
+					textOverflow: "ellipsis",
+				}}
+			>
+				{item.label}
+			</Text>
 			<Group
 				justify="flex-end"
 				style={(theme) => {

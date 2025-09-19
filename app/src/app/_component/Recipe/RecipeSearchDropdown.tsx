@@ -1,9 +1,7 @@
-import {
-	Combobox,
-} from "@mantine/core";
+import { Combobox } from "@mantine/core";
 import { useMemo } from "react";
 import { Craft } from "@/openapi";
-import { RecipeSearchDropdownItem, } from "./RecipeSearchDropdownItem";
+import { RecipeSearchDropdownItem } from "./RecipeSearchDropdownItem";
 
 export type RecipeSearchDropdownProps = {
 	items: Craft[];

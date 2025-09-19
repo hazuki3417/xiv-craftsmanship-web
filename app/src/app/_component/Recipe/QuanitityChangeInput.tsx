@@ -32,6 +32,7 @@ export const QuanitityChangeInput = (props: QuanitityChangeInputProps) => {
 			quantity:
 			<Group gap={4}>
 				<NumberInput
+					name="_quantity"
 					size="xs"
 					style={{ width: "6ch" }}
 					value={quantity}
