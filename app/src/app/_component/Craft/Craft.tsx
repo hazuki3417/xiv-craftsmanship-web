@@ -1,15 +1,14 @@
 import { ActionIcon, Divider, Flex, Grid, rem } from "@mantine/core";
-import { Recipe, RecipeSearch, useRecipe } from "../Recipe";
+import { CraftItem, CraftItemSelect, Recipe, RecipeSearch, useRecipe } from "../Recipe";
 import { useCallback, useMemo } from "react";
 import { useMaterialManager } from "../MaterialManagerProvider";
-import { CraftItem, CraftItemSelect } from "@/component";
 import { IconPlus } from "@tabler/icons-react";
 
 export type CraftProps = {};
 
 export const Craft = (props: CraftProps) => {
 	const manager = useMaterialManager();
-	const recipe = useRecipe()
+	const recipe = useRecipe();
 
 	const items = useMemo((): CraftItem[] => {
 		const recipes = manager.value.recipes;
@@ -23,19 +22,22 @@ export const Craft = (props: CraftProps) => {
 	}, [manager.value.recipes]);
 
 	const addRecipe = useCallback(() => {
-		console.debug("debug", recipe.value)
+		console.debug("debug", recipe.value);
 		if (recipe.value.spec === null) {
 			// 選択されていないときの処理
-			return
+			return;
 		}
 		// 選択されているときの処理
-		const recipeId = recipe.value.spec.recipeId
-		manager.action.add(recipeId, () => recipe.value)
-	}, [recipe.value.spec])
+		const recipeId = recipe.value.spec.recipeId;
+		manager.action.add(recipeId, () => recipe.value);
+	}, [recipe.value.spec]);
 
-	const removeRecipe = useCallback((id: string) => {
-		manager.action.remove(id)
-	}, [recipe.value.spec])
+	const removeRecipe = useCallback(
+		(id: string) => {
+			manager.action.remove(id);
+		},
+		[recipe.value.spec],
+	);
 
 	return (
 		<Grid>

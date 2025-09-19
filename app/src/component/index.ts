@@ -3,5 +3,4 @@ export * from "./ClipBoardCopyInput";
 export * from "./CopyActionIcon";
 export * from "./Header";
 export * from "./Providers";
-export * from "./Select";
 export * from "./Table";

@@ -1,3 +1,5 @@
+import "@mantine/core/styles.css";
+import "@xyflow/react/dist/style.css";
 import React from "react";
 import type { Preview } from "@storybook/react";
 import { MantineProvider, useMantineColorScheme } from "@mantine/core"

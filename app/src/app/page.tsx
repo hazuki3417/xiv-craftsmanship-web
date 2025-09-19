@@ -1,6 +1,11 @@
 "use client";
 import { useState } from "react";
-import { Craft, defaultRecipeContext, Material, MaterialManagerProvider } from "./_component";
+import {
+	Craft,
+	defaultRecipeContext,
+	Material,
+	MaterialManagerProvider,
+} from "./_component";
 import { Grid, SegmentedControl, SegmentedControlItem } from "@mantine/core";
 
 // NOTE: 仮実装（いずれ消す）
@@ -32,12 +37,13 @@ export default function Home() {
 			</section>
 			<section>
 				<MaterialManagerProvider>
-					{segment === "crafts" ?
-
+					{segment === "crafts" ? (
 						<RecipeProvider value={defaultRecipeContext}>
 							<Craft />
 						</RecipeProvider>
-						: <Material />}
+					) : (
+						<Material />
+					)}
 				</MaterialManagerProvider>
 			</section>
 		</>

@@ -10,7 +10,10 @@ export type MaterialProps = {};
 export const Material = (props: MaterialProps) => {
 	const manager = useMaterialManager();
 
-	const items = useMemo(() => manager.action.aggregate(), [manager.value.recipes]);
+	const items = useMemo(
+		() => manager.action.aggregate(),
+		[manager.value.recipes],
+	);
 
 	return (
 		<Grid>

@@ -16,7 +16,7 @@ export interface CraftItem {
 
 export interface CraftItemSelectProps {
 	items: CraftItem[];
-	onRemove: (id: string) => void
+	onRemove: (id: string) => void;
 }
 
 export const CraftItemSelect = (props: CraftItemSelectProps) => {
@@ -33,7 +33,7 @@ export const CraftItemSelect = (props: CraftItemSelectProps) => {
 			searchable
 			renderOption={({ option }) => {
 				const item = option as CraftItem;
-				const recipeId = item.value
+				const recipeId = item.value;
 				return (
 					<Group w="100%" display="flex" justify="space-between" grow>
 						<Text size="xs">{item.label}</Text>
