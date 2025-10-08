@@ -1,8 +1,7 @@
-import { ActionIcon, Divider, Flex, Grid, rem, Stack } from "@mantine/core";
+import { Divider, Flex, Grid, Stack } from "@mantine/core";
 import { CraftItem, CraftItemSelect, RecipeSearch, useRecipe } from "../Recipe";
 import { useCallback, useMemo } from "react";
 import { useMaterialManager } from "../MaterialManagerProvider";
-import { IconPlus } from "@tabler/icons-react";
 import { RecipeInfoPanel } from "../Recipe/RecipeInfoPanel";
 import { Diagram } from "../Diagram";
 import { MaterialMiniTableSwitcher } from "../Recipe/MaterialMiniTableSwitcher";
