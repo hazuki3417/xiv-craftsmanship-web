@@ -106,13 +106,48 @@ docker/
 ## 命名規則
 
 ### ディレクトリ
-- コンポーネントディレクトリ: PascalCase
-- その他のディレクトリ: kebab-case
+- コンポーネントディレクトリ: PascalCase（例: `Header/`, `ClipBoardCopyButton/`）
+- 機能モジュールディレクトリ: camelCase（例: `hooks/`, `functions/`）
+- その他のディレクトリ: kebab-case（例: `xiv-craftsmanship-web/`）
 
 ### ファイル
-- コンポーネント: PascalCase
-- ユーティリティ/フック: camelCase
-- 設定ファイル: kebab-case
+#### コンポーネント関連
+- Reactコンポーネント: PascalCase.tsx（例: `Header.tsx`, `ClipBoardCopyButton.tsx`）
+- Storybookファイル: PascalCase.stories.ts（例: `Header.stories.ts`）
+- テストファイル: PascalCase.test.tsx（例: `Header.test.tsx`）
+- インデックスファイル: index.ts（エクスポート定義用）
+
+#### フックとユーティリティ
+- カスタムフック: use{Name}.ts（例: `useQuantity.ts`, `useMaterialTree.ts`）
+- ユーティリティ関数: camelCase.ts（例: `material.ts`, `node.ts`）
+- 型定義ファイル: camelCase.d.ts（例: `env.d.ts`）
+
+#### GraphQL関連
+- クエリ/ミューテーション: camelCase.ts（例: `getItems.ts`, `updateItem.ts`）
+- スキーマ定義: camelCase.graphql（例: `schema.graphql`）
+
+#### 設定ファイル
+- 設定ファイル: kebab-case.{json|js|ts}（例: `tsconfig.json`, `next.config.mjs`）
+
+### 型定義
+
+#### インターフェース
+- コンポーネントProps: `{ComponentName}Props`（例: `interface HeaderProps`）
+- カスタムフック戻り値: `Use{Name}`（例: `interface UseQuantity`）
+- その他インターフェース: PascalCase（例: `interface NodeDataType`）
+
+#### 型エイリアス
+- 共有型: PascalCase（例: `type Maybe<T>`, `type InputMaybe<T>`）
+- 状態管理: `{Name}State`（例: `type QuantityState`）
+- アクション型: `{Name}Action`（例: `type QuantityAction`）
+
+#### 列挙型
+- 列挙型: PascalCase（例: `enum SortType`）
+
+### 定数
+- グローバル定数: SCREAMING_SNAKE_CASE（例: `MAX_ITEMS`, `DEFAULT_LIMIT`）
+- デフォルト値: `default{Name}`（例: `defaultQuantityState`）
+- 設定オブジェクト: camelCase（例: `themeConfig`）
 
 ## 注意事項
 
