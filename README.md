@@ -2,21 +2,14 @@
 
 FF14のクラフター向け支援ツールのWebアプリケーションです。
 
-## 技術スタック
+## 開発環境のセットアップ
 
-- Next.js 13 (App Router)
-- TypeScript
-- GraphQL
-- Material-UI
-- Storybook
-- Vitest
-
-## 必要要件
+### 必要要件
 
 - [Devbox](https://www.jetpack.io/devbox)
-- Node.js v18以上
+  - Node.js v18以上（devbox.jsonで自動的に設定されます）
 
-## セットアップ
+### セットアップ手順
 
 1. リポジトリのクローン
 
@@ -45,7 +38,7 @@ npm run dev
 
 アプリケーションは http://localhost:3000 で利用可能です。
 
-## 開発コマンド
+### 開発コマンド
 
 全てのコマンドは devbox shell 内で実行してください。
 
@@ -64,33 +57,15 @@ npm run typecheck
 
 # リントの実行
 npm run lint
-
-# ビルド
-npm run build
 ```
 
-## デプロイメント
+## ドキュメント
 
-本プロジェクトはAWS ECSまたはKubernetesへのデプロイを想定しています。
+詳細については、以下のドキュメントを参照してください：
 
-### Dockerイメージのビルド
-
-```bash
-docker build -f docker/develop/xiv-craftsmanship-web/Dockerfile -t xiv-craftsmanship-web .
-```
-
-### ローカルでのDocker実行（必要な場合）
-
-```bash
-docker run -p 3000:3000 xiv-craftsmanship-web
-```
-
-## プロジェクト構成
-
-詳細なプロジェクト構成とコーディングガイドラインについては、下記のドキュメントを参照してください：
-
-- [ディレクトリ構成](docs/directory-structure.md)
-- [コーディングガイドライン](docs/guideline.md)
+- [プロジェクト構成](docs/directory-structure.md)
+- [開発ガイドライン](docs/guideline.md)
+- [デプロイメントガイド](docs/deployment.md)
 
 FF14のクラフター向けツール。アイテムのクラフトレシピツリーを視覚化し、必要な材料の計算を支援します。
 
