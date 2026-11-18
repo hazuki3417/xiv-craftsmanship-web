@@ -35,6 +35,9 @@ jobs:
           context: .
           file: docker/develop/xiv-craftsmanship-web/Dockerfile
           push: true
+          build-args: |
+            NEXT_PUBLIC_API_URL=https://xiv-craftsmanship.com
+            NEXT_PUBLIC_HOST_URL=https://xiv-craftsmanship.com
           tags: ghcr.io/hazuki3417/xiv-craftsmanship-web:${{ github.sha }}
           labels: |
             org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
